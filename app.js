@@ -112,7 +112,7 @@ function formatDate(dateStr) {
 
 function formatCurrency(val) {
   if (val === undefined || val === null || val === '') return '—';
-  return Number(val).toFixed(2);
+  return 'Rs. ' + Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function daysUntil(dateStr) {
@@ -346,8 +346,8 @@ function renderItems(filter = '') {
       <td>${item.minStock}</td>
       <td style="${stockColor}"><strong>${stock}</strong></td>
       <td>${expiryStr}</td>
-      <td>${item.purchasePrice ? item.purchasePrice : '—'}</td>
-      <td>${item.sellPrice ? item.sellPrice : '—'}</td>
+      <td>${formatCurrency(item.purchasePrice)}</td>
+      <td>${formatCurrency(item.sellPrice)}</td>
       <td>
         <div class="action-btns">
           <button class="btn-action btn-edit" onclick="editItem(${item.id})">${IC.edit} Edit</button>
@@ -474,8 +474,8 @@ function renderStock() {
       <td>${item.minStock}</td>
       <td>${item.unit}</td>
       <td>${expiryStr}</td>
-      <td>${item.sellPrice || '—'}</td>
-      <td>${value}</td>
+      <td>${formatCurrency(item.sellPrice)}</td>
+      <td>${formatCurrency(value)}</td>
       <td>${statusLabel(status)}</td>
     </tr>`;
   }).join('');
