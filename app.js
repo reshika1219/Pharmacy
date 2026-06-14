@@ -800,6 +800,23 @@ function exportCSV() {
   showToast(`Exported ${filename}`, 'success');
 }
 
+// ---- DOWNLOAD BACKUP (JSON) ----
+
+function downloadBackup() {
+  const jsonStr = JSON.stringify(db, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  
+  const todayStr = new Date().toISOString().split('T')[0];
+  a.href = url;
+  a.download = `pharmacare_backup_${todayStr}.json`;
+  a.click();
+  
+  URL.revokeObjectURL(url);
+  showToast('Database backup downloaded successfully', 'success');
+}
+
 // ---- INIT ----
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -826,7 +843,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Quick Add (Stock In)
   document.getElementById('quick-add-btn').addEventListener('click', openAddStockIn);
 
-  // Export
+  // Backup & Export
+  document.getElementById('backup-btn').addEventListener('click', downloadBackup);
   document.getElementById('export-btn').addEventListener('click', exportCSV);
 
   // Item modal
