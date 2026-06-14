@@ -1,3 +1,7 @@
+<!--
+  PharmaCare — Pharmacy Inventory Management System
+  Co-authored by Reshika Amarasinghe & Antigravity (Google DeepMind)
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -136,6 +140,17 @@
             <path d="M12 5v14" />
           </svg>
           Quick Add Stock
+        </button>
+        <button class="btn btn-outline" id="backup-btn" title="Download database backup (JSON)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+            <path d="M3 5v14a9 3 0 0 0 18 0V5"/>
+            <path d="M3 12a9 3 0 0 0 18 0"/>
+            <path d="M12 11v6" />
+            <polyline points="9 14 12 17 15 14" />
+          </svg>
+          <span>Backup DB</span>
         </button>
         <button class="btn btn-outline" id="export-btn">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -403,8 +418,8 @@
               <th>Min Stock</th>
               <th>Current Stock</th>
               <th>Batch / Expiry</th>
-              <th>Purchase Price</th>
-              <th>Sell Price</th>
+              <th>Purchase Price (Rs.)</th>
+              <th>Sell Price (Rs.)</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -447,8 +462,8 @@
               <th>Unit</th>
               <th>Expiry Date</th>
               <th>Supplier</th>
-              <th>Purchase Price</th>
-              <th>Total Cost</th>
+              <th>Purchase Price (Rs.)</th>
+              <th>Total Cost (Rs.)</th>
               <th>Notes</th>
               <th>Actions</th>
             </tr>
@@ -491,8 +506,8 @@
               <th>Unit</th>
               <th>Reason</th>
               <th>Patient / Customer</th>
-              <th>Sell Price</th>
-              <th>Total Revenue</th>
+              <th>Sell Price (Rs.)</th>
+              <th>Total Revenue (Rs.)</th>
               <th>Notes</th>
               <th>Actions</th>
             </tr>
@@ -534,8 +549,8 @@
               <th>Min Stock</th>
               <th>Unit</th>
               <th>Nearest Expiry</th>
-              <th>Sell Price</th>
-              <th>Stock Value</th>
+              <th>Sell Price (Rs.)</th>
+              <th>Stock Value (Rs.)</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -606,11 +621,11 @@
             <input type="number" id="item-min-stock" min="0" placeholder="e.g. 10" required />
           </div>
           <div class="form-group">
-            <label>Purchase Price (per unit)</label>
+            <label>Purchase Price (Rs. / unit)</label>
             <input type="number" id="item-purchase-price" min="0" step="0.01" placeholder="0.00" />
           </div>
           <div class="form-group">
-            <label>Sell Price (per unit)</label>
+            <label>Sell Price (Rs. / unit)</label>
             <input type="number" id="item-sell-price" min="0" step="0.01" placeholder="0.00" />
           </div>
           <div class="form-group form-group-full">
@@ -676,11 +691,11 @@
             <input type="text" id="in-supplier" placeholder="e.g. ABC Pharma" />
           </div>
           <div class="form-group">
-            <label>Purchase Price (per unit)</label>
+            <label>Purchase Price (Rs. / unit)</label>
             <input type="number" id="in-price" min="0" step="0.01" placeholder="0.00" />
           </div>
           <div class="form-group">
-            <label>Total Cost</label>
+            <label>Total Cost (Rs.)</label>
             <input type="number" id="in-total" min="0" step="0.01" placeholder="Auto-calculated" readonly />
           </div>
           <div class="form-group form-group-full">
@@ -753,11 +768,11 @@
             <input type="text" id="out-customer" placeholder="e.g. John Doe / Walk-in" />
           </div>
           <div class="form-group">
-            <label>Sell Price (per unit)</label>
+            <label>Sell Price (Rs. / unit)</label>
             <input type="number" id="out-price" min="0" step="0.01" placeholder="0.00" />
           </div>
           <div class="form-group">
-            <label>Total Revenue</label>
+            <label>Total Revenue (Rs.)</label>
             <input type="number" id="out-total" min="0" step="0.01" placeholder="Auto-calculated" readonly />
           </div>
           <div class="form-group form-group-full">
