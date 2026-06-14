@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PharmaCare — Inventory Management System</title>
+  <meta name="description"
+    content="A complete pharmacy inventory management system to track medicines, stock levels, incoming and outgoing items, and alerts." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
+            <path d="m8.5 8.5 7 7" />
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">PharmaCare</span>
+          <span class="logo-developer">by Reshika Amarasinghe</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="dashboard" id="nav-dashboard">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="9" x="3" y="3" rx="1" />
+            <rect width="7" height="5" x="14" y="3" rx="1" />
+            <rect width="7" height="9" x="14" y="12" rx="1" />
+            <rect width="7" height="5" x="3" y="16" rx="1" />
+          </svg>
+        </span>
+        <span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-item" data-tab="items" id="nav-items">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
+            <path d="m8.5 8.5 7 7" />
+          </svg>
+        </span>
+        <span class="nav-label">Items</span>
+      </button>
+      <button class="nav-item" data-tab="in" id="nav-in">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12" />
+            <path d="m8 11 4 4 4-4" />
+            <path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" />
+          </svg>
+        </span>
+        <span class="nav-label">Stock In</span>
+        <span class="nav-badge" id="badge-in">0</span>
+      </button>
+      <button class="nav-item" data-tab="out" id="nav-out">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12" />
+            <path d="m8 7 4-4 4 4" />
+            <path d="M8 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4" />
+            <path d="M16 5h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4" />
+          </svg>
+        </span>
+        <span class="nav-label">Stock Out</span>
+        <span class="nav-badge" id="badge-out">0</span>
+      </button>
+      <button class="nav-item" data-tab="stock" id="nav-stock">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 9 12 4l10 5" />
+            <path d="M12 20V9" />
+            <path d="m2 9 10 5 10-5" />
+            <path d="M2 14l10 5 10-5" />
+          </svg>
+        </span>
+        <span class="nav-label">In Stock</span>
+      </button>
+      <button class="nav-item" data-tab="alerts" id="nav-alerts">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+          </svg>
+        </span>
+        <span class="nav-label">Alerts</span>
+        <span class="nav-badge danger" id="badge-alerts">0</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="pharmacy-info">
+        <span class="pharmacy-name" id="pharmacy-name-display">My Pharmacy</span>
+        <button class="btn-icon" id="edit-pharmacy-btn" title="Edit Pharmacy Name">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+            <path d="m15 5 4 4" />
+          </svg>
+        </button>
+      </div>
+      <div class="date-display" id="current-date"></div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-primary" id="quick-add-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          Quick Add Stock
+        </button>
+        <button class="btn btn-outline" id="export-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" x2="12" y1="15" y2="3" />
+          </svg>
+          <span class="export-label">Export CSV</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== DASHBOARD TAB ========== -->
+    <section class="tab-content active" id="tab-dashboard">
+
+      <!-- Onboarding Guide: shown when inventory is empty -->
+      <div id="onboarding-guide" class="onboarding-guide" style="display:none">
+        <div class="onboarding-header">
+          <div class="onboarding-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
+              <path d="m8.5 8.5 7 7" />
+            </svg>
+          </div>
+          <h2 class="onboarding-title">Welcome to PharmaCare</h2>
+          <p class="onboarding-sub">Your inventory is empty. Follow these 3 steps to get started.</p>
+        </div>
+        <div class="onboarding-steps">
+          <div class="onboarding-step">
+            <div class="step-number">1</div>
+            <div class="step-icon step-icon-blue">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z" />
+                <path d="m8.5 8.5 7 7" />
+              </svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Add Your Medicines</div>
+              <div class="step-desc">Build your catalog — brand names, generic names, categories, units, and minimum
+                stock levels.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="switchTab('items')">
+              Go to Items
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+          <div class="onboarding-step">
+            <div class="step-number">2</div>
+            <div class="step-icon step-icon-green">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12" />
+                <path d="m8 11 4 4 4-4" />
+                <path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" />
+              </svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Record Incoming Stock</div>
+              <div class="step-desc">Log deliveries from suppliers with batch numbers, quantities, and expiry dates.
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="switchTab('in')">
+              Stock In
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+          <div class="onboarding-step">
+            <div class="step-number">3</div>
+            <div class="step-icon step-icon-teal">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v12" />
+                <path d="m8 7 4-4 4 4" />
+                <path d="M8 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4" />
+                <path d="M16 5h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4" />
+              </svg>
+            </div>
+            <div class="step-content">
+              <div class="step-title">Dispense &amp; Monitor</div>
+              <div class="step-desc">Record every sale or dispensing. Stock levels update automatically and alerts fire
+                when needed.</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="switchTab('out')">
+              Stock Out
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="dash-stats" class="stats-grid">
+        <div class="stat-card stat-blue">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" />
+              <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9" />
+              <path d="M12 3v6" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-total-items">0</div>
+            <div class="stat-label">Total Items</div>
+          </div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-in-stock">0</div>
+            <div class="stat-label">In Stock</div>
+          </div>
+        </div>
+        <div class="stat-card stat-orange">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+              <path d="M12 9v4" />
+              <path d="M12 17h.01" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-low-stock">0</div>
+            <div class="stat-label">Low Stock</div>
+          </div>
+        </div>
+        <div class="stat-card stat-red">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="m4.9 4.9 14.2 14.2" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-expired">0</div>
+            <div class="stat-label">Expired / Near Expiry</div>
+          </div>
+        </div>
+        <div class="stat-card stat-purple">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v12" />
+              <path d="m8 11 4 4 4-4" />
+              <path d="M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-today-in">0</div>
+            <div class="stat-label">Today's Stock In</div>
+          </div>
+        </div>
+        <div class="stat-card stat-teal">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v12" />
+              <path d="m8 7 4-4 4 4" />
+              <path d="M8 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4" />
+              <path d="M16 5h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-today-out">0</div>
+            <div class="stat-label">Today's Stock Out</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="dash-panels" class="dashboard-panels">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                style="color:var(--red-light)">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+              </svg>
+              Critical Alerts
+            </h2>
+            <button class="btn btn-sm btn-outline" data-tab="alerts">View All</button>
+          </div>
+          <div class="alert-list" id="dash-alerts">
+            <div class="empty-state">No alerts right now — all good!</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                style="color:var(--blue-light)">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" x2="8" y1="13" y2="13" />
+                <line x1="16" x2="8" y1="17" y2="17" />
+                <line x1="10" x2="8" y1="9" y2="9" />
+              </svg>
+              Recent Activity
+            </h2>
+          </div>
+          <div class="activity-list" id="dash-activity">
+            <div class="empty-state">No recent activity</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ITEMS TAB ========== -->
+    <section class="tab-content" id="tab-items">
+      <div class="tab-toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input type="text" class="search-input" id="items-search" placeholder="Search medicines..." />
+        </div>
+        <select class="filter-select" id="items-category-filter">
+          <option value="">All Categories</option>
+        </select>
+        <button class="btn btn-primary" id="add-item-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          Add New Item
+        </button>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table" id="items-table">
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Generic Name</th>
+              <th>Category</th>
+              <th>Unit</th>
+              <th>Min Stock</th>
+              <th>Current Stock</th>
+              <th>Batch / Expiry</th>
+              <th>Purchase Price</th>
+              <th>Sell Price</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="items-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="items-empty">No items added yet. Click "Add New Item" to get started.</div>
+      </div>
+    </section>
+
+    <!-- ========== STOCK IN TAB ========== -->
+    <section class="tab-content" id="tab-in">
+      <div class="tab-toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input type="text" class="search-input" id="in-search" placeholder="Search records..." />
+        </div>
+        <input type="date" class="filter-select" id="in-date-filter" />
+        <button class="btn btn-primary" id="add-in-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          Record Stock In
+        </button>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Item Name</th>
+              <th>Batch No.</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+              <th>Expiry Date</th>
+              <th>Supplier</th>
+              <th>Purchase Price</th>
+              <th>Total Cost</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="in-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="in-empty">No stock-in records yet.</div>
+      </div>
+    </section>
+
+    <!-- ========== STOCK OUT TAB ========== -->
+    <section class="tab-content" id="tab-out">
+      <div class="tab-toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input type="text" class="search-input" id="out-search" placeholder="Search records..." />
+        </div>
+        <input type="date" class="filter-select" id="out-date-filter" />
+        <button class="btn btn-primary" id="add-out-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          Record Stock Out
+        </button>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Item Name</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+              <th>Reason</th>
+              <th>Patient / Customer</th>
+              <th>Sell Price</th>
+              <th>Total Revenue</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="out-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="out-empty">No stock-out records yet.</div>
+      </div>
+    </section>
+
+    <!-- ========== IN STOCK TAB ========== -->
+    <section class="tab-content" id="tab-stock">
+      <div class="tab-toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input type="text" class="search-input" id="stock-search" placeholder="Search stock..." />
+        </div>
+        <select class="filter-select" id="stock-status-filter">
+          <option value="">All Status</option>
+          <option value="ok">OK</option>
+          <option value="low">Low Stock</option>
+          <option value="out">Out of Stock</option>
+          <option value="expiring">Expiring Soon</option>
+          <option value="expired">Expired</option>
+        </select>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Category</th>
+              <th>Current Stock</th>
+              <th>Min Stock</th>
+              <th>Unit</th>
+              <th>Nearest Expiry</th>
+              <th>Sell Price</th>
+              <th>Stock Value</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="stock-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="stock-empty">No stock data available.</div>
+      </div>
+    </section>
+
+    <!-- ========== ALERTS TAB ========== -->
+    <section class="tab-content" id="tab-alerts">
+      <div class="alerts-summary" id="alerts-summary"></div>
+      <div class="alerts-container" id="alerts-container">
+        <div class="empty-state">No alerts right now — your inventory is in great shape!</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== MODALS ========== -->
+
+  <!-- Add/Edit Item Modal -->
+  <div class="modal-overlay" id="item-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="item-modal-title">Add New Item</h2>
+        <button class="modal-close" id="item-modal-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Item / Brand Name *</label>
+            <input type="text" id="item-name" placeholder="e.g. Panadol 500mg" required />
+          </div>
+          <div class="form-group">
+            <label>Generic Name</label>
+            <input type="text" id="item-generic" placeholder="e.g. Paracetamol" />
+          </div>
+          <div class="form-group">
+            <label>Category *</label>
+            <input type="text" id="item-category" list="category-list" placeholder="e.g. Analgesic" required />
+            <datalist id="category-list"></datalist>
+          </div>
+          <div class="form-group">
+            <label>Unit *</label>
+            <select id="item-unit" required>
+              <option value="Tablet(s)">Tablet(s)</option>
+              <option value="Capsule(s)">Capsule(s)</option>
+              <option value="Strip(s)">Strip(s)</option>
+              <option value="Box(es)">Box(es)</option>
+              <option value="Bottle(s)">Bottle(s)</option>
+              <option value="Vial(s)">Vial(s)</option>
+              <option value="Sachet(s)">Sachet(s)</option>
+              <option value="Tube(s)">Tube(s)</option>
+              <option value="ml">ml</option>
+              <option value="mg">mg</option>
+              <option value="Unit(s)">Unit(s)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Minimum Stock Level *</label>
+            <input type="number" id="item-min-stock" min="0" placeholder="e.g. 10" required />
+          </div>
+          <div class="form-group">
+            <label>Purchase Price (per unit)</label>
+            <input type="number" id="item-purchase-price" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label>Sell Price (per unit)</label>
+            <input type="number" id="item-sell-price" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="form-group form-group-full">
+            <label>Notes</label>
+            <textarea id="item-notes" placeholder="Storage instructions, special handling, etc." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="item-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="item-modal-save">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          Save Item
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock In Modal -->
+  <div class="modal-overlay" id="in-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Record Stock In</h2>
+        <button class="modal-close" id="in-modal-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Date *</label>
+            <input type="date" id="in-date" required />
+          </div>
+          <div class="form-group">
+            <label>Item *</label>
+            <select id="in-item" required>
+              <option value="">Select an item...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Batch Number</label>
+            <input type="text" id="in-batch" placeholder="e.g. BT-2024-001" />
+          </div>
+          <div class="form-group">
+            <label>Quantity *</label>
+            <input type="number" id="in-qty" min="1" placeholder="e.g. 100" required />
+          </div>
+          <div class="form-group">
+            <label>Expiry Date *</label>
+            <input type="date" id="in-expiry" required />
+          </div>
+          <div class="form-group">
+            <label>Supplier</label>
+            <input type="text" id="in-supplier" placeholder="e.g. ABC Pharma" />
+          </div>
+          <div class="form-group">
+            <label>Purchase Price (per unit)</label>
+            <input type="number" id="in-price" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label>Total Cost</label>
+            <input type="number" id="in-total" min="0" step="0.01" placeholder="Auto-calculated" readonly />
+          </div>
+          <div class="form-group form-group-full">
+            <label>Notes</label>
+            <textarea id="in-notes" placeholder="Invoice number, remarks, etc." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="in-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="in-modal-save">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          Save Record
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Out Modal -->
+  <div class="modal-overlay" id="out-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Record Stock Out</h2>
+        <button class="modal-close" id="out-modal-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Date *</label>
+            <input type="date" id="out-date" required />
+          </div>
+          <div class="form-group">
+            <label>Item *</label>
+            <select id="out-item" required>
+              <option value="">Select an item...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Available Stock</label>
+            <input type="text" id="out-available" readonly class="readonly-field" placeholder="Select item first" />
+          </div>
+          <div class="form-group">
+            <label>Quantity *</label>
+            <input type="number" id="out-qty" min="1" placeholder="e.g. 10" required />
+          </div>
+          <div class="form-group">
+            <label>Reason</label>
+            <select id="out-reason">
+              <option value="Sale">Sale / Dispensed</option>
+              <option value="Expired">Removed (Expired)</option>
+              <option value="Damaged">Damaged / Broken</option>
+              <option value="Returned">Returned to Supplier</option>
+              <option value="Internal Use">Internal Use</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Patient / Customer</label>
+            <input type="text" id="out-customer" placeholder="e.g. John Doe / Walk-in" />
+          </div>
+          <div class="form-group">
+            <label>Sell Price (per unit)</label>
+            <input type="number" id="out-price" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label>Total Revenue</label>
+            <input type="number" id="out-total" min="0" step="0.01" placeholder="Auto-calculated" readonly />
+          </div>
+          <div class="form-group form-group-full">
+            <label>Notes</label>
+            <textarea id="out-notes" placeholder="Prescription no., remarks, etc." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="out-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="out-modal-save">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          Save Record
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Pharmacy Name Modal -->
+  <div class="modal-overlay" id="pharmacy-modal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title">Pharmacy Settings</h2>
+        <button class="modal-close" id="pharmacy-modal-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Pharmacy Name</label>
+          <input type="text" id="pharmacy-name-input" placeholder="My Pharmacy" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="pharmacy-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="pharmacy-modal-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

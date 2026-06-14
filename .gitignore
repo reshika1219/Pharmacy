@@ -1,0 +1,6 @@
+# Database (contains sensitive business/inventory data)
+db.json
+
+# macOS system files
+.DS_Store
+Thumbs.db
