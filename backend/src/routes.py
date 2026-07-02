@@ -200,6 +200,7 @@ def stock_in():
     data = request.json or {}
     itemId = data.get('itemId')
     qty = int(data.get('qty', 0))
+    bonus_qty = int(data.get('bonusQty', 0))
     expiry = data.get('expiry', '').strip()
 
     if not itemId or qty <= 0 or not expiry:
@@ -216,10 +217,13 @@ def stock_in():
         payment_status = data.get('paymentStatus', 'Pending')
         amount_paid = float(data.get('amountPaid', 0.0))
 
+        total_received = qty + bonus_qty
+        effective_purchase_price = (qty * purchase_price) / total_received if total_received > 0 else purchase_price
+
         cursor.execute('''
-            INSERT INTO batches (itemId, batch_number, expiry, qty_received, qty_remaining, purchase_price, sell_price, supplier, date_added, payment_status, amount_paid)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (itemId, data.get('batchNumber'), expiry, qty, qty, purchase_price, sell_price, data.get('supplier'), date, payment_status, amount_paid))
+            INSERT INTO batches (itemId, batch_number, expiry, qty_received, qty_remaining, purchase_price, sell_price, supplier, date_added, payment_status, amount_paid, qty_billed, qty_bonus)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (itemId, data.get('batchNumber'), expiry, total_received, total_received, effective_purchase_price, sell_price, data.get('supplier'), date, payment_status, amount_paid, qty, bonus_qty))
         
         conn.commit()
         create_backup()
