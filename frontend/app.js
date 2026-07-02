@@ -957,6 +957,7 @@ function openAddStockIn() {
   document.getElementById('in-date').value = today();
   document.getElementById('in-batch').value = '';
   document.getElementById('in-qty').value = '';
+  document.getElementById('in-bonus').value = '0';
   document.getElementById('in-expiry').value = '';
   document.getElementById('in-supplier').value = '';
   document.getElementById('in-price').value = '';
@@ -971,6 +972,7 @@ async function saveStockIn() {
   const itemId = parseInt(document.getElementById('in-item').value);
   const batchNumber = document.getElementById('in-batch').value.trim();
   const qty = parseInt(document.getElementById('in-qty').value);
+  const bonusQty = parseInt(document.getElementById('in-bonus').value) || 0;
   const expiry = document.getElementById('in-expiry').value;
   const supplier = document.getElementById('in-supplier').value.trim();
   const purchasePrice = parseFloat(document.getElementById('in-price').value) || 0;
@@ -981,7 +983,7 @@ async function saveStockIn() {
   }
   if (!expiry) { showToast('Expiry date is required', 'error'); return; }
 
-  const payload = { date, itemId, batchNumber, qty, expiry, supplier, purchasePrice, sellPrice };
+  const payload = { date, itemId, batchNumber, qty, bonusQty, expiry, supplier, purchasePrice, sellPrice };
 
   try {
     const res = await fetch('/api/stock-in', {

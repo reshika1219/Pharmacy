@@ -63,6 +63,8 @@ def init_db():
             date_added TEXT,
             payment_status TEXT DEFAULT 'Pending',
             amount_paid REAL DEFAULT 0.0,
+            qty_billed INTEGER,
+            qty_bonus INTEGER DEFAULT 0,
             FOREIGN KEY(itemId) REFERENCES items(id)
         )
     ''')
@@ -151,6 +153,10 @@ def run_migrations():
             cursor.execute("ALTER TABLE batches ADD COLUMN payment_status TEXT DEFAULT 'Pending'")
         if 'amount_paid' not in batches_cols:
             cursor.execute("ALTER TABLE batches ADD COLUMN amount_paid REAL DEFAULT 0.0")
+        if 'qty_billed' not in batches_cols:
+            cursor.execute("ALTER TABLE batches ADD COLUMN qty_billed INTEGER")
+        if 'qty_bonus' not in batches_cols:
+            cursor.execute("ALTER TABLE batches ADD COLUMN qty_bonus INTEGER DEFAULT 0")
         conn.commit()
     except Exception as e:
         print(f"⚠️ Warning adding batch payment columns: {e}")
