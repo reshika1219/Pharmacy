@@ -179,7 +179,8 @@ const tabTitles = {
   in: 'Stock In',
   out: 'Stock Out',
   stock: 'Current Stock',
-  alerts: 'Alerts'
+  alerts: 'Alerts',
+  sales: 'Sales History'
 };
 
 const EXPORTABLE_TABS = ['items', 'in', 'out', 'stock'];
@@ -190,6 +191,14 @@ const EXPORT_LABELS = {
   out:   'Export Stock Out',
   stock: 'Export Stock',
 };
+
+// ---- AUTH SESSION ----
+const ownerSession = JSON.parse(sessionStorage.getItem('pharmacare_session') || 'null');
+
+function logout() {
+  sessionStorage.removeItem('pharmacare_session');
+  window.location.replace('login.html');
+}
 
 function switchTab(tabName) {
   document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
@@ -219,6 +228,7 @@ function renderTab(tab) {
   if (tab === 'out') renderStockOut();
   if (tab === 'stock') renderStock();
   if (tab === 'alerts') renderAlerts();
+  if (tab === 'sales') renderSales();
   updateBadges();
 }
 
@@ -541,6 +551,104 @@ function renderAlerts() {
   `).join('');
 }
 
+// ---- SALES HISTORY ----
+
+let voidingBillId = null;
+
+function renderSales() {
+  const bills = db.bills || [];
+  const search = (document.getElementById('sales-search')?.value || '').toLowerCase();
+  const dateF  = document.getElementById('sales-date-filter')?.value || '';
+  const statusF = document.getElementById('sales-status-filter')?.value || '';
+
+  let list = [...bills].sort((a, b) => b.id - a.id);
+  if (search) list = list.filter(b =>
+    (b.billNumber || '').toLowerCase().includes(search) ||
+    (b.cashier || '').toLowerCase().includes(search) ||
+    (b.paymentMethod || '').toLowerCase().includes(search)
+  );
+  if (dateF) list = list.filter(b => b.date === dateF);
+  if (statusF) list = list.filter(b => b.status === statusF);
+
+  const tbody = document.getElementById('sales-tbody');
+  const empty = document.getElementById('sales-empty');
+  const summaryBar = document.getElementById('sales-summary-bar');
+
+  // Summary bar
+  const activeBills = bills.filter(b => b.status === 'active');
+  const totalRevenue = activeBills.reduce((s, b) => s + parseFloat(b.total || 0), 0);
+  const todayBills = activeBills.filter(b => b.date === today());
+  const todayRevenue = todayBills.reduce((s, b) => s + parseFloat(b.total || 0), 0);
+  summaryBar.innerHTML = bills.length === 0 ? '' : `
+    <div class="sales-summary-item">
+      <span class="ss-label">Total Bills</span>
+      <span class="ss-value">${activeBills.length}</span>
+    </div>
+    <div class="sales-summary-item">
+      <span class="ss-label">Total Revenue</span>
+      <span class="ss-value" style="color:var(--green-light)">Rs. ${totalRevenue.toLocaleString('en-US', {minimumFractionDigits:2})}</span>
+    </div>
+    <div class="sales-summary-item">
+      <span class="ss-label">Today's Bills</span>
+      <span class="ss-value">${todayBills.length}</span>
+    </div>
+    <div class="sales-summary-item">
+      <span class="ss-label">Today's Revenue</span>
+      <span class="ss-value" style="color:var(--teal-light)">Rs. ${todayRevenue.toLocaleString('en-US', {minimumFractionDigits:2})}</span>
+    </div>
+  `;
+
+  if (list.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = list.map(bill => {
+    const isVoid = bill.status === 'void';
+    const itemSummary = (bill.items || []).map(i => `${i.qty}× ${i.name}`).join(', ');
+    const statusBadge = isVoid
+      ? '<span class="badge" style="background:rgba(239,68,68,0.15);color:var(--red-light);border:1px solid rgba(239,68,68,0.3)">VOID</span>'
+      : '<span class="badge badge-ok">Active</span>';
+    return `<tr style="${isVoid ? 'opacity:0.55' : ''}">
+      <td><strong>${bill.billNumber || '—'}</strong></td>
+      <td>${formatDate(bill.date)}</td>
+      <td>${bill.time || '—'}</td>
+      <td>${bill.cashier || '—'}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${itemSummary}">${itemSummary || '—'}</td>
+      <td>${bill.paymentMethod || '—'}</td>
+      <td><strong>${bill.total ? formatCurrency(bill.total) : '—'}</strong></td>
+      <td>${statusBadge}</td>
+      <td>
+        ${!isVoid ? `<button class="btn-action btn-delete" onclick="confirmVoidBill(${bill.id})">Void</button>` : '—'}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function confirmVoidBill(billId) {
+  const bill = (db.bills || []).find(b => b.id === billId);
+  if (!bill) return;
+  voidingBillId = billId;
+  document.getElementById('void-bill-number').textContent = bill.billNumber;
+  openModal('void-modal');
+}
+
+function executeVoidBill() {
+  const bill = (db.bills || []).find(b => b.id === voidingBillId);
+  if (!bill || bill.status === 'void') { closeModal('void-modal'); return; }
+
+  // Mark bill as void
+  bill.status = 'void';
+
+  // Remove stock-out entries that were created by this bill
+  db.stockOut = db.stockOut.filter(r => r.billId !== voidingBillId);
+
+  saveDB();
+  closeModal('void-modal');
+  renderSales();
+  updateBadges();
+  showToast(`${bill.billNumber} voided. Stock restored.`, 'warning');
+  voidingBillId = null;
+}
+
 // ---- BADGES ----
 
 function updateBadges() {
@@ -828,6 +936,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set pharmacy name
   document.getElementById('pharmacy-name-display').textContent = db.pharmacyName;
 
+  // Display logged-in owner name
+  if (ownerSession) {
+    const usernameEl = document.getElementById('owner-username-display');
+    if (usernameEl) usernameEl.textContent = ownerSession.username;
+  }
+
   // Nav buttons
   document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
@@ -896,23 +1010,55 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('out-price').addEventListener('input', calcOutTotal);
   document.getElementById('out-qty').addEventListener('input', calcOutTotal);
 
-  // Pharmacy name modal
+  // Pharmacy settings modal
   document.getElementById('edit-pharmacy-btn').addEventListener('click', () => {
-    document.getElementById('pharmacy-name-input').value = db.pharmacyName;
+    document.getElementById('pharmacy-name-input').value = db.pharmacyName || '';
+    document.getElementById('pharmacy-address-input').value = db.pharmacyAddress || '';
+    document.getElementById('pharmacy-phone-input').value = db.pharmacyPhone || '';
+    document.getElementById('new-owner-password').value = '';
+    document.getElementById('new-cashier-password').value = '';
     openModal('pharmacy-modal');
   });
   document.getElementById('pharmacy-modal-close').addEventListener('click', () => closeModal('pharmacy-modal'));
   document.getElementById('pharmacy-modal-cancel').addEventListener('click', () => closeModal('pharmacy-modal'));
   document.getElementById('pharmacy-modal-save').addEventListener('click', () => {
     const name = document.getElementById('pharmacy-name-input').value.trim();
-    if (name) {
-      db.pharmacyName = name;
-      saveDB();
-      document.getElementById('pharmacy-name-display').textContent = name;
-      showToast('Pharmacy name updated', 'success');
-    }
+    const address = document.getElementById('pharmacy-address-input').value.trim();
+    const phone = document.getElementById('pharmacy-phone-input').value.trim();
+    const newOwnerPw = document.getElementById('new-owner-password').value;
+    const newCashierPw = document.getElementById('new-cashier-password').value;
+
+    if (!name) { showToast('Pharmacy name cannot be empty', 'error'); return; }
+
+    db.pharmacyName = name;
+    db.pharmacyAddress = address;
+    db.pharmacyPhone = phone;
+
+    // Update passwords if provided
+    if (!db.users) db.users = {};
+    if (!db.users.owner) db.users.owner = { password: 'owner123', role: 'owner' };
+    if (!db.users.cashier) db.users.cashier = { password: 'cashier123', role: 'cashier' };
+    if (newOwnerPw) db.users.owner.password = newOwnerPw;
+    if (newCashierPw) db.users.cashier.password = newCashierPw;
+
+    saveDB();
+    document.getElementById('pharmacy-name-display').textContent = name;
+    showToast('Settings saved successfully', 'success');
     closeModal('pharmacy-modal');
   });
+
+  // Logout
+  document.getElementById('logout-btn').addEventListener('click', logout);
+
+  // Void Bill modal
+  document.getElementById('void-modal-close').addEventListener('click', () => closeModal('void-modal'));
+  document.getElementById('void-modal-cancel').addEventListener('click', () => closeModal('void-modal'));
+  document.getElementById('void-modal-confirm').addEventListener('click', executeVoidBill);
+
+  // Sales History filters
+  document.getElementById('sales-search').addEventListener('input', renderSales);
+  document.getElementById('sales-date-filter').addEventListener('change', renderSales);
+  document.getElementById('sales-status-filter').addEventListener('change', renderSales);
 
   // Search/filter events
   document.getElementById('items-search').addEventListener('input', renderItems);

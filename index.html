@@ -15,6 +15,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script>
+    // Auth guard — owner only
+    (function() {
+      const s = JSON.parse(sessionStorage.getItem('pharmacare_session') || 'null');
+      if (!s || s.role !== 'owner') window.location.replace('login.html');
+    })();
+  </script>
 </head>
 
 <body>
@@ -107,6 +114,18 @@
         <span class="nav-label">Alerts</span>
         <span class="nav-badge danger" id="badge-alerts">0</span>
       </button>
+      <button class="nav-item" data-tab="sales" id="nav-sales">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" x2="21" y1="6" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </span>
+        <span class="nav-label">Sales History</span>
+        <span class="nav-badge" id="badge-sales" style="display:none">0</span>
+      </button>
     </nav>
 
     <div class="sidebar-footer">
@@ -160,6 +179,24 @@
             <line x1="12" x2="12" y1="15" y2="3" />
           </svg>
           <span class="export-label">Export CSV</span>
+        </button>
+        <!-- User info + Logout -->
+        <div class="owner-badge" id="owner-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          <span id="owner-username-display">owner</span>
+        </div>
+        <button class="btn btn-outline btn-logout" id="logout-btn" title="Logout">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" x2="9" y1="12" y2="12"/>
+          </svg>
+          Logout
         </button>
       </div>
     </div>
@@ -568,6 +605,46 @@
       </div>
     </section>
 
+    <!-- ========== SALES HISTORY TAB ========== -->
+    <section class="tab-content" id="tab-sales">
+      <div class="tab-toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input type="text" class="search-input" id="sales-search" placeholder="Search by bill number, cashier..." />
+        </div>
+        <input type="date" class="filter-select" id="sales-date-filter" />
+        <select class="filter-select" id="sales-status-filter">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="void">Void</option>
+        </select>
+      </div>
+      <div class="sales-summary-bar" id="sales-summary-bar"></div>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Bill No.</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Cashier</th>
+              <th>Items</th>
+              <th>Payment</th>
+              <th>Total (Rs.)</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="sales-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="sales-empty">No sales recorded yet.</div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ========== MODALS ========== -->
@@ -796,9 +873,9 @@
     </div>
   </div>
 
-  <!-- Edit Pharmacy Name Modal -->
+  <!-- Pharmacy Settings Modal (expanded) -->
   <div class="modal-overlay" id="pharmacy-modal">
-    <div class="modal modal-sm">
+    <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title">Pharmacy Settings</h2>
         <button class="modal-close" id="pharmacy-modal-close">
@@ -810,14 +887,69 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label>Pharmacy Name</label>
-          <input type="text" id="pharmacy-name-input" placeholder="My Pharmacy" />
+        <div class="settings-section-title">Pharmacy Information</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Pharmacy Name *</label>
+            <input type="text" id="pharmacy-name-input" placeholder="e.g. PharmaCare" />
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" id="pharmacy-phone-input" placeholder="e.g. 011-234 5678" />
+          </div>
+          <div class="form-group form-group-full">
+            <label>Address (shown on printed bills)</label>
+            <input type="text" id="pharmacy-address-input" placeholder="e.g. 123 Main Street, Colombo" />
+          </div>
+        </div>
+        <div class="settings-section-title" style="margin-top:20px">Change Passwords</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>New Owner Password</label>
+            <input type="password" id="new-owner-password" placeholder="Leave blank to keep current" autocomplete="new-password" />
+          </div>
+          <div class="form-group">
+            <label>New Cashier Password</label>
+            <input type="password" id="new-cashier-password" placeholder="Leave blank to keep current" autocomplete="new-password" />
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" id="pharmacy-modal-cancel">Cancel</button>
-        <button class="btn btn-primary" id="pharmacy-modal-save">Save</button>
+        <button class="btn btn-primary" id="pharmacy-modal-save">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          Save Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Void Bill Confirmation Modal -->
+  <div class="modal-overlay" id="void-modal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title" style="color:var(--red-light)">Void Bill</h2>
+        <button class="modal-close" id="void-modal-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="color:var(--text-muted);margin-bottom:12px">You are about to void bill <strong id="void-bill-number" style="color:var(--text)"></strong>.</p>
+        <p style="color:var(--text-muted);font-size:0.9rem">This will mark the bill as <strong style="color:var(--red-light)">VOID</strong> and <strong>restore all stock</strong> for the items in this bill. This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="void-modal-cancel">Cancel</button>
+        <button class="btn" id="void-modal-confirm" style="background:var(--red);color:#fff;border-color:var(--red)">
+          Confirm Void
+        </button>
       </div>
     </div>
   </div>
