@@ -645,13 +645,33 @@ def get_dashboard_reports():
         day_exp = float(cursor.fetchone()['total_expenses'])
         weekly_profits.append(day_sales - day_cogs - day_exp)
 
-    # 7. Global inventory values
+    # 7. Global (all-time) stats
+    cursor.execute("SELECT COALESCE(SUM(total), 0) as grand_total FROM bills WHERE status = 'active'")
+    all_time_sales = float(cursor.fetchone()['grand_total'])
+
+    cursor.execute('''
+        SELECT COALESCE(SUM(si.qty * b.purchase_price), 0) as grand_cogs
+        FROM sales_items si
+        JOIN batches b ON si.batchId = b.id
+        JOIN bills bl ON si.billId = bl.id
+        WHERE bl.status = 'active'
+    ''')
+    all_time_cogs = float(cursor.fetchone()['grand_cogs'])
+
+    cursor.execute("SELECT COALESCE(SUM(amount), 0) as grand_expenses FROM expenses")
+    all_time_expenses = float(cursor.fetchone()['grand_expenses'])
+
+    all_time_net_profit = all_time_sales - all_time_cogs - all_time_expenses
+
+    # 8. Global inventory values
     cursor.execute("SELECT SUM(qty_remaining * purchase_price) as valuation FROM batches WHERE qty_remaining > 0")
     stock_valuation = float(cursor.fetchone()['valuation'] or 0.0)
 
     conn.close()
 
     return jsonify({
+        'totalSales': all_time_sales,
+        'netProfit': all_time_net_profit,
         'todaySales': today_sales,
         'todayInvoices': today_invoices,
         'todayGrossProfit': today_gross_profit,
