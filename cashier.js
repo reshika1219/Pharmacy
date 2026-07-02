@@ -3,16 +3,20 @@
 // cashier.js
 // ============================================================
 
-// ---- AUTH GUARD: Cashier only ----
+// ---- AUTH GUARD: Cashier or Owner ----
 const session = JSON.parse(sessionStorage.getItem('pharmacare_session') || 'null');
-if (!session || session.role !== 'cashier') {
+if (!session || (session.role !== 'cashier' && session.role !== 'owner')) {
   window.location.replace('login.html');
 }
 
 // ---- STATE ----
-let db = null;
+let itemsList = [];
 let cart = [];       // [{ itemId, name, unit, price, qty }]
 let selectedPayment = 'Cash';
+let dbName = 'PharmaCare';
+let dbAddress = '';
+let dbPhone = '';
+let nextBillId = 1;
 
 // ---- INIT ----
 document.addEventListener('DOMContentLoaded', async () => {
@@ -35,8 +39,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadDB();
   updateBillNumber();
   renderCart();
+
+  // Add discount event listener to recalculate total
+  const discountInput = document.getElementById('discount-val');
+  if (discountInput) {
+    discountInput.addEventListener('input', renderCart);
+  }
 });
 
+ Oskar = null;
 function updateClock() {
   const now = new Date();
   document.getElementById('pos-datetime').textContent =
@@ -48,46 +59,41 @@ function updateClock() {
 // ---- DB ----
 async function loadDB() {
   try {
-    const res = await fetch('/api/db');
-    db = await res.json();
-    document.getElementById('pos-pharmacy-name').textContent = db.pharmacyName || 'PharmaCare';
+    const res = await fetch('/api/items');
+    if (!res.ok) throw new Error();
+    itemsList = await res.json();
+
+    const configRes = await fetch('/api/config');
+    const config = await configRes.json();
+    dbName = config.pharmacyName || 'PharmaCare';
+    dbAddress = config.pharmacyAddress || '';
+    dbPhone = config.pharmacyPhone || '';
+    nextBillId = parseInt(config.billNextId) || 1;
+
+    document.getElementById('pos-pharmacy-name').textContent = dbName;
   } catch (e) {
     showToast('Cannot load medicines. Check server connection.', 'error');
   }
 }
 
-async function saveDB() {
-  try {
-    await fetch('/api/db', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(db)
-    });
-  } catch (e) {
-    showToast('Failed to save to server!', 'error');
-  }
-}
-
 // ---- STOCK HELPER ----
 function getStock(itemId) {
-  const totalIn  = db.stockIn.filter(r => r.itemId === itemId).reduce((s, r) => s + r.qty, 0);
-  const totalOut = db.stockOut.filter(r => r.itemId === itemId).reduce((s, r) => s + r.qty, 0);
-  // Subtract what's already in the cart
+  const item = itemsList.find(i => i.id === itemId);
+  if (!item) return 0;
   const inCart = cart.find(c => c.itemId === itemId);
-  return totalIn - totalOut - (inCart ? inCart.qty : 0);
+  return item.currentStock - (inCart ? inCart.qty : 0);
 }
 
 function getStockRaw(itemId) {
-  const totalIn  = db.stockIn.filter(r => r.itemId === itemId).reduce((s, r) => s + r.qty, 0);
-  const totalOut = db.stockOut.filter(r => r.itemId === itemId).reduce((s, r) => s + r.qty, 0);
-  return totalIn - totalOut;
+  const item = itemsList.find(i => i.id === itemId);
+  return item ? item.currentStock : 0;
 }
 
 // ---- MEDICINE SEARCH ----
 function renderMedicineList(query = '') {
   const listEl = document.getElementById('medicine-list');
 
-  if (!db || !db.items) {
+  if (itemsList.length === 0) {
     listEl.innerHTML = '<div class="search-prompt"><p>Loading medicines…</p></div>';
     return;
   }
@@ -105,7 +111,7 @@ function renderMedicineList(query = '') {
   }
 
   const q = query.toLowerCase();
-  const results = db.items.filter(i =>
+  const results = itemsList.filter(i =>
     i.name.toLowerCase().includes(q) ||
     (i.generic || '').toLowerCase().includes(q) ||
     (i.category || '').toLowerCase().includes(q)
@@ -117,15 +123,26 @@ function renderMedicineList(query = '') {
   }
 
   listEl.innerHTML = results.map(item => {
-    const stock = getStockRaw(item.id);
-    const inCart = cart.find(c => c.itemId === item.id);
-    const availableStock = stock - (inCart ? inCart.qty : 0);
+    const availableStock = getStock(item.id);
     const isOut = availableStock <= 0;
 
     let stockBadgeClass = 'stock-ok';
     let stockLabel = `${availableStock} in stock`;
     if (isOut) { stockBadgeClass = 'stock-out'; stockLabel = 'Out of stock'; }
     else if (availableStock <= item.minStock) { stockBadgeClass = 'stock-low'; stockLabel = `Low: ${availableStock}`; }
+
+    // Expire alert inside search card if expiring within 90 days
+    let expiryAlertHtml = '';
+    if (item.expiry) {
+      const now = new Date(); now.setHours(0,0,0,0);
+      const exp = new Date(item.expiry + 'T00:00:00');
+      const days = Math.floor((exp - now) / 86400000);
+      if (days < 0) {
+        expiryAlertHtml = `<span class="med-stock-badge stock-out" style="margin-left: 5px">EXPIRED (${item.expiry})</span>`;
+      } else if (days <= 90) {
+        expiryAlertHtml = `<span class="med-stock-badge stock-low" style="margin-left: 5px">Expiring in ${days}d</span>`;
+      }
+    }
 
     const price = item.sellPrice ? parseFloat(item.sellPrice) : 0;
 
@@ -138,6 +155,7 @@ function renderMedicineList(query = '') {
             <span class="med-price">Rs. ${price.toFixed(2)}</span>
             <span class="med-unit">/ ${escHtml(item.unit)}</span>
             <span class="med-stock-badge ${stockBadgeClass}">${stockLabel}</span>
+            ${expiryAlertHtml}
           </div>
         </div>
         ${!isOut ? `<button class="med-add-btn" onclick="event.stopPropagation(); addToCart(${item.id})">+</button>` : ''}
@@ -154,8 +172,7 @@ function clearSearch() {
 
 // ---- CART ----
 function addToCart(itemId) {
-  if (!db) return;
-  const item = db.items.find(i => i.id === itemId);
+  const item = itemsList.find(i => i.id === itemId);
   if (!item) return;
 
   const rawStock = getStockRaw(itemId);
@@ -180,7 +197,6 @@ function addToCart(itemId) {
   }
 
   renderCart();
-  // Re-render the medicine list to update available stock shown
   const q = document.getElementById('medicine-search').value.trim();
   if (q) renderMedicineList(q);
 
@@ -231,7 +247,6 @@ function renderCart() {
   const countBar = document.getElementById('items-count-bar');
 
   if (cart.length === 0) {
-    // Show only the empty state
     cartEl.innerHTML = '';
     cartEl.appendChild(emptyEl);
     emptyEl.style.display = 'flex';
@@ -261,9 +276,14 @@ function renderCart() {
   }
 
   // Totals
-  const total = cart.reduce((s, e) => s + e.price * e.qty, 0);
-  document.getElementById('subtotal-val').textContent = `Rs. ${total.toFixed(2)}`;
-  document.getElementById('grand-total-val').textContent = `Rs. ${total.toFixed(2)}`;
+  const subtotal = cart.reduce((s, e) => s + e.price * e.qty, 0);
+  document.getElementById('subtotal-val').textContent = `Rs. ${subtotal.toFixed(2)}`;
+
+  // Discount
+  const discountInput = document.getElementById('discount-val');
+  const discount = discountInput ? (parseFloat(discountInput.value) || 0) : 0;
+  const grandTotal = Math.max(0, subtotal - discount);
+  document.getElementById('grand-total-val').textContent = `Rs. ${grandTotal.toFixed(2)}`;
 
   // Item count
   const totalItems = cart.reduce((s, e) => s + e.qty, 0);
@@ -280,9 +300,7 @@ function selectPayment(method) {
 
 // ---- BILL NUMBER ----
 function updateBillNumber() {
-  if (!db) return;
-  const n = db.billNextId || 1;
-  document.getElementById('bill-number-display').textContent = formatBillNumber(n);
+  document.getElementById('bill-number-display').textContent = formatBillNumber(nextBillId);
 }
 
 function formatBillNumber(n) {
@@ -296,103 +314,71 @@ async function printBill() {
     return;
   }
 
-  // Reload DB fresh to get latest stock and bill number
-  await loadDB();
+  const discountInput = document.getElementById('discount-val');
+  const discount = discountInput ? (parseFloat(discountInput.value) || 0) : 0;
 
-  // Final stock validation
-  for (const entry of cart) {
-    const rawStock = getStockRaw(entry.itemId);
-    if (entry.qty > rawStock) {
-      showToast(`Stock changed! Only ${rawStock} of "${entry.name}" available now.`, 'error');
+  try {
+    const res = await fetch('/api/sales/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: cart.map(e => ({ itemId: e.itemId, qty: e.qty })),
+        paymentMethod: selectedPayment,
+        discount: discount
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || 'Checkout failed', 'error');
       return;
     }
-  }
 
-  const billId = db.billNextId || 1;
-  const billNumber = formatBillNumber(billId);
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
-  const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-  const total = cart.reduce((s, e) => s + e.price * e.qty, 0);
+    const billNumber = data.billNumber;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const total = cart.reduce((s, e) => s + e.price * e.qty, 0) - discount;
 
-  // Build print HTML
-  const billHTML = buildBillHTML({
-    billNumber, dateStr, timeStr, total,
-    pharmacyName: db.pharmacyName || 'PharmaCare',
-    pharmacyAddress: db.pharmacyAddress || '',
-    pharmacyPhone: db.pharmacyPhone || '',
-    cashier: session.username,
-    paymentMethod: selectedPayment,
-    items: cart
-  });
-
-  // Open print window
-  const printWin = window.open('', '_blank', 'width=420,height=650');
-  printWin.document.write(billHTML);
-  printWin.document.close();
-
-  // Wait for print window to load, then trigger print
-  printWin.onload = () => {
-    printWin.focus();
-    printWin.print();
-  };
-
-  // Save bill and stock after a short delay (allows print dialog to open)
-  setTimeout(async () => {
-    await saveBillAndStock(billId, billNumber, now, total);
-  }, 800);
-}
-
-async function saveBillAndStock(billId, billNumber, now, total) {
-  const today = now.toISOString().split('T')[0];
-  const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-
-  // Save the bill record
-  const bill = {
-    id: billId,
-    billNumber,
-    date: today,
-    time: timeStr,
-    cashier: session.username,
-    paymentMethod: selectedPayment,
-    items: cart.map(e => ({ ...e })),
-    total: total.toFixed(2),
-    status: 'active'
-  };
-  db.bills.push(bill);
-  db.billNextId = billId + 1;
-
-  // Save stock-out entries for each item in the cart
-  for (const entry of cart) {
-    const stockOutId = db.nextId++;
-    db.stockOut.push({
-      id: stockOutId,
-      date: today,
-      itemId: entry.itemId,
-      qty: entry.qty,
-      reason: 'Sale',
-      customer: `${billNumber} (${selectedPayment})`,
-      price: entry.price.toFixed(2),
-      total: (entry.price * entry.qty).toFixed(2),
-      notes: `Billed by ${session.username}`,
-      billId: billId
+    // Build print HTML
+    const billHTML = buildBillHTML({
+      billNumber, dateStr, timeStr, total: Math.max(0, total),
+      pharmacyName: dbName,
+      pharmacyAddress: dbAddress,
+      pharmacyPhone: dbPhone,
+      cashier: session.username,
+      paymentMethod: selectedPayment,
+      items: cart,
+      discount: discount
     });
+
+    // Open print window
+    const printWin = window.open('', '_blank', 'width=420,height=650');
+    printWin.document.write(billHTML);
+    printWin.document.close();
+
+    printWin.onload = () => {
+      printWin.focus();
+      printWin.print();
+    };
+
+    // Reset cart and load new stock
+    cart = [];
+    if (discountInput) discountInput.value = '';
+    renderCart();
+    await loadDB();
+    updateBillNumber();
+    const q = document.getElementById('medicine-search').value.trim();
+    if (q) renderMedicineList(q);
+
+    showToast(`✓ ${billNumber} printed & saved. Stock updated.`, 'success');
+
+  } catch (e) {
+    showToast('Failed to checkout. Check server connection.', 'error');
   }
-
-  await saveDB();
-
-  // Reset cart and UI
-  cart = [];
-  renderCart();
-  updateBillNumber();
-  const q = document.getElementById('medicine-search').value.trim();
-  if (q) renderMedicineList(q);
-
-  showToast(`✓ ${billNumber} printed & saved. Stock updated.`, 'success');
 }
 
 // ---- BILL HTML TEMPLATE ----
-function buildBillHTML({ billNumber, dateStr, timeStr, total, pharmacyName, pharmacyAddress, pharmacyPhone, cashier, paymentMethod, items }) {
+function buildBillHTML({ billNumber, dateStr, timeStr, total, pharmacyName, pharmacyAddress, pharmacyPhone, cashier, paymentMethod, items, discount }) {
   const itemRows = items.map(e => `
     <tr>
       <td>${escHtml(e.name)}</td>
@@ -401,6 +387,13 @@ function buildBillHTML({ billNumber, dateStr, timeStr, total, pharmacyName, phar
       <td style="text-align:right">Rs. ${(e.price * e.qty).toFixed(2)}</td>
     </tr>
   `).join('');
+
+  const discountRow = discount > 0 ? `
+    <div class="total-row" style="font-size:11px;color:#555">
+      <span>DISCOUNT</span>
+      <span>- Rs. ${discount.toFixed(2)}</span>
+    </div>
+  ` : '';
 
   return `<!DOCTYPE html>
 <html>
@@ -477,6 +470,7 @@ function buildBillHTML({ billNumber, dateStr, timeStr, total, pharmacyName, phar
   </table>
 
   <div class="total-section">
+    ${discountRow}
     <div class="total-row grand-total">
       <span>TOTAL</span>
       <span>Rs. ${total.toFixed(2)}</span>
@@ -493,10 +487,13 @@ function buildBillHTML({ billNumber, dateStr, timeStr, total, pharmacyName, phar
 }
 
 // ---- LOGOUT ----
-function logout() {
+async function logout() {
   if (cart.length > 0) {
     if (!confirm('You have items in the cart. Are you sure you want to log out?')) return;
   }
+  try {
+    await fetch('/api/logout', { method: 'POST' });
+  } catch (e) {}
   sessionStorage.removeItem('pharmacare_session');
   window.location.replace('login.html');
 }
