@@ -576,3 +576,36 @@ html, body {
 .pos-toast.success { background: #166534; color: #bbf7d0; border: 1px solid #16a34a; }
 .pos-toast.error   { background: #7f1d1d; color: #fecaca; border: 1px solid #dc2626; }
 .pos-toast.warning { background: #7c2d12; color: #fed7aa; border: 1px solid #ea580c; }
+
+/* Disable default browser number spinner arrows for clean input boxes */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Discount Input Styling */
+.discount-input {
+  width: 100px;
+  text-align: right;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  background: var(--surface-3);
+  color: var(--text);
+  outline: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.discount-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+.discount-input::placeholder {
+  color: var(--text-dim);
+}
