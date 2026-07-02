@@ -1,8 +1,10 @@
 #!/bin/bash
 cd "$(dirname "$0")"
 echo "================================================================="
-echo "Starting PharmaCare Local Server..."
-echo "Please keep this Terminal window open while using the system."
-echo "You can close this window or press Ctrl+C here to stop the server."
+echo "  PharmaCare — Starting..."
+echo "  Keep this window open while using the system."
+echo "  Close this window to stop the server."
 echo "================================================================="
-python3 server.py
+# Clear any previous stuck instance on port 8088
+lsof -ti:8088 | xargs kill -9 2>/dev/null
+python3 backend/src/app.py
