@@ -7,4 +7,4 @@ echo "  Close this window to stop the server."
 echo "================================================================="
 # Clear any previous stuck instance on port 8088
 lsof -ti:8088 | xargs kill -9 2>/dev/null
-python3 server.py
+python3 backend/src/app.py
