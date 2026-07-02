@@ -86,7 +86,9 @@ async function syncWithServer() {
       supplier: b.supplier,
       price: b.purchase_price,
       total: (b.qty_received * b.purchase_price).toFixed(2),
-      notes: ''
+      notes: '',
+      payment_status: b.payment_status || 'Pending',
+      amount_paid: parseFloat(b.amount_paid || 0.0)
     }));
 
     // Map stockOut adjustments & sales to stockOut
@@ -194,17 +196,19 @@ const tabTitles = {
   stock: 'Current Stock',
   alerts: 'Alerts',
   sales: 'Sales History',
-  expenses: 'Expense Management'
+  expenses: 'Expense Management',
+  suppliers: 'Supplier Ledger & Payables'
 };
 
-const EXPORTABLE_TABS = ['items', 'in', 'out', 'stock', 'expenses'];
+const EXPORTABLE_TABS = ['items', 'in', 'out', 'stock', 'expenses', 'suppliers'];
 
 const EXPORT_LABELS = {
   items: 'Export Items',
   in:    'Export Batches',
   out:   'Export Stock Out',
   stock: 'Export Stock',
-  expenses: 'Export Expenses'
+  expenses: 'Export Expenses',
+  suppliers: 'Export Supplier Ledger'
 };
 
 const ownerSession = JSON.parse(sessionStorage.getItem('pharmacare_session') || 'null');
@@ -244,6 +248,7 @@ function renderTab(tab) {
   if (tab === 'alerts') renderAlerts();
   if (tab === 'sales') renderSales();
   if (tab === 'expenses') renderExpenses();
+  if (tab === 'suppliers') renderSuppliers();
   updateBadges();
 }
 
@@ -279,6 +284,43 @@ function renderDashboard() {
   const profitCard = document.getElementById('stat-profit-val');
   if (revenueCard) revenueCard.textContent = formatCurrency(reportData.totalSales);
   if (profitCard) profitCard.textContent = formatCurrency(reportData.netProfit);
+
+  // Render owner remote portal elements
+  const todaySalesEl = document.getElementById('owner-today-sales');
+  const todayGrossProfitEl = document.getElementById('owner-today-gross-profit');
+  const todayExpensesEl = document.getElementById('owner-today-expenses');
+  const todayNetProfitEl = document.getElementById('owner-today-net-profit');
+
+  if (todaySalesEl) todaySalesEl.textContent = formatCurrency(reportData.todaySales || 0);
+  if (todayGrossProfitEl) todayGrossProfitEl.textContent = formatCurrency(reportData.todayGrossProfit || 0);
+  if (todayExpensesEl) todayExpensesEl.textContent = formatCurrency(reportData.todayExpenses || 0);
+  if (todayNetProfitEl) todayNetProfitEl.textContent = formatCurrency(reportData.todayNetProfit || 0);
+
+  const payCashEl = document.getElementById('owner-pay-cash');
+  const payCardEl = document.getElementById('owner-pay-card');
+  const payOnlineEl = document.getElementById('owner-pay-online');
+  const payCreditEl = document.getElementById('owner-pay-credit');
+
+  if (reportData.paymentBreakdown) {
+    if (payCashEl) payCashEl.textContent = formatCurrency(reportData.paymentBreakdown.Cash || 0);
+    if (payCardEl) payCardEl.textContent = formatCurrency(reportData.paymentBreakdown.Card || 0);
+    if (payOnlineEl) payOnlineEl.textContent = formatCurrency(reportData.paymentBreakdown.Online || 0);
+    if (payCreditEl) payCreditEl.textContent = formatCurrency(reportData.paymentBreakdown.Credit || 0);
+  }
+
+  const cashierActivityList = document.getElementById('owner-cashier-activity-list');
+  if (cashierActivityList) {
+    if (!reportData.cashierActivity || reportData.cashierActivity.length === 0) {
+      cashierActivityList.innerHTML = '<div class="empty-state" style="padding:10px">No cashier activity logged today</div>';
+    } else {
+      cashierActivityList.innerHTML = reportData.cashierActivity.map(c => `
+        <div style="display: flex; justify-content: space-between;">
+          <span><strong>${c.cashier}</strong> (${c.sales_count} bills):</span>
+          <span>${formatCurrency(c.sales_total)}</span>
+        </div>
+      `).join('');
+    }
+  }
 
   // Alerts summary
   const alertItems = getAlertItems();
@@ -692,6 +734,85 @@ async function deleteExpense(id) {
   } catch (e) {
     showToast('Connection error', 'error');
   }
+}
+
+// ---- SUPPLIER LEDGER ----
+let payingBatchId = null;
+
+function renderSuppliers() {
+  const tbody = document.getElementById('suppliers-tbody');
+  const empty = document.getElementById('suppliers-empty');
+  if (!tbody) return;
+
+  const list = db.stockIn || [];
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = list.map(b => {
+    const totalCost = parseFloat(b.total || 0.0);
+    const amountPaid = parseFloat(b.amount_paid || 0.0);
+    const outstanding = Math.max(0.0, totalCost - amountPaid);
+    const status = b.payment_status || 'Pending';
+
+    let badgeClass = 'badge-low';
+    if (status === 'Paid') badgeClass = 'badge-ok';
+
+    return `
+      <tr>
+        <td>${formatDate(b.date)}</td>
+        <td><strong>${b.supplier || '—'}</strong></td>
+        <td>${b.batch || '—'}</td>
+        <td>${formatCurrency(totalCost)}</td>
+        <td>${formatCurrency(amountPaid)}</td>
+        <td style="${outstanding > 0 ? 'color:var(--red-light);font-weight:700' : ''}">${formatCurrency(outstanding)}</td>
+        <td><span class="badge ${badgeClass}">${status}</span></td>
+        <td>
+          ${outstanding > 0 ? `<button class="btn-action btn-edit" onclick="openPaySupplierModal(${b.id}, '${b.supplier}', '${b.batch}', ${outstanding})">Record Payment</button>` : '—'}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function openPaySupplierModal(batchId, supplierName, batchNumber, outstanding) {
+  payingBatchId = batchId;
+  document.getElementById('pay-supplier-name').textContent = supplierName;
+  document.getElementById('pay-batch-number').textContent = batchNumber;
+  document.getElementById('pay-amount-val').value = outstanding.toFixed(2);
+  document.getElementById('pay-amount-val').max = outstanding;
+  openModal('pay-supplier-modal');
+}
+
+async function executePaySupplier() {
+  if (!payingBatchId) return;
+  const amount = parseFloat(document.getElementById('pay-amount-val').value) || 0;
+  if (amount <= 0) {
+    showToast('Please enter a valid payment amount', 'error');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/batches/${payingBatchId}/pay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount })
+    });
+    if (res.ok) {
+      showToast('Supplier payment saved successfully', 'success');
+      closeModal('pay-supplier-modal');
+      await syncWithServer();
+    } else {
+      const data = await res.json();
+      showToast(data.error || 'Failed to save payment', 'error');
+    }
+  } catch (e) {
+    showToast('Connection error', 'error');
+  }
+  payingBatchId = null;
 }
 
 async function saveExpense() {
@@ -1131,6 +1252,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('void-modal-close').addEventListener('click', () => closeModal('void-modal'));
   document.getElementById('void-modal-cancel').addEventListener('click', () => closeModal('void-modal'));
   document.getElementById('void-modal-confirm').addEventListener('click', executeVoidBill);
+
+  // Pay Supplier modal listeners
+  const closePaySup = document.getElementById('pay-supplier-modal-close');
+  if (closePaySup) closePaySup.addEventListener('click', () => closeModal('pay-supplier-modal'));
+  const cancelPaySup = document.getElementById('pay-supplier-modal-cancel');
+  if (cancelPaySup) cancelPaySup.addEventListener('click', () => closeModal('pay-supplier-modal'));
+  const confirmPaySup = document.getElementById('pay-supplier-modal-confirm');
+  if (confirmPaySup) confirmPaySup.addEventListener('click', executePaySupplier);
 
   // Search filters
   document.getElementById('sales-search').addEventListener('input', renderSales);
