@@ -10,96 +10,115 @@ const IC = {
   ban:      `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>`,
   xcirc:    `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`,
   clock:    `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-  // Large icons for alert cards
   banLg:    `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>`,
   clockLg:  `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
   xcircLg:  `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`,
   warnLg:   `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
-  // Action buttons
   edit:     `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`,
   trash:    `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>`,
-  // Expiry warning icons for table cells
   expWarn:  `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
   expClock: `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-  // Activity feed icons
   arrowDn:  `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>`,
   arrowUp:  `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>`,
 };
 
-// ---- DATA STORE ---- (persisted in localStorage)
-const DB_KEY = 'pharmacare_db';
+// ---- DATA STORE ----
+let db = {
+  pharmacyName: 'PharmaCare',
+  pharmacyAddress: '',
+  pharmacyPhone: '',
+  items: [],
+  stockIn: [],
+  stockOut: [],
+  bills: [],
+  expenses: []
+};
 
-function loadDB() {
-  try {
-    const raw = localStorage.getItem(DB_KEY);
-    return raw ? JSON.parse(raw) : initDB();
-  } catch {
-    return initDB();
-  }
-}
+let reportData = {
+  totalSales: 0,
+  totalCOGS: 0,
+  grossProfit: 0,
+  totalExpenses: 0,
+  netProfit: 0,
+  stockValuation: 0,
+  topSelling: []
+};
 
-function initDB() {
-  return {
-    pharmacyName: 'PharmaCare',
-    items: [],
-    stockIn: [],
-    stockOut: [],
-    nextId: 1
-  };
-}
-
-// Server Sync Flag & Functions
-const isServerMode = window.location.protocol.startsWith('http');
-
-async function saveToServer() {
-  if (!isServerMode) return;
-  try {
-    await fetch('/api/db', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(db)
-    });
-  } catch (e) {
-    console.error("Failed to save to local server database:", e);
-    showToast('Failed to sync changes with server', 'error');
-  }
-}
-
+// ---- SYSTEM SYNC ----
 async function syncWithServer() {
-  if (!isServerMode) return;
   try {
-    const res = await fetch('/api/db');
-    const data = await res.json();
-    if (data && data.items && data.items.length > 0) {
-      db = data;
-      localStorage.setItem(DB_KEY, JSON.stringify(db));
-      // Re-render the active tab
-      const activeTab = document.querySelector('.nav-item.active')?.dataset?.tab || 'dashboard';
-      renderTab(activeTab);
-    } else if (db && db.items && db.items.length > 0) {
-      // Server doesn't have data, but local storage does. Sync local data to server!
-      saveToServer();
+    const itemsRes = await fetch('/api/items');
+    const items = await itemsRes.json();
+    
+    const configRes = await fetch('/api/config');
+    const config = await configRes.json();
+    
+    const batchesRes = await fetch('/api/batches');
+    const batches = await batchesRes.json();
+
+    const salesRes = await fetch('/api/sales');
+    const sales = await salesRes.json();
+
+    const stockOutRes = await fetch('/api/stock-out');
+    const stockOut = await stockOutRes.json();
+
+    const expensesRes = await fetch('/api/expenses');
+    const expenses = await expensesRes.json();
+
+    const reportRes = await fetch('/api/reports/dashboard');
+    if (reportRes.ok) {
+      reportData = await reportRes.json();
     }
+
+    db.items = items;
+    db.pharmacyName = config.pharmacyName || 'PharmaCare';
+    db.pharmacyAddress = config.pharmacyAddress || '';
+    db.pharmacyPhone = config.pharmacyPhone || '';
+    
+    // Map batches to stockIn
+    db.stockIn = batches.map(b => ({
+      id: b.id,
+      date: b.date_added,
+      itemId: b.itemId,
+      batch: b.batch_number,
+      qty: b.qty_received,
+      expiry: b.expiry,
+      supplier: b.supplier,
+      price: b.purchase_price,
+      total: (b.qty_received * b.purchase_price).toFixed(2),
+      notes: '',
+      payment_status: b.payment_status || 'Pending',
+      amount_paid: parseFloat(b.amount_paid || 0.0)
+    }));
+
+    // Map stockOut adjustments & sales to stockOut
+    db.stockOut = stockOut.map(s => ({
+      id: s.id,
+      date: s.date,
+      itemId: s.itemId,
+      qty: s.qty,
+      reason: s.reason,
+      customer: s.billNumber || '',
+      price: s.price,
+      total: s.total,
+      notes: s.cashier ? `By ${s.cashier}` : '',
+      billId: s.billNumber
+    }));
+
+    db.bills = sales;
+    db.expenses = expenses;
+
+    document.getElementById('pharmacy-name-display').textContent = db.pharmacyName;
+
+    // Re-render the active tab
+    const activeTab = document.querySelector('.nav-item.active')?.dataset?.tab || 'dashboard';
+    renderTab(activeTab);
   } catch (e) {
-    console.warn("Failed to sync from local server database:", e);
+    console.error("Failed to sync database:", e);
   }
 }
-
-function saveDB() {
-  localStorage.setItem(DB_KEY, JSON.stringify(db));
-  saveToServer();
-}
-
-function genId() {
-  const id = db.nextId++;
-  saveDB();
-  return id;
-}
-
-let db = loadDB();
 
 // ---- UTILITY FUNCTIONS ----
-
 function today() {
   return new Date().toISOString().split('T')[0];
 }
@@ -139,17 +158,14 @@ function closeModal(id) {
 }
 
 // ---- STOCK CALCULATIONS ----
-
 function getStock(itemId) {
-  const totalIn  = db.stockIn.filter(r => r.itemId === itemId).reduce((s, r) => s + r.qty, 0);
-  const totalOut = db.stockOut.filter(r => r.itemId === itemId).reduce((s, r) => s + r.qty, 0);
-  return totalIn - totalOut;
+  const item = db.items.find(i => i.id === itemId);
+  return item ? item.currentStock : 0;
 }
 
 function getNearestExpiry(itemId) {
-  const batches = db.stockIn.filter(r => r.itemId === itemId && r.expiry);
-  if (!batches.length) return null;
-  return batches.sort((a,b) => new Date(a.expiry) - new Date(b.expiry))[0].expiry;
+  const item = db.items.find(i => i.id === itemId);
+  return item ? item.expiry : null;
 }
 
 function getStockStatus(item) {
@@ -172,31 +188,43 @@ function statusLabel(s) {
 }
 
 // ---- NAV / TAB SWITCHING ----
-
 const tabTitles = {
   dashboard: 'Dashboard',
   items: 'Items Catalog',
-  in: 'Stock In',
-  out: 'Stock Out',
+  in: 'Stock In (Batches)',
+  out: 'Stock Out History',
   stock: 'Current Stock',
-  alerts: 'Alerts'
+  alerts: 'Alerts',
+  sales: 'Sales History',
+  expenses: 'Expense Management',
+  suppliers: 'Supplier Ledger & Payables'
 };
 
-const EXPORTABLE_TABS = ['items', 'in', 'out', 'stock'];
+const EXPORTABLE_TABS = ['items', 'in', 'out', 'stock', 'expenses', 'suppliers'];
 
 const EXPORT_LABELS = {
   items: 'Export Items',
-  in:    'Export Stock In',
+  in:    'Export Batches',
   out:   'Export Stock Out',
   stock: 'Export Stock',
+  expenses: 'Export Expenses',
+  suppliers: 'Export Supplier Ledger'
 };
+
+const ownerSession = JSON.parse(sessionStorage.getItem('pharmacare_session') || 'null');
+
+function logout() {
+  fetch('/api/logout', { method: 'POST' }).finally(() => {
+    sessionStorage.removeItem('pharmacare_session');
+    window.location.replace('login.html');
+  });
+}
 
 function switchTab(tabName) {
   document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
   document.querySelectorAll('.tab-content').forEach(s => s.classList.toggle('active', s.id === 'tab-' + tabName));
   document.getElementById('page-title').textContent = tabTitles[tabName] || tabName;
 
-  // Export CSV: only on tabs with tabular data, with a label specific to that tab
   const exportBtn = document.getElementById('export-btn');
   if (EXPORTABLE_TABS.includes(tabName)) {
     exportBtn.style.display = '';
@@ -205,7 +233,6 @@ function switchTab(tabName) {
     exportBtn.style.display = 'none';
   }
 
-  // Quick Add Stock: only on Dashboard (all other tabs have their own toolbar button)
   const quickAddBtn = document.getElementById('quick-add-btn');
   quickAddBtn.style.display = (tabName === 'dashboard') ? '' : 'none';
 
@@ -219,21 +246,22 @@ function renderTab(tab) {
   if (tab === 'out') renderStockOut();
   if (tab === 'stock') renderStock();
   if (tab === 'alerts') renderAlerts();
+  if (tab === 'sales') renderSales();
+  if (tab === 'expenses') renderExpenses();
+  if (tab === 'suppliers') renderSuppliers();
   updateBadges();
 }
 
 // ---- DASHBOARD ----
-
 function renderDashboard() {
   const allItems = db.items;
   const hasItems = allItems.length > 0;
 
-  // Toggle between onboarding guide and live dashboard
   document.getElementById('onboarding-guide').style.display = hasItems ? 'none' : '';
   document.getElementById('dash-stats').style.display    = hasItems ? '' : 'none';
   document.getElementById('dash-panels').style.display   = hasItems ? '' : 'none';
 
-  if (!hasItems) return; // Nothing else to render
+  if (!hasItems) return;
 
   const totalItems = allItems.length;
   const inStock = allItems.filter(i => getStock(i.id) > 0).length;
@@ -250,6 +278,49 @@ function renderDashboard() {
   document.getElementById('stat-expired').textContent = expired;
   document.getElementById('stat-today-in').textContent = todayIn;
   document.getElementById('stat-today-out').textContent = todayOut;
+
+  // Render accounting stats
+  const revenueCard = document.getElementById('stat-revenue-val');
+  const profitCard = document.getElementById('stat-profit-val');
+  if (revenueCard) revenueCard.textContent = formatCurrency(reportData.totalSales);
+  if (profitCard) profitCard.textContent = formatCurrency(reportData.netProfit);
+
+  // Render owner remote portal elements
+  const todaySalesEl = document.getElementById('owner-today-sales');
+  const todayGrossProfitEl = document.getElementById('owner-today-gross-profit');
+  const todayExpensesEl = document.getElementById('owner-today-expenses');
+  const todayNetProfitEl = document.getElementById('owner-today-net-profit');
+
+  if (todaySalesEl) todaySalesEl.textContent = formatCurrency(reportData.todaySales || 0);
+  if (todayGrossProfitEl) todayGrossProfitEl.textContent = formatCurrency(reportData.todayGrossProfit || 0);
+  if (todayExpensesEl) todayExpensesEl.textContent = formatCurrency(reportData.todayExpenses || 0);
+  if (todayNetProfitEl) todayNetProfitEl.textContent = formatCurrency(reportData.todayNetProfit || 0);
+
+  const payCashEl = document.getElementById('owner-pay-cash');
+  const payCardEl = document.getElementById('owner-pay-card');
+  const payOnlineEl = document.getElementById('owner-pay-online');
+  const payCreditEl = document.getElementById('owner-pay-credit');
+
+  if (reportData.paymentBreakdown) {
+    if (payCashEl) payCashEl.textContent = formatCurrency(reportData.paymentBreakdown.Cash || 0);
+    if (payCardEl) payCardEl.textContent = formatCurrency(reportData.paymentBreakdown.Card || 0);
+    if (payOnlineEl) payOnlineEl.textContent = formatCurrency(reportData.paymentBreakdown.Online || 0);
+    if (payCreditEl) payCreditEl.textContent = formatCurrency(reportData.paymentBreakdown.Credit || 0);
+  }
+
+  const cashierActivityList = document.getElementById('owner-cashier-activity-list');
+  if (cashierActivityList) {
+    if (!reportData.cashierActivity || reportData.cashierActivity.length === 0) {
+      cashierActivityList.innerHTML = '<div class="empty-state" style="padding:10px">No cashier activity logged today</div>';
+    } else {
+      cashierActivityList.innerHTML = reportData.cashierActivity.map(c => `
+        <div style="display: flex; justify-content: space-between;">
+          <span><strong>${c.cashier}</strong> (${c.sales_count} bills):</span>
+          <span>${formatCurrency(c.sales_total)}</span>
+        </div>
+      `).join('');
+    }
+  }
 
   // Alerts summary
   const alertItems = getAlertItems();
@@ -299,8 +370,7 @@ function renderDashboard() {
 }
 
 // ---- ITEMS ----
-
-function renderItems(filter = '') {
+function renderItems() {
   const catFilter = document.getElementById('items-category-filter')?.value || '';
   const search = (document.getElementById('items-search')?.value || '').toLowerCase();
   let list = db.items;
@@ -310,14 +380,12 @@ function renderItems(filter = '') {
   const tbody = document.getElementById('items-tbody');
   const empty = document.getElementById('items-empty');
 
-  // Populate category filter
   const cats = [...new Set(db.items.map(i => i.category).filter(Boolean))];
   const catSel = document.getElementById('items-category-filter');
   const curCat = catSel.value;
   catSel.innerHTML = '<option value="">All Categories</option>' +
     cats.map(c => `<option value="${c}" ${c===curCat?'selected':''}>${c}</option>`).join('');
 
-  // Populate category datalist
   const catList = document.getElementById('category-list');
   catList.innerHTML = cats.map(c => `<option value="${c}"></option>`).join('');
 
@@ -359,7 +427,6 @@ function renderItems(filter = '') {
 }
 
 // ---- STOCK IN ----
-
 function renderStockIn() {
   const search = (document.getElementById('in-search')?.value || '').toLowerCase();
   const dateF  = document.getElementById('in-date-filter')?.value || '';
@@ -394,17 +461,12 @@ function renderStockIn() {
       <td>${r.price ? formatCurrency(r.price) : '—'}</td>
       <td>${r.total ? formatCurrency(r.total) : '—'}</td>
       <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.notes||''}">${r.notes||'—'}</td>
-      <td>
-        <div class="action-btns">
-          <button class="btn-action btn-delete" onclick="deleteStockIn(${r.id})">${IC.trash}</button>
-        </div>
-      </td>
+      <td>—</td>
     </tr>`;
   }).join('');
 }
 
 // ---- STOCK OUT ----
-
 function renderStockOut() {
   const search = (document.getElementById('out-search')?.value || '').toLowerCase();
   const dateF  = document.getElementById('out-date-filter')?.value || '';
@@ -434,17 +496,12 @@ function renderStockOut() {
       <td>${r.price ? formatCurrency(r.price) : '—'}</td>
       <td>${r.total ? formatCurrency(r.total) : '—'}</td>
       <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.notes||''}">${r.notes||'—'}</td>
-      <td>
-        <div class="action-btns">
-          <button class="btn-action btn-delete" onclick="deleteStockOut(${r.id})">${IC.trash}</button>
-        </div>
-      </td>
+      <td>—</td>
     </tr>`;
   }).join('');
 }
 
 // ---- CURRENT STOCK ----
-
 function renderStock() {
   const search = (document.getElementById('stock-search')?.value || '').toLowerCase();
   const statusF = document.getElementById('stock-status-filter')?.value || '';
@@ -482,7 +539,6 @@ function renderStock() {
 }
 
 // ---- ALERTS ----
-
 function getAlertItems() {
   const alerts = [];
   db.items.forEach(item => {
@@ -492,8 +548,6 @@ function getAlertItems() {
 
     if (days !== null && days < 0) {
       alerts.push({ type: 'expired', iconSvg: IC.banLg, msg: `${item.name} has EXPIRED`, detail: `Expired on ${formatDate(expiry)}`, item, stock, days });
-    } else if (days !== null && days <= 30) {
-      alerts.push({ type: 'expiry', iconSvg: IC.clockLg, msg: `${item.name} expires in ${days} days`, detail: `Expiry: ${formatDate(expiry)} | Stock: ${stock} ${item.unit}`, item, stock, days });
     } else if (days !== null && days <= 90) {
       alerts.push({ type: 'expiry', iconSvg: IC.clockLg, msg: `${item.name} expiring in ${days} days`, detail: `Expiry: ${formatDate(expiry)} | Stock: ${stock} ${item.unit}`, item, stock, days });
     }
@@ -504,7 +558,6 @@ function getAlertItems() {
       alerts.push({ type: 'low', iconSvg: IC.warnLg, msg: `${item.name} is LOW`, detail: `Current: ${stock} ${item.unit} | Min: ${item.minStock} ${item.unit}`, item, stock, days });
     }
   });
-  // Sort: expired > out > low expiry
   const order = { expired: 0, out: 1, expiry: 2, low: 3 };
   return alerts.sort((a,b) => (order[a.type]||9) - (order[b.type]||9));
 }
@@ -541,8 +594,258 @@ function renderAlerts() {
   `).join('');
 }
 
-// ---- BADGES ----
+// ---- SALES HISTORY ----
+let voidingBillId = null;
 
+function renderSales() {
+  const bills = db.bills || [];
+  const search = (document.getElementById('sales-search')?.value || '').toLowerCase();
+  const dateF  = document.getElementById('sales-date-filter')?.value || '';
+  const statusF = document.getElementById('sales-status-filter')?.value || '';
+
+  let list = [...bills].sort((a, b) => b.id - a.id);
+  if (search) list = list.filter(b =>
+    (b.billNumber || '').toLowerCase().includes(search) ||
+    (b.cashier || '').toLowerCase().includes(search) ||
+    (b.paymentMethod || '').toLowerCase().includes(search)
+  );
+  if (dateF) list = list.filter(b => b.date === dateF);
+  if (statusF) list = list.filter(b => b.status === statusF);
+
+  const tbody = document.getElementById('sales-tbody');
+  const empty = document.getElementById('sales-empty');
+  const summaryBar = document.getElementById('sales-summary-bar');
+
+  // Summary bar
+  const activeBills = bills.filter(b => b.status === 'active');
+  const totalRevenue = activeBills.reduce((s, b) => s + parseFloat(b.total || 0), 0);
+  const todayBills = activeBills.filter(b => b.date === today());
+  const todayRevenue = todayBills.reduce((s, b) => s + parseFloat(b.total || 0), 0);
+  summaryBar.innerHTML = bills.length === 0 ? '' : `
+    <div class="sales-summary-item">
+      <span class="ss-label">Total Bills</span>
+      <span class="ss-value">${activeBills.length}</span>
+    </div>
+    <div class="sales-summary-item">
+      <span class="ss-label">Total Revenue</span>
+      <span class="ss-value" style="color:var(--green-light)">Rs. ${totalRevenue.toLocaleString('en-US', {minimumFractionDigits:2})}</span>
+    </div>
+    <div class="sales-summary-item">
+      <span class="ss-label">Today's Bills</span>
+      <span class="ss-value">${todayBills.length}</span>
+    </div>
+    <div class="sales-summary-item">
+      <span class="ss-label">Today's Revenue</span>
+      <span class="ss-value" style="color:var(--teal-light)">Rs. ${todayRevenue.toLocaleString('en-US', {minimumFractionDigits:2})}</span>
+    </div>
+  `;
+
+  if (list.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = list.map(bill => {
+    const isVoid = bill.status === 'void';
+    const isAdj = bill.status === 'adjustment';
+    const itemSummary = (bill.items || []).map(i => `${i.qty}× ${i.name}`).join(', ');
+    
+    let statusBadge = '<span class="badge badge-ok">Active</span>';
+    if (isVoid) statusBadge = '<span class="badge badge-expired">VOID</span>';
+    else if (isAdj) statusBadge = '<span class="badge badge-low">Adjustment</span>';
+
+    return `<tr style="${isVoid ? 'opacity:0.55' : ''}">
+      <td><strong>${bill.billNumber || '—'}</strong></td>
+      <td>${formatDate(bill.date)}</td>
+      <td>${bill.time || '—'}</td>
+      <td>${bill.cashier || '—'}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${itemSummary}">${itemSummary || '—'}</td>
+      <td>${bill.paymentMethod || '—'}</td>
+      <td><strong>${bill.total ? formatCurrency(bill.total) : '—'}</strong></td>
+      <td>${statusBadge}</td>
+      <td>
+        ${(!isVoid && !isAdj) ? `<button class="btn-action btn-delete" onclick="confirmVoidBill(${bill.id})">Void</button>` : '—'}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function confirmVoidBill(billId) {
+  const bill = (db.bills || []).find(b => b.id === billId);
+  if (!bill) return;
+  voidingBillId = billId;
+  document.getElementById('void-bill-number').textContent = bill.billNumber;
+  openModal('void-modal');
+}
+
+async function executeVoidBill() {
+  if (!voidingBillId) return;
+  try {
+    const res = await fetch(`/api/sales/void/${voidingBillId}`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || 'Failed to void bill', 'error');
+      return;
+    }
+    showToast('Bill voided. Stock restored.', 'warning');
+    closeModal('void-modal');
+    await syncWithServer();
+  } catch (e) {
+    showToast('Connection error', 'error');
+  }
+  voidingBillId = null;
+}
+
+// ---- EXPENSES ----
+function renderExpenses() {
+  const tbody = document.getElementById('expenses-tbody');
+  const empty = document.getElementById('expenses-empty');
+  if (!tbody) return;
+
+  const list = db.expenses || [];
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = list.map(e => `
+    <tr>
+      <td>${formatDate(e.date)}</td>
+      <td><strong>${e.category}</strong></td>
+      <td><strong>${formatCurrency(e.amount)}</strong></td>
+      <td>${e.notes || '—'}</td>
+      <td>
+        <button class="btn-action btn-delete" onclick="deleteExpense(${e.id})">${IC.trash} Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function deleteExpense(id) {
+  if (!confirm('Are you sure you want to delete this expense?')) return;
+  try {
+    const res = await fetch(`/api/expenses/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      showToast('Expense deleted', 'warning');
+      await syncWithServer();
+    } else {
+      showToast('Failed to delete expense', 'error');
+    }
+  } catch (e) {
+    showToast('Connection error', 'error');
+  }
+}
+
+// ---- SUPPLIER LEDGER ----
+let payingBatchId = null;
+
+function renderSuppliers() {
+  const tbody = document.getElementById('suppliers-tbody');
+  const empty = document.getElementById('suppliers-empty');
+  if (!tbody) return;
+
+  const list = db.stockIn || [];
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = list.map(b => {
+    const totalCost = parseFloat(b.total || 0.0);
+    const amountPaid = parseFloat(b.amount_paid || 0.0);
+    const outstanding = Math.max(0.0, totalCost - amountPaid);
+    const status = b.payment_status || 'Pending';
+
+    let badgeClass = 'badge-low';
+    if (status === 'Paid') badgeClass = 'badge-ok';
+
+    return `
+      <tr>
+        <td>${formatDate(b.date)}</td>
+        <td><strong>${b.supplier || '—'}</strong></td>
+        <td>${b.batch || '—'}</td>
+        <td>${formatCurrency(totalCost)}</td>
+        <td>${formatCurrency(amountPaid)}</td>
+        <td style="${outstanding > 0 ? 'color:var(--red-light);font-weight:700' : ''}">${formatCurrency(outstanding)}</td>
+        <td><span class="badge ${badgeClass}">${status}</span></td>
+        <td>
+          ${outstanding > 0 ? `<button class="btn-action btn-edit" onclick="openPaySupplierModal(${b.id}, '${b.supplier}', '${b.batch}', ${outstanding})">Record Payment</button>` : '—'}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function openPaySupplierModal(batchId, supplierName, batchNumber, outstanding) {
+  payingBatchId = batchId;
+  document.getElementById('pay-supplier-name').textContent = supplierName;
+  document.getElementById('pay-batch-number').textContent = batchNumber;
+  document.getElementById('pay-amount-val').value = outstanding.toFixed(2);
+  document.getElementById('pay-amount-val').max = outstanding;
+  openModal('pay-supplier-modal');
+}
+
+async function executePaySupplier() {
+  if (!payingBatchId) return;
+  const amount = parseFloat(document.getElementById('pay-amount-val').value) || 0;
+  if (amount <= 0) {
+    showToast('Please enter a valid payment amount', 'error');
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/batches/${payingBatchId}/pay`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount })
+    });
+    if (res.ok) {
+      showToast('Supplier payment saved successfully', 'success');
+      closeModal('pay-supplier-modal');
+      await syncWithServer();
+    } else {
+      const data = await res.json();
+      showToast(data.error || 'Failed to save payment', 'error');
+    }
+  } catch (e) {
+    showToast('Connection error', 'error');
+  }
+  payingBatchId = null;
+}
+
+async function saveExpense() {
+  const date = document.getElementById('exp-date').value;
+  const category = document.getElementById('exp-category').value.trim();
+  const amount = parseFloat(document.getElementById('exp-amount').value) || 0;
+  const notes = document.getElementById('exp-notes').value.trim();
+
+  if (!category || amount <= 0) {
+    showToast('Please fill in required fields', 'error');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/expenses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date, category, amount, notes })
+    });
+    if (res.ok) {
+      showToast('Expense recorded successfully', 'success');
+      closeModal('expense-modal');
+      await syncWithServer();
+    } else {
+      const data = await res.json();
+      showToast(data.error || 'Failed to save expense', 'error');
+    }
+  } catch (e) {
+    showToast('Connection error', 'error');
+  }
+}
+
+// ---- BADGES ----
 function updateBadges() {
   const todayStr = today();
   const inCount  = db.stockIn.filter(r => r.date === todayStr).length;
@@ -557,17 +860,12 @@ function updateBadges() {
   badgeOut.textContent = outCount;
   badgeAlerts.textContent = alertCount;
 
-  badgeIn.setAttribute('data-count', inCount);
-  badgeOut.setAttribute('data-count', outCount);
-  badgeAlerts.setAttribute('data-count', alertCount);
-
   badgeIn.style.display = inCount ? 'flex' : 'none';
   badgeOut.style.display = outCount ? 'flex' : 'none';
   badgeAlerts.style.display = alertCount ? 'flex' : 'none';
 }
 
 // ---- ITEM CRUD ----
-
 let editingItemId = null;
 
 function openAddItem() {
@@ -578,8 +876,8 @@ function openAddItem() {
   document.getElementById('item-category').value = '';
   document.getElementById('item-unit').value = 'Tablet(s)';
   document.getElementById('item-min-stock').value = '';
-  document.getElementById('item-purchase-price').value = '';
-  document.getElementById('item-sell-price').value = '';
+  document.getElementById('item-purchase-price-group')?.style.setProperty('display', 'none');
+  document.getElementById('item-sell-price-group')?.style.setProperty('display', 'none');
   document.getElementById('item-notes').value = '';
   openModal('item-modal');
 }
@@ -594,56 +892,67 @@ function editItem(id) {
   document.getElementById('item-category').value = item.category || '';
   document.getElementById('item-unit').value = item.unit;
   document.getElementById('item-min-stock').value = item.minStock;
-  document.getElementById('item-purchase-price').value = item.purchasePrice || '';
-  document.getElementById('item-sell-price').value = item.sellPrice || '';
   document.getElementById('item-notes').value = item.notes || '';
   openModal('item-modal');
 }
 
-function saveItem() {
+async function saveItem() {
   const name = document.getElementById('item-name').value.trim();
   const generic = document.getElementById('item-generic').value.trim();
   const category = document.getElementById('item-category').value.trim();
   const unit = document.getElementById('item-unit').value;
   const minStock = parseInt(document.getElementById('item-min-stock').value) || 0;
-  const purchasePrice = document.getElementById('item-purchase-price').value;
-  const sellPrice = document.getElementById('item-sell-price').value;
   const notes = document.getElementById('item-notes').value.trim();
 
   if (!name) { showToast('Item name is required', 'error'); return; }
 
-  if (editingItemId) {
-    const idx = db.items.findIndex(i => i.id === editingItemId);
-    if (idx >= 0) {
-      db.items[idx] = { ...db.items[idx], name, generic, category, unit, minStock, purchasePrice, sellPrice, notes };
-      showToast(`"${name}" updated successfully`, 'success');
-    }
-  } else {
-    db.items.push({ id: genId(), name, generic, category, unit, minStock, purchasePrice, sellPrice, notes });
-    showToast(`"${name}" added to inventory`, 'success');
-  }
+  const payload = { name, generic, category, unit, minStock, notes };
 
-  saveDB();
-  closeModal('item-modal');
-  renderItems();
-  updateBadges();
+  try {
+    let res;
+    if (editingItemId) {
+      res = await fetch(`/api/items/${editingItemId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } else {
+      res = await fetch('/api/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || 'Failed to save item', 'error');
+      return;
+    }
+
+    showToast(editingItemId ? `"${name}" updated successfully` : `"${name}" added to inventory`, 'success');
+    closeModal('item-modal');
+    await syncWithServer();
+  } catch (e) {
+    showToast('Connection error', 'error');
+  }
 }
 
-function deleteItem(id) {
+async function deleteItem(id) {
   const item = db.items.find(i => i.id === id);
   if (!item) return;
   if (!confirm(`Delete "${item.name}"? This will also remove all stock records for this item.`)) return;
-  db.items = db.items.filter(i => i.id !== id);
-  db.stockIn  = db.stockIn.filter(r => r.itemId !== id);
-  db.stockOut = db.stockOut.filter(r => r.itemId !== id);
-  saveDB();
-  renderItems();
-  updateBadges();
-  showToast(`"${item.name}" deleted`, 'warning');
+  try {
+    const res = await fetch(`/api/items/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error();
+    showToast(`"${item.name}" deleted`, 'warning');
+    await syncWithServer();
+  } catch (e) {
+    showToast('Failed to delete item', 'error');
+  }
 }
 
 // ---- STOCK IN CRUD ----
-
 function openAddStockIn() {
   document.getElementById('in-date').value = today();
   document.getElementById('in-batch').value = '';
@@ -657,43 +966,43 @@ function openAddStockIn() {
   openModal('in-modal');
 }
 
-function saveStockIn() {
+async function saveStockIn() {
   const date = document.getElementById('in-date').value;
   const itemId = parseInt(document.getElementById('in-item').value);
-  const batch = document.getElementById('in-batch').value.trim();
+  const batchNumber = document.getElementById('in-batch').value.trim();
   const qty = parseInt(document.getElementById('in-qty').value);
   const expiry = document.getElementById('in-expiry').value;
   const supplier = document.getElementById('in-supplier').value.trim();
-  const price = document.getElementById('in-price').value;
-  const notes = document.getElementById('in-notes').value.trim();
+  const purchasePrice = parseFloat(document.getElementById('in-price').value) || 0;
+  const sellPrice = parseFloat(document.getElementById('in-sell-price')?.value) || purchasePrice * 1.25;
 
   if (!date || !itemId || !qty || qty < 1) {
     showToast('Please fill in required fields', 'error'); return;
   }
   if (!expiry) { showToast('Expiry date is required', 'error'); return; }
 
-  const item = db.items.find(i => i.id === itemId);
-  const total = price && qty ? (parseFloat(price) * qty).toFixed(2) : '';
+  const payload = { date, itemId, batchNumber, qty, expiry, supplier, purchasePrice, sellPrice };
 
-  db.stockIn.push({ id: genId(), date, itemId, batch, qty, expiry, supplier, price: price || '', total, notes });
-  saveDB();
-  closeModal('in-modal');
-  renderStockIn();
-  updateBadges();
-  showToast(`Stock In recorded: ${qty} ${item?.unit||''} of ${item?.name||''}`, 'success');
-}
-
-function deleteStockIn(id) {
-  if (!confirm('Remove this stock-in record?')) return;
-  db.stockIn = db.stockIn.filter(r => r.id !== id);
-  saveDB();
-  renderStockIn();
-  updateBadges();
-  showToast('Record removed', 'warning');
+  try {
+    const res = await fetch('/api/stock-in', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || 'Failed to save stock-in', 'error');
+      return;
+    }
+    showToast('Stock In recorded successfully', 'success');
+    closeModal('in-modal');
+    await syncWithServer();
+  } catch (e) {
+    showToast('Connection error', 'error');
+  }
 }
 
 // ---- STOCK OUT CRUD ----
-
 function openAddStockOut() {
   document.getElementById('out-date').value = today();
   document.getElementById('out-qty').value = '';
@@ -707,44 +1016,39 @@ function openAddStockOut() {
   openModal('out-modal');
 }
 
-function saveStockOut() {
+async function saveStockOut() {
   const date = document.getElementById('out-date').value;
   const itemId = parseInt(document.getElementById('out-item').value);
   const qty = parseInt(document.getElementById('out-qty').value);
   const reason = document.getElementById('out-reason').value;
   const customer = document.getElementById('out-customer').value.trim();
-  const price = document.getElementById('out-price').value;
+  const price = parseFloat(document.getElementById('out-price').value) || 0;
   const notes = document.getElementById('out-notes').value.trim();
 
   if (!date || !itemId || !qty || qty < 1) {
     showToast('Please fill in required fields', 'error'); return;
   }
 
-  const item = db.items.find(i => i.id === itemId);
-  const currentStock = getStock(itemId);
-  if (qty > currentStock) {
-    showToast(`Not enough stock. Available: ${currentStock} ${item?.unit||''}`, 'error'); return;
+  const payload = { date, itemId, qty, reason, customer, price, notes };
+
+  try {
+    const res = await fetch('/api/stock-out', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || 'Failed to save stock-out', 'error');
+      return;
+    }
+    showToast('Stock Out recorded successfully', 'success');
+    closeModal('out-modal');
+    await syncWithServer();
+  } catch (e) {
+    showToast('Connection error', 'error');
   }
-
-  const total = price && qty ? (parseFloat(price) * qty).toFixed(2) : '';
-  db.stockOut.push({ id: genId(), date, itemId, qty, reason, customer, price: price || '', total, notes });
-  saveDB();
-  closeModal('out-modal');
-  renderStockOut();
-  updateBadges();
-  showToast(`Stock Out recorded: ${qty} ${item?.unit||''} of ${item?.name||''}`, 'success');
 }
-
-function deleteStockOut(id) {
-  if (!confirm('Remove this stock-out record?')) return;
-  db.stockOut = db.stockOut.filter(r => r.id !== id);
-  saveDB();
-  renderStockOut();
-  updateBadges();
-  showToast('Record removed', 'warning');
-}
-
-// ---- HELPERS ----
 
 function populateItemSelect(selectId) {
   const sel = document.getElementById(selectId);
@@ -753,7 +1057,6 @@ function populateItemSelect(selectId) {
 }
 
 // ---- EXPORT CSV ----
-
 function exportCSV() {
   const tab = document.querySelector('.tab-content.active')?.id?.replace('tab-', '') || 'stock';
   let csv = '';
@@ -761,23 +1064,29 @@ function exportCSV() {
 
   if (tab === 'items') {
     filename = 'items.csv';
-    csv = 'Name,Generic,Category,Unit,Min Stock,Current Stock,Purchase Price,Sell Price\n';
+    csv = 'Name,Generic,Category,Unit,Min Stock,Current Stock,Sell Price\n';
     db.items.forEach(i => {
-      csv += `"${i.name}","${i.generic||''}","${i.category||''}","${i.unit}",${i.minStock},${getStock(i.id)},${i.purchasePrice||''},${i.sellPrice||''}\n`;
+      csv += `"${i.name}","${i.generic||''}","${i.category||''}","${i.unit}",${i.minStock},${getStock(i.id)},${i.sellPrice||''}\n`;
     });
   } else if (tab === 'in') {
-    filename = 'stock_in.csv';
-    csv = 'Date,Item,Batch,Qty,Expiry,Supplier,Price,Total,Notes\n';
+    filename = 'batches.csv';
+    csv = 'Date,Item,Batch,Qty,Expiry,Supplier,Purchase Price,Total\n';
     db.stockIn.forEach(r => {
       const item = db.items.find(i => i.id === r.itemId);
-      csv += `"${r.date}","${item?.name||''}","${r.batch||''}",${r.qty},"${r.expiry||''}","${r.supplier||''}",${r.price||''},${r.total||''},"${r.notes||''}"\n`;
+      csv += `"${r.date}","${item?.name||''}","${r.batch||''}",${r.qty},"${r.expiry||''}","${r.supplier||''}",${r.price||''},${r.total||''}\n`;
     });
   } else if (tab === 'out') {
     filename = 'stock_out.csv';
-    csv = 'Date,Item,Qty,Reason,Customer,Price,Total,Notes\n';
+    csv = 'Date,Item,Qty,Reason,Customer,Price,Total\n';
     db.stockOut.forEach(r => {
       const item = db.items.find(i => i.id === r.itemId);
-      csv += `"${r.date}","${item?.name||''}",${r.qty},"${r.reason}","${r.customer||''}",${r.price||''},${r.total||''},"${r.notes||''}"\n`;
+      csv += `"${r.date}","${item?.name||''}",${r.qty},"${r.reason}","${r.customer||''}",${r.price||''},${r.total||''}\n`;
+    });
+  } else if (tab === 'expenses') {
+    filename = 'expenses.csv';
+    csv = 'Date,Category,Amount,Notes\n';
+    db.expenses.forEach(e => {
+      csv += `"${e.date}","${e.category}",${e.amount},"${e.notes||''}"\n`;
     });
   } else {
     filename = 'current_stock.csv';
@@ -800,50 +1109,38 @@ function exportCSV() {
   showToast(`Exported ${filename}`, 'success');
 }
 
-// ---- DOWNLOAD BACKUP (JSON) ----
-
+// ---- BACKUP DOWNLOAD ----
 function downloadBackup() {
-  const jsonStr = JSON.stringify(db, null, 2);
-  const blob = new Blob([jsonStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  
-  const todayStr = new Date().toISOString().split('T')[0];
-  a.href = url;
-  a.download = `pharmacare_backup_${todayStr}.json`;
+  a.href = '/pharmacy.db';
+  a.download = 'pharmacy.db';
   a.click();
-  
-  URL.revokeObjectURL(url);
-  showToast('Database backup downloaded successfully', 'success');
+  showToast('Database file downloaded', 'success');
 }
 
 // ---- INIT ----
-
 document.addEventListener('DOMContentLoaded', () => {
-
-  // Set current date
   document.getElementById('current-date').textContent =
     new Date().toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
 
-  // Set pharmacy name
   document.getElementById('pharmacy-name-display').textContent = db.pharmacyName;
 
-  // Nav buttons
+  if (ownerSession) {
+    const usernameEl = document.getElementById('owner-username-display');
+    if (usernameEl) usernameEl.textContent = ownerSession.username;
+  }
+
   document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
 
-  // Dashboard "View All" links
   document.querySelectorAll('[data-tab]').forEach(el => {
     if (el.tagName === 'BUTTON' && !el.classList.contains('nav-item')) {
       el.addEventListener('click', () => switchTab(el.dataset.tab));
     }
   });
 
-  // Quick Add (Stock In)
   document.getElementById('quick-add-btn').addEventListener('click', openAddStockIn);
-
-  // Backup & Export
   document.getElementById('backup-btn').addEventListener('click', downloadBackup);
   document.getElementById('export-btn').addEventListener('click', exportCSV);
 
@@ -859,7 +1156,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('in-modal-cancel').addEventListener('click', () => closeModal('in-modal'));
   document.getElementById('in-modal-save').addEventListener('click', saveStockIn);
 
-  // Auto-calc total for stock in
   const calcInTotal = () => {
     const p = parseFloat(document.getElementById('in-price').value) || 0;
     const q = parseInt(document.getElementById('in-qty').value) || 0;
@@ -874,7 +1170,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('out-modal-cancel').addEventListener('click', () => closeModal('out-modal'));
   document.getElementById('out-modal-save').addEventListener('click', saveStockOut);
 
-  // Show available stock when item selected for out
   document.getElementById('out-item').addEventListener('change', () => {
     const id = parseInt(document.getElementById('out-item').value);
     if (id) {
@@ -887,7 +1182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Auto-calc total for stock out
   const calcOutTotal = () => {
     const p = parseFloat(document.getElementById('out-price').value) || 0;
     const q = parseInt(document.getElementById('out-qty').value) || 0;
@@ -896,25 +1190,81 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('out-price').addEventListener('input', calcOutTotal);
   document.getElementById('out-qty').addEventListener('input', calcOutTotal);
 
-  // Pharmacy name modal
+  // Expense modal setup
+  const addExpBtn = document.getElementById('add-expense-btn');
+  if (addExpBtn) addExpBtn.addEventListener('click', () => {
+    document.getElementById('exp-date').value = today();
+    document.getElementById('exp-category').value = '';
+    document.getElementById('exp-amount').value = '';
+    document.getElementById('exp-notes').value = '';
+    openModal('expense-modal');
+  });
+
+  const closeExpBtn = document.getElementById('expense-modal-close');
+  if (closeExpBtn) closeExpBtn.addEventListener('click', () => closeModal('expense-modal'));
+  const cancelExpBtn = document.getElementById('expense-modal-cancel');
+  if (cancelExpBtn) cancelExpBtn.addEventListener('click', () => closeModal('expense-modal'));
+  const saveExpBtn = document.getElementById('expense-modal-save');
+  if (saveExpBtn) saveExpBtn.addEventListener('click', saveExpense);
+
+  // Settings
   document.getElementById('edit-pharmacy-btn').addEventListener('click', () => {
-    document.getElementById('pharmacy-name-input').value = db.pharmacyName;
+    document.getElementById('pharmacy-name-input').value = db.pharmacyName || '';
+    document.getElementById('pharmacy-address-input').value = db.pharmacyAddress || '';
+    document.getElementById('pharmacy-phone-input').value = db.pharmacyPhone || '';
+    document.getElementById('new-owner-password').value = '';
+    document.getElementById('new-cashier-password').value = '';
     openModal('pharmacy-modal');
   });
   document.getElementById('pharmacy-modal-close').addEventListener('click', () => closeModal('pharmacy-modal'));
   document.getElementById('pharmacy-modal-cancel').addEventListener('click', () => closeModal('pharmacy-modal'));
-  document.getElementById('pharmacy-modal-save').addEventListener('click', () => {
+  document.getElementById('pharmacy-modal-save').addEventListener('click', async () => {
     const name = document.getElementById('pharmacy-name-input').value.trim();
-    if (name) {
-      db.pharmacyName = name;
-      saveDB();
-      document.getElementById('pharmacy-name-display').textContent = name;
-      showToast('Pharmacy name updated', 'success');
+    const address = document.getElementById('pharmacy-address-input').value.trim();
+    const phone = document.getElementById('pharmacy-phone-input').value.trim();
+    const newOwnerPw = document.getElementById('new-owner-password').value;
+    const newCashierPw = document.getElementById('new-cashier-password').value;
+
+    if (!name) { showToast('Pharmacy name cannot be empty', 'error'); return; }
+
+    try {
+      const res = await fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pharmacyName: name,
+          pharmacyAddress: address,
+          pharmacyPhone: phone,
+          newOwnerPassword: newOwnerPw || undefined,
+          newCashierPassword: newCashierPw || undefined
+        })
+      });
+      if (!res.ok) throw new Error();
+      showToast('Settings saved successfully', 'success');
+      closeModal('pharmacy-modal');
+      await syncWithServer();
+    } catch (e) {
+      showToast('Failed to save settings', 'error');
     }
-    closeModal('pharmacy-modal');
   });
 
-  // Search/filter events
+  document.getElementById('logout-btn').addEventListener('click', logout);
+  document.getElementById('void-modal-close').addEventListener('click', () => closeModal('void-modal'));
+  document.getElementById('void-modal-cancel').addEventListener('click', () => closeModal('void-modal'));
+  document.getElementById('void-modal-confirm').addEventListener('click', executeVoidBill);
+
+  // Pay Supplier modal listeners
+  const closePaySup = document.getElementById('pay-supplier-modal-close');
+  if (closePaySup) closePaySup.addEventListener('click', () => closeModal('pay-supplier-modal'));
+  const cancelPaySup = document.getElementById('pay-supplier-modal-cancel');
+  if (cancelPaySup) cancelPaySup.addEventListener('click', () => closeModal('pay-supplier-modal'));
+  const confirmPaySup = document.getElementById('pay-supplier-modal-confirm');
+  if (confirmPaySup) confirmPaySup.addEventListener('click', executePaySupplier);
+
+  // Search filters
+  document.getElementById('sales-search').addEventListener('input', renderSales);
+  document.getElementById('sales-date-filter').addEventListener('change', renderSales);
+  document.getElementById('sales-status-filter').addEventListener('change', renderSales);
   document.getElementById('items-search').addEventListener('input', renderItems);
   document.getElementById('items-category-filter').addEventListener('change', renderItems);
   document.getElementById('in-search').addEventListener('input', renderStockIn);
@@ -924,30 +1274,18 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('stock-search').addEventListener('input', renderStock);
   document.getElementById('stock-status-filter').addEventListener('change', renderStock);
 
-  // Close modals on overlay click
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', e => {
       if (e.target === overlay) overlay.classList.remove('open');
     });
   });
 
-  // Open date picker on click/focus for date inputs to make selection easier
   document.querySelectorAll('input[type="date"]').forEach(input => {
-    input.addEventListener('click', () => {
-      try {
-        input.showPicker();
-      } catch (e) {}
-    });
-    input.addEventListener('focus', () => {
-      try {
-        input.showPicker();
-      } catch (e) {}
-    });
+    input.addEventListener('click', () => { try { input.showPicker(); } catch (e) {} });
+    input.addEventListener('focus', () => { try { input.showPicker(); } catch (e) {} });
   });
 
-  // Initial render
+  // Initial load
   switchTab('dashboard');
-  
-  // Sync with server if running in server mode
   syncWithServer();
 });
