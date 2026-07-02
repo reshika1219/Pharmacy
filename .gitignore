@@ -1,5 +1,12 @@
 # Database (contains sensitive business/inventory data)
 db.json
+db.json.bak
+pharmacy.db
+backups/
+
+# Python cache files
+__pycache__/
+*.py[cod]
 
 # macOS system files
 .DS_Store
