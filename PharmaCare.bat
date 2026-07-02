@@ -6,7 +6,7 @@ echo ==================================================================
 echo   PharmaCare — Starting Server...
 echo ==================================================================
 echo.
-python server.py
+python backend\src\app.py
 if %ERRORLEVEL% neq 0 (
     echo.
     echo ❌ The server encountered an error and stopped.
