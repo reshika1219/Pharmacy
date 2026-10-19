@@ -20,3 +20,15 @@ __pycache__/
 # macOS / OS system files
 .DS_Store
 Thumbs.db
+
+# Node & Next.js
+node_modules/
+.next/
+out/
+.env
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+node_modules
+
+/src/generated/prisma
