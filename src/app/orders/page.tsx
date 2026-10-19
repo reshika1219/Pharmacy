@@ -141,7 +141,7 @@ export default function OrdersPage() {
 
               <div id="thermal-receipt" className="bg-white text-black p-4 rounded-xl text-left font-mono text-[11px] leading-tight space-y-2">
                 <div className="text-center border-b border-dashed border-gray-400 pb-2">
-                  <div className="font-extrabold text-sm uppercase">PharmaCare Store</div>
+                  <div className="font-extrabold text-sm uppercase">ExamplePOS Store</div>
                   <div className="text-[10px] text-gray-500">Order #{selectedOrder.orderNumber}</div>
                   <div className="text-[10px] text-gray-500">{selectedOrder.date} {selectedOrder.time}</div>
                 </div>

@@ -9,12 +9,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'NexusPOS — Remote Inventory & Store Operations',
+  title: 'ExamplePOS — Remote Inventory & Store Operations',
   description: 'Modern universal Point of Sale and real-time inventory management web application for mobile and desktop.',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'NexusPOS',
+    title: 'ExamplePOS',
   },
 };
 

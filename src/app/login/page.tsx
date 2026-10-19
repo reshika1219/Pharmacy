@@ -53,7 +53,7 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 shadow-xl shadow-indigo-500/25 border border-indigo-400/30 mb-4">
             <Store className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">PharmaCare & NexusPOS</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">ExamplePOS</h1>
           <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
             Cloud Remote Operations & Inventory Platform
           </p>

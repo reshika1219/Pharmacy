@@ -8,13 +8,13 @@ async function main() {
 
   // 1. Config
   const configs = [
-    { key: 'businessName', val: 'PharmaCare & NexusPOS' },
+    { key: 'businessName', val: 'ExamplePOS' },
     { key: 'businessAddress', val: '450 Healthcare Boulevard, Suite 101' },
     { key: 'businessPhone', val: '+1 (555) 382-9100' },
     { key: 'currency', val: '$' },
     { key: 'currencyCode', val: 'USD' },
     { key: 'taxRate', val: '5.0' },
-    { key: 'receiptFooter', val: 'Thank you for choosing PharmaCare! Keep your receipt for returns within 14 days.' },
+    { key: 'receiptFooter', val: 'Thank you for choosing ExamplePOS! Keep your receipt for returns within 14 days.' },
     { key: 'orderNextId', val: '1001' },
     { key: 'loyaltyEnabled', val: 'true' },
     { key: 'loyaltyRate', val: '1' },

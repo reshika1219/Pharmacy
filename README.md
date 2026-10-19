@@ -1,4 +1,4 @@
-# NexusPOS & PharmaCare — Cloud Remote Web Application
+# ExamplePOS — Cloud Remote Web Application
 
 A modern, fast, mobile-first Point of Sale (POS) and universal inventory management web application. Designed for store owners and managers to **remotely monitor inventory and store operations from any phone, tablet, or laptop browser**.
 

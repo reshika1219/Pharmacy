@@ -1,6 +1,6 @@
-# System Features — NexusPOS
+# System Features — ExamplePOS
 
-NexusPOS is a versatile, universal POS and inventory tracking platform suitable for any commercial enterprise (retail stores, groceries, apparel, specialty shops, cafes, service counters, etc.).
+ExamplePOS is a versatile, universal POS and inventory tracking platform suitable for any commercial enterprise (retail stores, groceries, apparel, specialty shops, cafes, service counters, etc.).
 
 ---
 

@@ -92,8 +92,8 @@ export default function Navigation() {
               <Store className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="font-bold text-white tracking-tight leading-tight text-base">PharmaCare</h1>
-              <p className="text-xs text-indigo-400 font-medium">NexusPOS Cloud</p>
+              <h1 className="font-bold text-white tracking-tight leading-tight text-base">ExamplePOS</h1>
+              <p className="text-xs text-indigo-400 font-medium">Cloud Web App</p>
             </div>
           </div>
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="System Online" />
@@ -171,8 +171,8 @@ export default function Navigation() {
             <Store className="w-4 h-4 text-white" />
           </div>
           <div>
-            <span className="font-bold text-white text-sm tracking-tight">PharmaCare</span>
-            <span className="text-[10px] block text-indigo-400 font-medium">NexusPOS Mobile</span>
+            <span className="font-bold text-white text-sm tracking-tight">ExamplePOS</span>
+            <span className="text-[10px] block text-indigo-400 font-medium">Mobile Web App</span>
           </div>
         </div>
 

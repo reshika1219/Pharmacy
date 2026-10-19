@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'nexuspos-super-secure-production-jwt-secret-key-2026'
+  process.env.JWT_SECRET || 'examplepos-super-secure-production-jwt-secret-key-2026'
 );
 
 export async function hashPassword(password: string): Promise<string> {

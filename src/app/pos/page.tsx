@@ -587,8 +587,8 @@ export default function POSPage() {
                 className="bg-white text-black p-4 rounded-xl text-left font-mono text-[11px] leading-tight space-y-2 shadow-inner"
               >
                 <div className="text-center border-b border-dashed border-gray-400 pb-2">
-                  <div className="font-extrabold text-sm uppercase">PharmaCare Store</div>
-                  <div className="text-[10px] text-gray-600">Universal POS & Dispensary</div>
+                  <div className="font-extrabold text-sm uppercase">ExamplePOS Store</div>
+                  <div className="text-[10px] text-gray-600">Point of Sale & Inventory</div>
                   <div className="text-[10px] text-gray-500 mt-1">Order #{completedOrder.orderNumber}</div>
                   <div className="text-[10px] text-gray-500">{completedOrder.date} {completedOrder.time}</div>
                 </div>
