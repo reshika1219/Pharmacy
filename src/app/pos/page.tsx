@@ -182,14 +182,13 @@ export default function POSPage() {
     <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors">
       <Navigation />
 
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
+      <main className="flex-1 flex flex-col min-h-0 lg:h-screen lg:overflow-hidden">
         {/* Top Header & Search Bar */}
-        <header className="p-3 sm:p-4 bg-[var(--surface)] border-b border-[var(--border)] shrink-0 flex flex-col sm:flex-row items-center gap-3 justify-between">
+        <div className="p-3 sm:p-4 bg-[var(--surface)] border-b border-[var(--border)] shrink-0 flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3 justify-between">
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
             <input
               type="text"
-              autoFocus
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Scan barcode or type name..."
@@ -197,40 +196,38 @@ export default function POSPage() {
             />
           </div>
 
-          {/* Category Filter Pills & Mode Switcher */}
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+          {/* Category Filter Pills */}
+          <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
+                selectedCategory === 'all'
+                  ? 'bg-[var(--accent)] text-[var(--accent-text)]'
+                  : 'bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text)]'
+              }`}
+            >
+              All Items
+            </button>
+            {categories.map((c) => (
               <button
-                onClick={() => setSelectedCategory('all')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
-                  selectedCategory === 'all'
+                key={c.id}
+                onClick={() => setSelectedCategory(c.id.toString())}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer shrink-0 ${
+                  selectedCategory === c.id.toString()
                     ? 'bg-[var(--accent)] text-[var(--accent-text)]'
                     : 'bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text)]'
                 }`}
               >
-                All Items
+                {c.name}
               </button>
-              {categories.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => setSelectedCategory(c.id.toString())}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
-                    selectedCategory === c.id.toString()
-                      ? 'bg-[var(--accent)] text-[var(--accent-text)]'
-                      : 'bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text)]'
-                  }`}
-                >
-                  {c.name}
-                </button>
-              ))}
-            </div>
+            ))}
           </div>
-        </header>
+        </div>
 
         {/* POS Body (Catalog Grid + Cart Sidebar) */}
         <div className="flex-1 flex overflow-hidden">
           {/* Catalog Grid */}
-          <section className="flex-1 overflow-y-auto p-3 sm:p-5 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3.5 content-start pb-24 lg:pb-6">
+          <section className="flex-1 overflow-y-auto p-3 sm:p-5 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3.5 content-start pb-36 lg:pb-6">
             {filteredProducts.map((p) => {
               const inCart = cart.find((i) => i.id === p.id);
               const isOut = p.totalStock <= 0;
@@ -399,19 +396,21 @@ export default function POSPage() {
           </aside>
         </div>
 
-        {/* MOBILE FLOATING CART DRAWER TRIGGER */}
-        <div className="lg:hidden fixed bottom-16 left-3 right-3 z-30">
-          <button
-            onClick={() => setMobileCartOpen(true)}
-            className="w-full py-2.5 px-4 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] font-bold text-xs shadow-md flex items-center justify-between active:scale-98 transition-all cursor-pointer"
-          >
-            <div className="flex items-center gap-2">
-              <ShoppingCart className="w-4 h-4" />
-              <span>Cart ({cart.reduce((s, i) => s + i.qty, 0)} items)</span>
-            </div>
-            <span className="text-sm font-extrabold">${total.toFixed(2)}</span>
-          </button>
-        </div>
+        {/* MOBILE FLOATING CART DRAWER TRIGGER (only visible when cart has items) */}
+        {cart.length > 0 && (
+          <div className="lg:hidden fixed bottom-18 left-3 right-3 z-30 animate-in slide-in-from-bottom duration-200">
+            <button
+              onClick={() => setMobileCartOpen(true)}
+              className="w-full py-3 px-4 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] font-bold text-xs shadow-lg flex items-center justify-between active:scale-98 transition-all cursor-pointer border border-[var(--border)]"
+            >
+              <div className="flex items-center gap-2">
+                <ShoppingCart className="w-4 h-4" />
+                <span>View Cart ({cart.reduce((s, i) => s + i.qty, 0)} items)</span>
+              </div>
+              <span className="text-sm font-extrabold">${total.toFixed(2)}</span>
+            </button>
+          </div>
+        )}
 
         {/* MOBILE CART DRAWER */}
         {mobileCartOpen && (
