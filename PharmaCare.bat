@@ -1,16 +1,11 @@
 @echo off
-title PharmaCare Local Server
+title NexusPOS
 cd /d "%~dp0"
-cls
-echo ==================================================================
-echo   PharmaCare — Starting Server...
-echo ==================================================================
-echo.
-python backend\src\app.py
-if %ERRORLEVEL% neq 0 (
+echo Starting NexusPOS...
+python backend/src/app.py
+if errorlevel 1 (
     echo.
-    echo ❌ The server encountered an error and stopped.
-    echo Please make sure Python is installed and check the logs above.
-    echo.
+    echo ERROR: Could not start the server.
+    echo Make sure Python and Flask are installed: pip install flask
     pause
 )

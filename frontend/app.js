@@ -1,1293 +1,1137 @@
-// ============================================================
-// PharmaCare Inventory Management System
-// app.js — Complete Application Logic
-// ============================================================
+/* ═══════════════════════════════════════════════════════
+   NexusPOS — Admin Dashboard Controller
+   ═══════════════════════════════════════════════════════ */
 
-// ---- SVG ICON STRINGS (Lucide-style) ----
-const IC = {
-  check:    `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
-  warn:     `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
-  ban:      `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>`,
-  xcirc:    `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`,
-  clock:    `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-  banLg:    `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>`,
-  clockLg:  `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-  xcircLg:  `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`,
-  warnLg:   `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
-  edit:     `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`,
-  trash:    `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>`,
-  expWarn:  `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
-  expClock: `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-  arrowDn:  `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>`,
-  arrowUp:  `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>`,
+'use strict';
+
+// ─── State ────────────────────────────────────────────────
+const state = {
+  session: JSON.parse(sessionStorage.getItem('pos_session') || 'null'),
+  config: {},
+  products: [],
+  categories: [],
+  customers: [],
+  suppliers: [],
+  currentTab: 'dashboard',
+  editingProduct: null,
+  editingCategory: null,
+  editingCustomer: null,
+  editingSupplier: null,
+  viewingOrderId: null,
+  charts: {}
 };
 
-// ---- DATA STORE ----
-let db = {
-  pharmacyName: 'PharmaCare',
-  pharmacyAddress: '',
-  pharmacyPhone: '',
-  items: [],
-  stockIn: [],
-  stockOut: [],
-  bills: [],
-  expenses: []
-};
+// ─── Helpers ──────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const curr = v => `${state.config.currency || '$'}${Number(v || 0).toFixed(2)}`;
+const fmtDate = d => d ? new Date(d).toLocaleDateString() : '—';
 
-let reportData = {
-  totalSales: 0,
-  totalCOGS: 0,
-  grossProfit: 0,
-  totalExpenses: 0,
-  netProfit: 0,
-  stockValuation: 0,
-  topSelling: []
-};
+function toast(msg, type = 'success') {
+  const c = $('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+  el.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+  c.appendChild(el);
+  setTimeout(() => { el.classList.add('hide'); el.addEventListener('animationend', () => el.remove()); }, 3000);
+}
 
-// ---- SYSTEM SYNC ----
-async function syncWithServer() {
+async function api(path, method = 'GET', body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`/api${path}`, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function openModal(id) { $(id).classList.add('open'); }
+function closeModal(id) { $(id).classList.remove('open'); }
+
+function stockBadge(stock, minStock) {
+  if (stock <= 0) return `<span class="badge badge-rose">Out of Stock</span>`;
+  if (stock <= minStock) return `<span class="badge badge-amber">Low Stock</span>`;
+  return `<span class="badge badge-emerald">In Stock</span>`;
+}
+
+function formatDateLocal() {
+  return new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+// ─── Navigation ───────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  $(`tab-${tab}`).classList.add('active');
+  $(`nav-${tab}`)?.classList.add('active');
+  $('page-title').textContent = {
+    dashboard: 'Dashboard', pos: 'Point of Sale', products: 'Products',
+    stock: 'Stock In', categories: 'Categories', orders: 'Orders',
+    customers: 'Customers', suppliers: 'Suppliers', expenses: 'Expenses',
+    users: 'Users', settings: 'Settings'
+  }[tab] || tab;
+  state.currentTab = tab;
+
+  if (tab === 'dashboard') loadDashboard();
+  else if (tab === 'products') loadProducts();
+  else if (tab === 'stock') loadBatches();
+  else if (tab === 'categories') loadCategories();
+  else if (tab === 'orders') loadOrders();
+  else if (tab === 'customers') loadCustomers();
+  else if (tab === 'suppliers') loadSuppliers();
+  else if (tab === 'expenses') loadExpenses();
+  else if (tab === 'users') loadUsers();
+  else if (tab === 'settings') loadSettings();
+  else if (tab === 'pos') renderPOS();
+}
+
+document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Modal close buttons
+document.querySelectorAll('[data-close]').forEach(btn => {
+  btn.addEventListener('click', () => closeModal(btn.dataset.close));
+});
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// ─── Dashboard ────────────────────────────────────────────
+async function loadDashboard() {
   try {
-    const itemsRes = await fetch('/api/items');
-    const items = await itemsRes.json();
-    
-    const configRes = await fetch('/api/config');
-    const config = await configRes.json();
-    
-    const batchesRes = await fetch('/api/batches');
-    const batches = await batchesRes.json();
+    const d = await api('/reports/dashboard');
 
-    const salesRes = await fetch('/api/sales');
-    const sales = await salesRes.json();
+    $('ds-today-sales').textContent = curr(d.todaySales);
+    $('ds-today-orders').textContent = `${d.todayOrders} orders today`;
+    $('ds-gross-profit').textContent = curr(d.todayGrossProfit);
+    $('ds-net-profit').textContent = `Net: ${curr(d.todayNetProfit)}`;
+    $('ds-all-sales').textContent = curr(d.allTimeSales);
+    $('ds-all-profit').textContent = `Profit: ${curr(d.allTimeProfit)}`;
+    $('ds-customers').textContent = d.totalCustomers;
+    $('ds-stock-val').textContent = curr(d.stockValuation);
+    $('ds-low-stock').textContent = `${d.lowStockItems.length} low stock items`;
+    $('ds-expenses').textContent = curr(d.todayExpenses);
 
-    const stockOutRes = await fetch('/api/stock-out');
-    const stockOut = await stockOutRes.json();
-
-    const expensesRes = await fetch('/api/expenses');
-    const expenses = await expensesRes.json();
-
-    const reportRes = await fetch('/api/reports/dashboard');
-    if (reportRes.ok) {
-      reportData = await reportRes.json();
-    }
-
-    db.items = items;
-    db.pharmacyName = config.pharmacyName || 'PharmaCare';
-    db.pharmacyAddress = config.pharmacyAddress || '';
-    db.pharmacyPhone = config.pharmacyPhone || '';
-    
-    // Map batches to stockIn
-    db.stockIn = batches.map(b => ({
-      id: b.id,
-      date: b.date_added,
-      itemId: b.itemId,
-      batch: b.batch_number,
-      qty: b.qty_received,
-      expiry: b.expiry,
-      supplier: b.supplier,
-      price: b.purchase_price,
-      total: (b.qty_received * b.purchase_price).toFixed(2),
-      notes: '',
-      payment_status: b.payment_status || 'Pending',
-      amount_paid: parseFloat(b.amount_paid || 0.0)
-    }));
-
-    // Map stockOut adjustments & sales to stockOut
-    db.stockOut = stockOut.map(s => ({
-      id: s.id,
-      date: s.date,
-      itemId: s.itemId,
-      qty: s.qty,
-      reason: s.reason,
-      customer: s.billNumber || '',
-      price: s.price,
-      total: s.total,
-      notes: s.cashier ? `By ${s.cashier}` : '',
-      billId: s.billNumber
-    }));
-
-    db.bills = sales;
-    db.expenses = expenses;
-
-    document.getElementById('pharmacy-name-display').textContent = db.pharmacyName;
-
-    // Re-render the active tab
-    const activeTab = document.querySelector('.nav-item.active')?.dataset?.tab || 'dashboard';
-    renderTab(activeTab);
+    drawSalesChart(d);
+    drawProfitChart(d);
+    renderTopProducts(d.topProducts);
+    renderLowStock(d.lowStockItems);
   } catch (e) {
-    console.error("Failed to sync database:", e);
+    toast('Failed to load dashboard', 'error');
   }
 }
 
-// ---- UTILITY FUNCTIONS ----
-function today() {
-  return new Date().toISOString().split('T')[0];
-}
-
-function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-}
-
-function formatCurrency(val) {
-  if (val === undefined || val === null || val === '') return '—';
-  return 'Rs. ' + Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function daysUntil(dateStr) {
-  if (!dateStr) return null;
-  const now = new Date(); now.setHours(0,0,0,0);
-  const exp = new Date(dateStr + 'T00:00:00');
-  return Math.floor((exp - now) / 86400000);
-}
-
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + type;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-
-// ---- STOCK CALCULATIONS ----
-function getStock(itemId) {
-  const item = db.items.find(i => i.id === itemId);
-  return item ? item.currentStock : 0;
-}
-
-function getNearestExpiry(itemId) {
-  const item = db.items.find(i => i.id === itemId);
-  return item ? item.expiry : null;
-}
-
-function getStockStatus(item) {
-  const stock = getStock(item.id);
-  const expiry = getNearestExpiry(item.id);
-  const days = daysUntil(expiry);
-
-  if (days !== null && days < 0) return 'expired';
-  if (days !== null && days <= 90) return 'expiring';
-  if (stock <= 0) return 'out';
-  if (stock <= item.minStock) return 'low';
-  return 'ok';
-}
-
-function statusLabel(s) {
-  const icons = { ok: IC.check, low: IC.warn, out: IC.xcirc, expiring: IC.clock, expired: IC.ban };
-  const text  = { ok: 'OK', low: 'Low Stock', out: 'Out of Stock', expiring: 'Expiring Soon', expired: 'Expired' };
-  const cls   = { ok: 'badge-ok', low: 'badge-low', out: 'badge-out', expiring: 'badge-expiring', expired: 'badge-expired' };
-  return `<span class="badge ${cls[s]}">${icons[s]} ${text[s]}</span>`;
-}
-
-// ---- NAV / TAB SWITCHING ----
-const tabTitles = {
-  dashboard: 'Dashboard',
-  items: 'Items Catalog',
-  in: 'Stock In (Batches)',
-  out: 'Stock Out History',
-  stock: 'Current Stock',
-  alerts: 'Alerts',
-  sales: 'Sales History',
-  expenses: 'Expense Management',
-  suppliers: 'Supplier Ledger & Payables'
-};
-
-const EXPORTABLE_TABS = ['items', 'in', 'out', 'stock', 'expenses', 'suppliers'];
-
-const EXPORT_LABELS = {
-  items: 'Export Items',
-  in:    'Export Batches',
-  out:   'Export Stock Out',
-  stock: 'Export Stock',
-  expenses: 'Export Expenses',
-  suppliers: 'Export Supplier Ledger'
-};
-
-const ownerSession = JSON.parse(sessionStorage.getItem('pharmacare_session') || 'null');
-
-function logout() {
-  fetch('/api/logout', { method: 'POST' }).finally(() => {
-    sessionStorage.removeItem('pharmacare_session');
-    window.location.replace('login.html');
-  });
-}
-
-function switchTab(tabName) {
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
-  document.querySelectorAll('.tab-content').forEach(s => s.classList.toggle('active', s.id === 'tab-' + tabName));
-  document.getElementById('page-title').textContent = tabTitles[tabName] || tabName;
-
-  const exportBtn = document.getElementById('export-btn');
-  if (EXPORTABLE_TABS.includes(tabName)) {
-    exportBtn.style.display = '';
-    exportBtn.querySelector('.export-label').textContent = EXPORT_LABELS[tabName];
-  } else {
-    exportBtn.style.display = 'none';
-  }
-
-  const quickAddBtn = document.getElementById('quick-add-btn');
-  quickAddBtn.style.display = (tabName === 'dashboard') ? '' : 'none';
-
-  renderTab(tabName);
-}
-
-function renderTab(tab) {
-  if (tab === 'dashboard') renderDashboard();
-  if (tab === 'items') renderItems();
-  if (tab === 'in') renderStockIn();
-  if (tab === 'out') renderStockOut();
-  if (tab === 'stock') renderStock();
-  if (tab === 'alerts') renderAlerts();
-  if (tab === 'sales') renderSales();
-  if (tab === 'expenses') renderExpenses();
-  if (tab === 'suppliers') renderSuppliers();
-  updateBadges();
-}
-
-// ---- DASHBOARD ----
-function renderDashboard() {
-  const allItems = db.items;
-  const hasItems = allItems.length > 0;
-
-  document.getElementById('onboarding-guide').style.display = hasItems ? 'none' : '';
-  document.getElementById('dash-stats').style.display    = hasItems ? '' : 'none';
-  document.getElementById('dash-panels').style.display   = hasItems ? '' : 'none';
-
-  if (!hasItems) return;
-
-  const totalItems = allItems.length;
-  const inStock = allItems.filter(i => getStock(i.id) > 0).length;
-  const lowStock = allItems.filter(i => { const s = getStockStatus(i); return s === 'low'; }).length;
-  const expired = allItems.filter(i => { const s = getStockStatus(i); return s === 'expired' || s === 'expiring'; }).length;
-
-  const todayStr = today();
-  const todayIn  = db.stockIn.filter(r => r.date === todayStr).reduce((s,r) => s + r.qty, 0);
-  const todayOut = db.stockOut.filter(r => r.date === todayStr).reduce((s,r) => s + r.qty, 0);
-
-  document.getElementById('stat-total-items').textContent = totalItems;
-  document.getElementById('stat-in-stock').textContent = inStock;
-  document.getElementById('stat-low-stock').textContent = lowStock;
-  document.getElementById('stat-expired').textContent = expired;
-  document.getElementById('stat-today-in').textContent = todayIn;
-  document.getElementById('stat-today-out').textContent = todayOut;
-
-  // Render accounting stats
-  const revenueCard = document.getElementById('stat-revenue-val');
-  const profitCard = document.getElementById('stat-profit-val');
-  if (revenueCard) revenueCard.textContent = formatCurrency(reportData.totalSales);
-  if (profitCard) profitCard.textContent = formatCurrency(reportData.netProfit);
-
-  // Render owner remote portal elements
-  const todaySalesEl = document.getElementById('owner-today-sales');
-  const todayGrossProfitEl = document.getElementById('owner-today-gross-profit');
-  const todayExpensesEl = document.getElementById('owner-today-expenses');
-  const todayNetProfitEl = document.getElementById('owner-today-net-profit');
-
-  if (todaySalesEl) todaySalesEl.textContent = formatCurrency(reportData.todaySales || 0);
-  if (todayGrossProfitEl) todayGrossProfitEl.textContent = formatCurrency(reportData.todayGrossProfit || 0);
-  if (todayExpensesEl) todayExpensesEl.textContent = formatCurrency(reportData.todayExpenses || 0);
-  if (todayNetProfitEl) todayNetProfitEl.textContent = formatCurrency(reportData.todayNetProfit || 0);
-
-  const payCashEl = document.getElementById('owner-pay-cash');
-  const payCardEl = document.getElementById('owner-pay-card');
-  const payOnlineEl = document.getElementById('owner-pay-online');
-  const payCreditEl = document.getElementById('owner-pay-credit');
-
-  if (reportData.paymentBreakdown) {
-    if (payCashEl) payCashEl.textContent = formatCurrency(reportData.paymentBreakdown.Cash || 0);
-    if (payCardEl) payCardEl.textContent = formatCurrency(reportData.paymentBreakdown.Card || 0);
-    if (payOnlineEl) payOnlineEl.textContent = formatCurrency(reportData.paymentBreakdown.Online || 0);
-    if (payCreditEl) payCreditEl.textContent = formatCurrency(reportData.paymentBreakdown.Credit || 0);
-  }
-
-  const cashierActivityList = document.getElementById('owner-cashier-activity-list');
-  if (cashierActivityList) {
-    if (!reportData.cashierActivity || reportData.cashierActivity.length === 0) {
-      cashierActivityList.innerHTML = '<div class="empty-state" style="padding:10px">No cashier activity logged today</div>';
-    } else {
-      cashierActivityList.innerHTML = reportData.cashierActivity.map(c => `
-        <div style="display: flex; justify-content: space-between;">
-          <span><strong>${c.cashier}</strong> (${c.sales_count} bills):</span>
-          <span>${formatCurrency(c.sales_total)}</span>
-        </div>
-      `).join('');
-    }
-  }
-
-  // Alerts summary
-  const alertItems = getAlertItems();
-  const dashAlerts = document.getElementById('dash-alerts');
-  if (alertItems.length === 0) {
-    dashAlerts.innerHTML = '<div class="empty-state">No alerts — all good!</div>';
-  } else {
-    dashAlerts.innerHTML = alertItems.slice(0,5).map(a =>
-      `<div class="alert-item alert-${a.type}">
-         <span class="alert-icon-svg">${a.iconSvg}</span>
-         <div>
-           <div class="alert-msg">${a.msg}</div>
-           <div class="alert-detail">${a.detail}</div>
-         </div>
-       </div>`
-    ).join('');
-  }
-
-  // Recent activity
-  const all = [
-    ...db.stockIn.map(r => ({ ...r, type: 'in', ts: r.date })),
-    ...db.stockOut.map(r => ({ ...r, type: 'out', ts: r.date }))
-  ].sort((a,b) => b.id - a.id).slice(0,10);
-
-  const actEl = document.getElementById('dash-activity');
-  if (all.length === 0) {
-    actEl.innerHTML = '<div class="empty-state">No recent activity</div>';
-  } else {
-    actEl.innerHTML = all.map(r => {
-      const item = db.items.find(i => i.id === r.itemId);
-      const itemName = item ? item.name : 'Unknown';
-      if (r.type === 'in') {
-        return `<div class="activity-item">
-          <div class="activity-icon act-in">${IC.arrowDn}</div>
-          <div class="activity-text">Stock In: <strong>${r.qty} ${item?.unit||''}</strong> of <strong>${itemName}</strong>${r.supplier ? ` from ${r.supplier}` : ''}</div>
-          <div class="activity-time">${formatDate(r.date)}</div>
-        </div>`;
-      } else {
-        return `<div class="activity-item">
-          <div class="activity-icon act-out">${IC.arrowUp}</div>
-          <div class="activity-text">Stock Out: <strong>${r.qty} ${item?.unit||''}</strong> of <strong>${itemName}</strong> (${r.reason})</div>
-          <div class="activity-time">${formatDate(r.date)}</div>
-        </div>`;
+function drawSalesChart(d) {
+  const ctx = $('chart-sales').getContext('2d');
+  if (state.charts.sales) state.charts.sales.destroy();
+  state.charts.sales = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: d.weeklyLabels.map(l => {
+        const dt = new Date(l);
+        return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      }),
+      datasets: [{
+        label: 'Revenue',
+        data: d.weeklySales,
+        backgroundColor: 'rgba(99,102,241,0.25)',
+        borderColor: '#6366f1',
+        borderWidth: 2,
+        borderRadius: 6,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b', font: { size: 11 }, callback: v => `${state.config.currency || '$'}${v}` } }
       }
-    }).join('');
-  }
-}
-
-// ---- ITEMS ----
-function renderItems() {
-  const catFilter = document.getElementById('items-category-filter')?.value || '';
-  const search = (document.getElementById('items-search')?.value || '').toLowerCase();
-  let list = db.items;
-  if (search) list = list.filter(i => i.name.toLowerCase().includes(search) || (i.generic||'').toLowerCase().includes(search));
-  if (catFilter) list = list.filter(i => i.category === catFilter);
-
-  const tbody = document.getElementById('items-tbody');
-  const empty = document.getElementById('items-empty');
-
-  const cats = [...new Set(db.items.map(i => i.category).filter(Boolean))];
-  const catSel = document.getElementById('items-category-filter');
-  const curCat = catSel.value;
-  catSel.innerHTML = '<option value="">All Categories</option>' +
-    cats.map(c => `<option value="${c}" ${c===curCat?'selected':''}>${c}</option>`).join('');
-
-  const catList = document.getElementById('category-list');
-  catList.innerHTML = cats.map(c => `<option value="${c}"></option>`).join('');
-
-  if (list.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = list.map(item => {
-    const stock = getStock(item.id);
-    const expiry = getNearestExpiry(item.id);
-    const days = daysUntil(expiry);
-    let expiryStr = expiry ? formatDate(expiry) : '—';
-    if (days !== null && days < 0) expiryStr = `<span style="color:var(--red-light)">${IC.expWarn} ${expiryStr}</span>`;
-    else if (days !== null && days <= 90) expiryStr = `<span style="color:var(--orange-light)">${IC.expClock} ${expiryStr}</span>`;
-
-    const stockColor = stock <= 0 ? 'color:var(--red-light)' : stock <= item.minStock ? 'color:var(--orange-light)' : 'color:var(--green-light)';
-
-    return `<tr>
-      <td><strong>${item.name}</strong></td>
-      <td>${item.generic || '—'}</td>
-      <td><span class="badge" style="background:rgba(139,92,246,0.15);color:var(--purple-light);border:1px solid rgba(139,92,246,0.3)">${item.category||'—'}</span></td>
-      <td>${item.unit}</td>
-      <td>${item.minStock}</td>
-      <td style="${stockColor}"><strong>${stock}</strong></td>
-      <td>${expiryStr}</td>
-      <td>${formatCurrency(item.purchasePrice)}</td>
-      <td>${formatCurrency(item.sellPrice)}</td>
-      <td>
-        <div class="action-btns">
-          <button class="btn-action btn-edit" onclick="editItem(${item.id})">${IC.edit} Edit</button>
-          <button class="btn-action btn-delete" onclick="deleteItem(${item.id})">${IC.trash} Delete</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-// ---- STOCK IN ----
-function renderStockIn() {
-  const search = (document.getElementById('in-search')?.value || '').toLowerCase();
-  const dateF  = document.getElementById('in-date-filter')?.value || '';
-  let list = [...db.stockIn].sort((a,b) => b.id - a.id);
-  if (search) {
-    list = list.filter(r => {
-      const item = db.items.find(i => i.id === r.itemId);
-      return (item?.name||'').toLowerCase().includes(search) || (r.supplier||'').toLowerCase().includes(search) || (r.batch||'').toLowerCase().includes(search);
-    });
-  }
-  if (dateF) list = list.filter(r => r.date === dateF);
-
-  const tbody = document.getElementById('in-tbody');
-  const empty = document.getElementById('in-empty');
-  if (list.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = list.map(r => {
-    const item = db.items.find(i => i.id === r.itemId);
-    const days = daysUntil(r.expiry);
-    let expiryStr = r.expiry ? formatDate(r.expiry) : '—';
-    if (days !== null && days < 0) expiryStr = `<span style="color:var(--red-light)">${IC.expWarn} ${expiryStr}</span>`;
-
-    return `<tr>
-      <td>${formatDate(r.date)}</td>
-      <td><strong>${item?.name||'Unknown'}</strong></td>
-      <td>${r.batch||'—'}</td>
-      <td><strong>${r.qty}</strong></td>
-      <td>${item?.unit||''}</td>
-      <td>${expiryStr}</td>
-      <td>${r.supplier||'—'}</td>
-      <td>${r.price ? formatCurrency(r.price) : '—'}</td>
-      <td>${r.total ? formatCurrency(r.total) : '—'}</td>
-      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.notes||''}">${r.notes||'—'}</td>
-      <td>—</td>
-    </tr>`;
-  }).join('');
-}
-
-// ---- STOCK OUT ----
-function renderStockOut() {
-  const search = (document.getElementById('out-search')?.value || '').toLowerCase();
-  const dateF  = document.getElementById('out-date-filter')?.value || '';
-  let list = [...db.stockOut].sort((a,b) => b.id - a.id);
-  if (search) {
-    list = list.filter(r => {
-      const item = db.items.find(i => i.id === r.itemId);
-      return (item?.name||'').toLowerCase().includes(search) || (r.customer||'').toLowerCase().includes(search);
-    });
-  }
-  if (dateF) list = list.filter(r => r.date === dateF);
-
-  const tbody = document.getElementById('out-tbody');
-  const empty = document.getElementById('out-empty');
-  if (list.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = list.map(r => {
-    const item = db.items.find(i => i.id === r.itemId);
-    return `<tr>
-      <td>${formatDate(r.date)}</td>
-      <td><strong>${item?.name||'Unknown'}</strong></td>
-      <td><strong>${r.qty}</strong></td>
-      <td>${item?.unit||''}</td>
-      <td><span class="badge badge-ok">${r.reason}</span></td>
-      <td>${r.customer||'—'}</td>
-      <td>${r.price ? formatCurrency(r.price) : '—'}</td>
-      <td>${r.total ? formatCurrency(r.total) : '—'}</td>
-      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.notes||''}">${r.notes||'—'}</td>
-      <td>—</td>
-    </tr>`;
-  }).join('');
-}
-
-// ---- CURRENT STOCK ----
-function renderStock() {
-  const search = (document.getElementById('stock-search')?.value || '').toLowerCase();
-  const statusF = document.getElementById('stock-status-filter')?.value || '';
-  let list = db.items;
-  if (search) list = list.filter(i => i.name.toLowerCase().includes(search) || (i.category||'').toLowerCase().includes(search));
-  if (statusF) list = list.filter(i => getStockStatus(i) === statusF);
-
-  const tbody = document.getElementById('stock-tbody');
-  const empty = document.getElementById('stock-empty');
-  if (list.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = list.map(item => {
-    const stock = getStock(item.id);
-    const expiry = getNearestExpiry(item.id);
-    const status = getStockStatus(item);
-    const value = item.sellPrice ? (stock * parseFloat(item.sellPrice)).toFixed(2) : '—';
-    const days = daysUntil(expiry);
-    let expiryStr = expiry ? formatDate(expiry) : '—';
-    if (days !== null && days < 0) expiryStr = `<span style="color:var(--red-light)">${IC.expWarn} ${expiryStr}</span>`;
-    else if (days !== null && days <= 90) expiryStr = `<span style="color:var(--orange-light)">${IC.expClock} ${expiryStr} (${days}d)</span>`;
-
-    return `<tr>
-      <td><strong>${item.name}</strong>${item.generic ? `<br><small style="color:var(--text-muted)">${item.generic}</small>` : ''}</td>
-      <td>${item.category||'—'}</td>
-      <td style="font-size:1.1rem;font-weight:700">${stock}</td>
-      <td>${item.minStock}</td>
-      <td>${item.unit}</td>
-      <td>${expiryStr}</td>
-      <td>${formatCurrency(item.sellPrice)}</td>
-      <td>${formatCurrency(value)}</td>
-      <td>${statusLabel(status)}</td>
-    </tr>`;
-  }).join('');
-}
-
-// ---- ALERTS ----
-function getAlertItems() {
-  const alerts = [];
-  db.items.forEach(item => {
-    const stock = getStock(item.id);
-    const expiry = getNearestExpiry(item.id);
-    const days = daysUntil(expiry);
-
-    if (days !== null && days < 0) {
-      alerts.push({ type: 'expired', iconSvg: IC.banLg, msg: `${item.name} has EXPIRED`, detail: `Expired on ${formatDate(expiry)}`, item, stock, days });
-    } else if (days !== null && days <= 90) {
-      alerts.push({ type: 'expiry', iconSvg: IC.clockLg, msg: `${item.name} expiring in ${days} days`, detail: `Expiry: ${formatDate(expiry)} | Stock: ${stock} ${item.unit}`, item, stock, days });
-    }
-
-    if (stock <= 0) {
-      alerts.push({ type: 'out', iconSvg: IC.xcircLg, msg: `${item.name} is OUT OF STOCK`, detail: `Min required: ${item.minStock} ${item.unit}`, item, stock, days });
-    } else if (stock <= item.minStock) {
-      alerts.push({ type: 'low', iconSvg: IC.warnLg, msg: `${item.name} is LOW`, detail: `Current: ${stock} ${item.unit} | Min: ${item.minStock} ${item.unit}`, item, stock, days });
     }
   });
-  const order = { expired: 0, out: 1, expiry: 2, low: 3 };
-  return alerts.sort((a,b) => (order[a.type]||9) - (order[b.type]||9));
 }
 
-function renderAlerts() {
-  const alerts = getAlertItems();
-  const container = document.getElementById('alerts-container');
-  const summary = document.getElementById('alerts-summary');
+function drawProfitChart(d) {
+  const ctx = $('chart-profit').getContext('2d');
+  if (state.charts.profit) state.charts.profit.destroy();
+  state.charts.profit = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: d.weeklyLabels.map(l => new Date(l).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })),
+      datasets: [{
+        label: 'Net Profit',
+        data: d.weeklyProfits,
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16,185,129,0.08)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#10b981',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b', font: { size: 11 }, callback: v => `${state.config.currency || '$'}${v}` } }
+      }
+    }
+  });
+}
 
-  const counts = { expired:0, out:0, expiry:0, low:0 };
-  alerts.forEach(a => counts[a.type] = (counts[a.type]||0)+1);
-
-  summary.innerHTML = [
-    counts.expired ? `<span class="badge badge-expired">${IC.ban} ${counts.expired} Expired</span>` : '',
-    counts.out ? `<span class="badge badge-out">${IC.xcirc} ${counts.out} Out of Stock</span>` : '',
-    counts.expiry ? `<span class="badge badge-expiring">${IC.clock} ${counts.expiry} Expiring Soon</span>` : '',
-    counts.low ? `<span class="badge badge-low">${IC.warn} ${counts.low} Low Stock</span>` : '',
-  ].join('');
-
-  if (alerts.length === 0) {
-    container.innerHTML = '<div class="empty-state">All clear — your inventory is in great shape!</div>';
-    return;
-  }
-
-  container.innerHTML = alerts.map(a => `
-    <div class="alert-card card-${a.type}">
-      <div class="alert-card-icon-svg">${a.iconSvg}</div>
-      <div class="alert-card-body">
-        <div class="alert-card-title">${a.msg}</div>
-        <div class="alert-card-sub">${a.detail}</div>
+function renderTopProducts(products) {
+  const el = $('top-products-list');
+  if (!products.length) { el.innerHTML = '<div class="empty-state"><p>No sales data this month</p></div>'; return; }
+  const max = Math.max(...products.map(p => p.units_sold), 1);
+  el.innerHTML = products.map(p => `
+    <div style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <span style="font-size:0.85rem;font-weight:500;">${p.name}</span>
+        <span style="font-size:0.78rem;color:var(--text-2);">${p.units_sold} sold · ${curr(p.revenue)}</span>
       </div>
-      <button class="btn btn-sm btn-outline" onclick="switchTab('stock')">View Stock</button>
+      <div style="height:4px;background:var(--surface-2);border-radius:4px;overflow:hidden;">
+        <div style="width:${(p.units_sold/max)*100}%;height:100%;background:var(--indigo);border-radius:4px;transition:width 0.6s ease;"></div>
+      </div>
     </div>
   `).join('');
 }
 
-// ---- SALES HISTORY ----
-let voidingBillId = null;
-
-function renderSales() {
-  const bills = db.bills || [];
-  const search = (document.getElementById('sales-search')?.value || '').toLowerCase();
-  const dateF  = document.getElementById('sales-date-filter')?.value || '';
-  const statusF = document.getElementById('sales-status-filter')?.value || '';
-
-  let list = [...bills].sort((a, b) => b.id - a.id);
-  if (search) list = list.filter(b =>
-    (b.billNumber || '').toLowerCase().includes(search) ||
-    (b.cashier || '').toLowerCase().includes(search) ||
-    (b.paymentMethod || '').toLowerCase().includes(search)
-  );
-  if (dateF) list = list.filter(b => b.date === dateF);
-  if (statusF) list = list.filter(b => b.status === statusF);
-
-  const tbody = document.getElementById('sales-tbody');
-  const empty = document.getElementById('sales-empty');
-  const summaryBar = document.getElementById('sales-summary-bar');
-
-  // Summary bar
-  const activeBills = bills.filter(b => b.status === 'active');
-  const totalRevenue = activeBills.reduce((s, b) => s + parseFloat(b.total || 0), 0);
-  const todayBills = activeBills.filter(b => b.date === today());
-  const todayRevenue = todayBills.reduce((s, b) => s + parseFloat(b.total || 0), 0);
-  summaryBar.innerHTML = bills.length === 0 ? '' : `
-    <div class="sales-summary-item">
-      <span class="ss-label">Total Bills</span>
-      <span class="ss-value">${activeBills.length}</span>
-    </div>
-    <div class="sales-summary-item">
-      <span class="ss-label">Total Revenue</span>
-      <span class="ss-value" style="color:var(--green-light)">Rs. ${totalRevenue.toLocaleString('en-US', {minimumFractionDigits:2})}</span>
-    </div>
-    <div class="sales-summary-item">
-      <span class="ss-label">Today's Bills</span>
-      <span class="ss-value">${todayBills.length}</span>
-    </div>
-    <div class="sales-summary-item">
-      <span class="ss-label">Today's Revenue</span>
-      <span class="ss-value" style="color:var(--teal-light)">Rs. ${todayRevenue.toLocaleString('en-US', {minimumFractionDigits:2})}</span>
-    </div>
-  `;
-
-  if (list.length === 0) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = list.map(bill => {
-    const isVoid = bill.status === 'void';
-    const isAdj = bill.status === 'adjustment';
-    const itemSummary = (bill.items || []).map(i => `${i.qty}× ${i.name}`).join(', ');
-    
-    let statusBadge = '<span class="badge badge-ok">Active</span>';
-    if (isVoid) statusBadge = '<span class="badge badge-expired">VOID</span>';
-    else if (isAdj) statusBadge = '<span class="badge badge-low">Adjustment</span>';
-
-    return `<tr style="${isVoid ? 'opacity:0.55' : ''}">
-      <td><strong>${bill.billNumber || '—'}</strong></td>
-      <td>${formatDate(bill.date)}</td>
-      <td>${bill.time || '—'}</td>
-      <td>${bill.cashier || '—'}</td>
-      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${itemSummary}">${itemSummary || '—'}</td>
-      <td>${bill.paymentMethod || '—'}</td>
-      <td><strong>${bill.total ? formatCurrency(bill.total) : '—'}</strong></td>
-      <td>${statusBadge}</td>
-      <td>
-        ${(!isVoid && !isAdj) ? `<button class="btn-action btn-delete" onclick="confirmVoidBill(${bill.id})">Void</button>` : '—'}
-      </td>
-    </tr>`;
-  }).join('');
+function renderLowStock(items) {
+  const badge = $('low-stock-badge');
+  const el = $('low-stock-list');
+  badge.textContent = items.length;
+  if (!items.length) { el.innerHTML = '<div class="empty-state"><p>All stocked up! 🎉</p></div>'; return; }
+  el.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>Product</th><th>Stock</th><th>Min</th></tr></thead>
+    <tbody>
+      ${items.map(i => `
+        <tr>
+          <td style="font-weight:500">${i.name}</td>
+          <td>${i.stock <= 0 ? `<span class="badge badge-rose">${i.stock}</span>` : `<span class="badge badge-amber">${i.stock}</span>`}</td>
+          <td style="color:var(--text-2)">${i.min_stock}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  </table></div>`;
 }
 
-function confirmVoidBill(billId) {
-  const bill = (db.bills || []).find(b => b.id === billId);
-  if (!bill) return;
-  voidingBillId = billId;
-  document.getElementById('void-bill-number').textContent = bill.billNumber;
-  openModal('void-modal');
-}
-
-async function executeVoidBill() {
-  if (!voidingBillId) return;
+// ─── Products ─────────────────────────────────────────────
+async function loadProducts() {
   try {
-    const res = await fetch(`/api/sales/void/${voidingBillId}`, { method: 'POST' });
-    const data = await res.json();
-    if (!res.ok) {
-      showToast(data.error || 'Failed to void bill', 'error');
-      return;
-    }
-    showToast('Bill voided. Stock restored.', 'warning');
-    closeModal('void-modal');
-    await syncWithServer();
-  } catch (e) {
-    showToast('Connection error', 'error');
-  }
-  voidingBillId = null;
+    const [products, categories] = await Promise.all([api('/products'), api('/categories')]);
+    state.products = products;
+    state.categories = categories;
+    renderProductsTable(products);
+    populateCategoryFilter(categories);
+    populateCategorySelect('prod-category', categories);
+  } catch (e) { toast('Failed to load products', 'error'); }
 }
 
-// ---- EXPENSES ----
-function renderExpenses() {
-  const tbody = document.getElementById('expenses-tbody');
-  const empty = document.getElementById('expenses-empty');
-  if (!tbody) return;
-
-  const list = db.expenses || [];
-  if (list.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
+function renderProductsTable(products) {
+  const tbody = $('products-tbody');
+  if (!products.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>No products yet. Add your first product.</p></div></td></tr>`;
     return;
   }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = list.map(e => `
+  tbody.innerHTML = products.map(p => `
     <tr>
-      <td>${formatDate(e.date)}</td>
-      <td><strong>${e.category}</strong></td>
-      <td><strong>${formatCurrency(e.amount)}</strong></td>
-      <td>${e.notes || '—'}</td>
-      <td>
-        <button class="btn-action btn-delete" onclick="deleteExpense(${e.id})">${IC.trash} Delete</button>
+      <td><div style="font-weight:600">${p.name}</div><div style="font-size:0.72rem;color:var(--text-2)">${p.unit}</div></td>
+      <td><code style="font-size:0.78rem;color:var(--text-2)">${p.sku || '—'}</code></td>
+      <td>${p.category_name ? `<span class="badge" style="background:${p.category_color}22;color:${p.category_color}">${p.category_name}</span>` : '<span class="badge badge-gray">—</span>'}</td>
+      <td>${p.track_inventory ? `<span class="${p.current_stock <= 0 ? 'stock-out' : p.current_stock <= p.min_stock ? 'stock-low' : 'stock-ok'}" style="font-weight:600">${p.current_stock}</span> ${p.unit}` : '<span class="badge badge-gray">Not tracked</span>'}</td>
+      <td style="font-weight:600">${curr(p.sell_price)}</td>
+      <td>${stockBadge(p.current_stock, p.min_stock)}</td>
+      <td class="td-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editProduct(${p.id})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id}, '${p.name.replace(/'/g,"\\'")}')">Delete</button>
       </td>
     </tr>
   `).join('');
 }
 
-async function deleteExpense(id) {
-  if (!confirm('Are you sure you want to delete this expense?')) return;
-  try {
-    const res = await fetch(`/api/expenses/${id}`, { method: 'DELETE' });
-    if (res.ok) {
-      showToast('Expense deleted', 'warning');
-      await syncWithServer();
-    } else {
-      showToast('Failed to delete expense', 'error');
-    }
-  } catch (e) {
-    showToast('Connection error', 'error');
-  }
+function populateCategoryFilter(categories) {
+  const el = $('products-cat-filter');
+  el.innerHTML = '<option value="">All Categories</option>' + categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 }
 
-// ---- SUPPLIER LEDGER ----
-let payingBatchId = null;
+function populateCategorySelect(elId, categories) {
+  const el = $(elId);
+  const current = el ? el.value : '';
+  if (el) el.innerHTML = '<option value="">No Category</option>' + categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  if (current && el) el.value = current;
+}
 
-function renderSuppliers() {
-  const tbody = document.getElementById('suppliers-tbody');
-  const empty = document.getElementById('suppliers-empty');
-  if (!tbody) return;
+$('products-search').addEventListener('input', () => {
+  const q = $('products-search').value.toLowerCase();
+  const cat = $('products-cat-filter').value;
+  const filtered = state.products.filter(p =>
+    (p.name.toLowerCase().includes(q) || (p.sku || '').toLowerCase().includes(q)) &&
+    (!cat || String(p.category_id) === cat)
+  );
+  renderProductsTable(filtered);
+});
 
-  const list = db.stockIn || [];
-  if (list.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
+$('products-cat-filter').addEventListener('change', () => {
+  const q = $('products-search').value.toLowerCase();
+  const cat = $('products-cat-filter').value;
+  const filtered = state.products.filter(p =>
+    (p.name.toLowerCase().includes(q) || (p.sku || '').toLowerCase().includes(q)) &&
+    (!cat || String(p.category_id) === cat)
+  );
+  renderProductsTable(filtered);
+});
 
-  tbody.innerHTML = list.map(b => {
-    const totalCost = parseFloat(b.total || 0.0);
-    const amountPaid = parseFloat(b.amount_paid || 0.0);
-    const outstanding = Math.max(0.0, totalCost - amountPaid);
-    const status = b.payment_status || 'Pending';
+$('btn-add-product').addEventListener('click', () => {
+  state.editingProduct = null;
+  $('modal-product-title').textContent = 'Add Product';
+  $('prod-name').value = '';
+  $('prod-sku').value = '';
+  $('prod-barcode').value = '';
+  $('prod-desc').value = '';
+  $('prod-min-stock').value = '0';
+  $('prod-track').checked = true;
+  $('prod-unit').value = 'pcs';
+  if (state.categories.length) populateCategorySelect('prod-category', state.categories);
+  openModal('modal-product');
+  $('prod-name').focus();
+});
 
-    let badgeClass = 'badge-low';
-    if (status === 'Paid') badgeClass = 'badge-ok';
+window.editProduct = (id) => {
+  const p = state.products.find(x => x.id === id);
+  if (!p) return;
+  state.editingProduct = id;
+  $('modal-product-title').textContent = 'Edit Product';
+  $('prod-name').value = p.name || '';
+  $('prod-sku').value = p.sku || '';
+  $('prod-barcode').value = p.barcode || '';
+  $('prod-desc').value = p.description || '';
+  $('prod-min-stock').value = p.min_stock || 0;
+  $('prod-track').checked = !!p.track_inventory;
+  $('prod-unit').value = p.unit || 'pcs';
+  populateCategorySelect('prod-category', state.categories);
+  if (p.category_id) $('prod-category').value = String(p.category_id);
+  openModal('modal-product');
+};
 
-    return `
+$('btn-save-product').addEventListener('click', async () => {
+  const name = $('prod-name').value.trim();
+  if (!name) { toast('Product name is required', 'error'); return; }
+  const body = {
+    name,
+    sku: $('prod-sku').value.trim() || undefined,
+    barcode: $('prod-barcode').value.trim(),
+    category_id: $('prod-category').value ? Number($('prod-category').value) : null,
+    unit: $('prod-unit').value,
+    description: $('prod-desc').value.trim(),
+    min_stock: Number($('prod-min-stock').value) || 0,
+    track_inventory: $('prod-track').checked
+  };
+  try {
+    if (state.editingProduct) await api(`/products/${state.editingProduct}`, 'PUT', body);
+    else await api('/products', 'POST', body);
+    closeModal('modal-product');
+    toast(state.editingProduct ? 'Product updated' : 'Product added');
+    await loadProducts();
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+window.deleteProduct = async (id, name) => {
+  if (!confirm(`Delete "${name}"? This will also remove all stock batches.`)) return;
+  try {
+    await api(`/products/${id}`, 'DELETE');
+    toast('Product deleted');
+    await loadProducts();
+  } catch (e) { toast(e.message, 'error'); }
+};
+
+// ─── Stock / Batches ──────────────────────────────────────
+async function loadBatches() {
+  try {
+    const [batches, products] = await Promise.all([api('/batches'), api('/products')]);
+    state.products = products;
+    const tbody = $('batches-tbody');
+    if (!batches.length) {
+      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><p>No stock received yet.</p></div></td></tr>`;
+    } else {
+      tbody.innerHTML = batches.map(b => `
+        <tr>
+          <td style="font-weight:600">${b.product_name}</td>
+          <td><code style="font-size:0.78rem;color:var(--text-2)">${b.batch_ref || '—'}</code></td>
+          <td>${b.qty_received}</td>
+          <td><span class="${b.qty_remaining <= 0 ? 'stock-out' : 'stock-ok'}" style="font-weight:600">${b.qty_remaining}</span></td>
+          <td>${curr(b.cost_price)}</td>
+          <td style="font-weight:600">${curr(b.sell_price)}</td>
+          <td>${b.supplier || '—'}</td>
+          <td>${fmtDate(b.date_added)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Populate stock-in product select
+    const sel = $('stock-product-id');
+    sel.innerHTML = '<option value="">Select product…</option>' + products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+    // Populate adjust product select
+    const sel2 = $('adj-product-id');
+    sel2.innerHTML = '<option value="">Select product…</option>' + products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  } catch (e) { toast('Failed to load stock', 'error'); }
+}
+
+$('btn-add-stock').addEventListener('click', () => {
+  $('stock-qty').value = '';
+  $('stock-batch-ref').value = '';
+  $('stock-cost').value = '';
+  $('stock-sell').value = '';
+  $('stock-supplier').value = '';
+  $('stock-date').value = new Date().toISOString().split('T')[0];
+  $('stock-notes').value = '';
+  openModal('modal-stock');
+});
+
+$('btn-adjust-stock').addEventListener('click', () => {
+  $('adj-qty').value = '';
+  $('adj-reason').value = '';
+  openModal('modal-adjust');
+});
+
+$('btn-save-stock').addEventListener('click', async () => {
+  const product_id = $('stock-product-id').value;
+  const qty = Number($('stock-qty').value);
+  if (!product_id) { toast('Select a product', 'error'); return; }
+  if (!qty || qty < 1) { toast('Quantity must be at least 1', 'error'); return; }
+  try {
+    await api('/stock-in', 'POST', {
+      product_id: Number(product_id),
+      qty,
+      batch_ref: $('stock-batch-ref').value.trim(),
+      cost_price: Number($('stock-cost').value) || 0,
+      sell_price: Number($('stock-sell').value) || 0,
+      supplier: $('stock-supplier').value.trim(),
+      date: $('stock-date').value,
+      notes: $('stock-notes').value.trim()
+    });
+    closeModal('modal-stock');
+    toast('Stock received');
+    await loadBatches();
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+$('btn-save-adjust').addEventListener('click', async () => {
+  const product_id = $('adj-product-id').value;
+  const qty_change = Number($('adj-qty').value);
+  if (!product_id) { toast('Select a product', 'error'); return; }
+  if (!qty_change) { toast('Enter a non-zero quantity change', 'error'); return; }
+  try {
+    await api('/stock-adjust', 'POST', {
+      product_id: Number(product_id),
+      qty_change,
+      reason: $('adj-reason').value.trim() || 'Manual Adjustment'
+    });
+    closeModal('modal-adjust');
+    toast('Stock adjusted');
+    await loadBatches();
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+// ─── Categories ───────────────────────────────────────────
+async function loadCategories() {
+  try {
+    const cats = await api('/categories');
+    state.categories = cats;
+    const tbody = $('categories-tbody');
+    tbody.innerHTML = cats.map(c => `
       <tr>
-        <td>${formatDate(b.date)}</td>
-        <td><strong>${b.supplier || '—'}</strong></td>
-        <td>${b.batch || '—'}</td>
-        <td>${formatCurrency(totalCost)}</td>
-        <td>${formatCurrency(amountPaid)}</td>
-        <td style="${outstanding > 0 ? 'color:var(--red-light);font-weight:700' : ''}">${formatCurrency(outstanding)}</td>
-        <td><span class="badge ${badgeClass}">${status}</span></td>
-        <td>
-          ${outstanding > 0 ? `<button class="btn-action btn-edit" onclick="openPaySupplierModal(${b.id}, '${b.supplier}', '${b.batch}', ${outstanding})">Record Payment</button>` : '—'}
+        <td style="font-weight:600">${c.name}</td>
+        <td><span style="display:inline-block;width:24px;height:24px;border-radius:6px;background:${c.color};vertical-align:middle;"></span> <code style="color:var(--text-2);font-size:0.78rem;">${c.color}</code></td>
+        <td class="td-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editCategory(${c.id})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCategory(${c.id}, '${c.name.replace(/'/g,"\\'")}')">Delete</button>
         </td>
       </tr>
-    `;
-  }).join('');
+    `).join('') || `<tr><td colspan="3"><div class="empty-state"><p>No categories yet.</p></div></td></tr>`;
+  } catch (e) { toast('Failed to load categories', 'error'); }
 }
 
-function openPaySupplierModal(batchId, supplierName, batchNumber, outstanding) {
-  payingBatchId = batchId;
-  document.getElementById('pay-supplier-name').textContent = supplierName;
-  document.getElementById('pay-batch-number').textContent = batchNumber;
-  document.getElementById('pay-amount-val').value = outstanding.toFixed(2);
-  document.getElementById('pay-amount-val').max = outstanding;
-  openModal('pay-supplier-modal');
-}
-
-async function executePaySupplier() {
-  if (!payingBatchId) return;
-  const amount = parseFloat(document.getElementById('pay-amount-val').value) || 0;
-  if (amount <= 0) {
-    showToast('Please enter a valid payment amount', 'error');
-    return;
-  }
-
-  try {
-    const res = await fetch(`/api/batches/${payingBatchId}/pay`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount })
-    });
-    if (res.ok) {
-      showToast('Supplier payment saved successfully', 'success');
-      closeModal('pay-supplier-modal');
-      await syncWithServer();
-    } else {
-      const data = await res.json();
-      showToast(data.error || 'Failed to save payment', 'error');
-    }
-  } catch (e) {
-    showToast('Connection error', 'error');
-  }
-  payingBatchId = null;
-}
-
-async function saveExpense() {
-  const date = document.getElementById('exp-date').value;
-  const category = document.getElementById('exp-category').value.trim();
-  const amount = parseFloat(document.getElementById('exp-amount').value) || 0;
-  const notes = document.getElementById('exp-notes').value.trim();
-
-  if (!category || amount <= 0) {
-    showToast('Please fill in required fields', 'error');
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/expenses', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date, category, amount, notes })
-    });
-    if (res.ok) {
-      showToast('Expense recorded successfully', 'success');
-      closeModal('expense-modal');
-      await syncWithServer();
-    } else {
-      const data = await res.json();
-      showToast(data.error || 'Failed to save expense', 'error');
-    }
-  } catch (e) {
-    showToast('Connection error', 'error');
-  }
-}
-
-// ---- BADGES ----
-function updateBadges() {
-  const todayStr = today();
-  const inCount  = db.stockIn.filter(r => r.date === todayStr).length;
-  const outCount = db.stockOut.filter(r => r.date === todayStr).length;
-  const alertCount = getAlertItems().length;
-
-  const badgeIn = document.getElementById('badge-in');
-  const badgeOut = document.getElementById('badge-out');
-  const badgeAlerts = document.getElementById('badge-alerts');
-
-  badgeIn.textContent = inCount;
-  badgeOut.textContent = outCount;
-  badgeAlerts.textContent = alertCount;
-
-  badgeIn.style.display = inCount ? 'flex' : 'none';
-  badgeOut.style.display = outCount ? 'flex' : 'none';
-  badgeAlerts.style.display = alertCount ? 'flex' : 'none';
-}
-
-// ---- ITEM CRUD ----
-let editingItemId = null;
-
-function openAddItem() {
-  editingItemId = null;
-  document.getElementById('item-modal-title').textContent = 'Add New Item';
-  document.getElementById('item-name').value = '';
-  document.getElementById('item-generic').value = '';
-  document.getElementById('item-category').value = '';
-  document.getElementById('item-unit').value = 'Tablet(s)';
-  document.getElementById('item-min-stock').value = '';
-  document.getElementById('item-purchase-price-group')?.style.setProperty('display', 'none');
-  document.getElementById('item-sell-price-group')?.style.setProperty('display', 'none');
-  document.getElementById('item-notes').value = '';
-  openModal('item-modal');
-}
-
-function editItem(id) {
-  const item = db.items.find(i => i.id === id);
-  if (!item) return;
-  editingItemId = id;
-  document.getElementById('item-modal-title').textContent = 'Edit Item';
-  document.getElementById('item-name').value = item.name;
-  document.getElementById('item-generic').value = item.generic || '';
-  document.getElementById('item-category').value = item.category || '';
-  document.getElementById('item-unit').value = item.unit;
-  document.getElementById('item-min-stock').value = item.minStock;
-  document.getElementById('item-notes').value = item.notes || '';
-  openModal('item-modal');
-}
-
-async function saveItem() {
-  const name = document.getElementById('item-name').value.trim();
-  const generic = document.getElementById('item-generic').value.trim();
-  const category = document.getElementById('item-category').value.trim();
-  const unit = document.getElementById('item-unit').value;
-  const minStock = parseInt(document.getElementById('item-min-stock').value) || 0;
-  const notes = document.getElementById('item-notes').value.trim();
-
-  if (!name) { showToast('Item name is required', 'error'); return; }
-
-  const payload = { name, generic, category, unit, minStock, notes };
-
-  try {
-    let res;
-    if (editingItemId) {
-      res = await fetch(`/api/items/${editingItemId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    } else {
-      res = await fetch('/api/items', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    }
-
-    const data = await res.json();
-    if (!res.ok) {
-      showToast(data.error || 'Failed to save item', 'error');
-      return;
-    }
-
-    showToast(editingItemId ? `"${name}" updated successfully` : `"${name}" added to inventory`, 'success');
-    closeModal('item-modal');
-    await syncWithServer();
-  } catch (e) {
-    showToast('Connection error', 'error');
-  }
-}
-
-async function deleteItem(id) {
-  const item = db.items.find(i => i.id === id);
-  if (!item) return;
-  if (!confirm(`Delete "${item.name}"? This will also remove all stock records for this item.`)) return;
-  try {
-    const res = await fetch(`/api/items/${id}`, { method: 'DELETE' });
-    if (!res.ok) throw new Error();
-    showToast(`"${item.name}" deleted`, 'warning');
-    await syncWithServer();
-  } catch (e) {
-    showToast('Failed to delete item', 'error');
-  }
-}
-
-// ---- STOCK IN CRUD ----
-function openAddStockIn() {
-  document.getElementById('in-date').value = today();
-  document.getElementById('in-batch').value = '';
-  document.getElementById('in-qty').value = '';
-  document.getElementById('in-bonus').value = '0';
-  document.getElementById('in-expiry').value = '';
-  document.getElementById('in-supplier').value = '';
-  document.getElementById('in-price').value = '';
-  document.getElementById('in-total').value = '';
-  document.getElementById('in-notes').value = '';
-  populateItemSelect('in-item');
-  openModal('in-modal');
-}
-
-async function saveStockIn() {
-  const date = document.getElementById('in-date').value;
-  const itemId = parseInt(document.getElementById('in-item').value);
-  const batchNumber = document.getElementById('in-batch').value.trim();
-  const qty = parseInt(document.getElementById('in-qty').value);
-  const bonusQty = parseInt(document.getElementById('in-bonus').value) || 0;
-  const expiry = document.getElementById('in-expiry').value;
-  const supplier = document.getElementById('in-supplier').value.trim();
-  const purchasePrice = parseFloat(document.getElementById('in-price').value) || 0;
-  const sellPrice = parseFloat(document.getElementById('in-sell-price')?.value) || purchasePrice * 1.25;
-
-  if (!date || !itemId || !qty || qty < 1) {
-    showToast('Please fill in required fields', 'error'); return;
-  }
-  if (!expiry) { showToast('Expiry date is required', 'error'); return; }
-
-  const payload = { date, itemId, batchNumber, qty, bonusQty, expiry, supplier, purchasePrice, sellPrice };
-
-  try {
-    const res = await fetch('/api/stock-in', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      showToast(data.error || 'Failed to save stock-in', 'error');
-      return;
-    }
-    showToast('Stock In recorded successfully', 'success');
-    closeModal('in-modal');
-    await syncWithServer();
-  } catch (e) {
-    showToast('Connection error', 'error');
-  }
-}
-
-// ---- STOCK OUT CRUD ----
-function openAddStockOut() {
-  document.getElementById('out-date').value = today();
-  document.getElementById('out-qty').value = '';
-  document.getElementById('out-customer').value = '';
-  document.getElementById('out-price').value = '';
-  document.getElementById('out-total').value = '';
-  document.getElementById('out-notes').value = '';
-  document.getElementById('out-available').value = '';
-  document.getElementById('out-reason').value = 'Sale';
-  populateItemSelect('out-item');
-  openModal('out-modal');
-}
-
-async function saveStockOut() {
-  const date = document.getElementById('out-date').value;
-  const itemId = parseInt(document.getElementById('out-item').value);
-  const qty = parseInt(document.getElementById('out-qty').value);
-  const reason = document.getElementById('out-reason').value;
-  const customer = document.getElementById('out-customer').value.trim();
-  const price = parseFloat(document.getElementById('out-price').value) || 0;
-  const notes = document.getElementById('out-notes').value.trim();
-
-  if (!date || !itemId || !qty || qty < 1) {
-    showToast('Please fill in required fields', 'error'); return;
-  }
-
-  const payload = { date, itemId, qty, reason, customer, price, notes };
-
-  try {
-    const res = await fetch('/api/stock-out', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      showToast(data.error || 'Failed to save stock-out', 'error');
-      return;
-    }
-    showToast('Stock Out recorded successfully', 'success');
-    closeModal('out-modal');
-    await syncWithServer();
-  } catch (e) {
-    showToast('Connection error', 'error');
-  }
-}
-
-function populateItemSelect(selectId) {
-  const sel = document.getElementById(selectId);
-  sel.innerHTML = '<option value="">Select an item...</option>' +
-    db.items.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
-}
-
-// ---- EXPORT CSV ----
-function exportCSV() {
-  const tab = document.querySelector('.tab-content.active')?.id?.replace('tab-', '') || 'stock';
-  let csv = '';
-  let filename = '';
-
-  if (tab === 'items') {
-    filename = 'items.csv';
-    csv = 'Name,Generic,Category,Unit,Min Stock,Current Stock,Sell Price\n';
-    db.items.forEach(i => {
-      csv += `"${i.name}","${i.generic||''}","${i.category||''}","${i.unit}",${i.minStock},${getStock(i.id)},${i.sellPrice||''}\n`;
-    });
-  } else if (tab === 'in') {
-    filename = 'batches.csv';
-    csv = 'Date,Item,Batch,Qty,Expiry,Supplier,Purchase Price,Total\n';
-    db.stockIn.forEach(r => {
-      const item = db.items.find(i => i.id === r.itemId);
-      csv += `"${r.date}","${item?.name||''}","${r.batch||''}",${r.qty},"${r.expiry||''}","${r.supplier||''}",${r.price||''},${r.total||''}\n`;
-    });
-  } else if (tab === 'out') {
-    filename = 'stock_out.csv';
-    csv = 'Date,Item,Qty,Reason,Customer,Price,Total\n';
-    db.stockOut.forEach(r => {
-      const item = db.items.find(i => i.id === r.itemId);
-      csv += `"${r.date}","${item?.name||''}",${r.qty},"${r.reason}","${r.customer||''}",${r.price||''},${r.total||''}\n`;
-    });
-  } else if (tab === 'expenses') {
-    filename = 'expenses.csv';
-    csv = 'Date,Category,Amount,Notes\n';
-    db.expenses.forEach(e => {
-      csv += `"${e.date}","${e.category}",${e.amount},"${e.notes||''}"\n`;
-    });
-  } else {
-    filename = 'current_stock.csv';
-    csv = 'Name,Category,Current Stock,Min Stock,Unit,Nearest Expiry,Sell Price,Stock Value,Status\n';
-    db.items.forEach(i => {
-      const stock = getStock(i.id);
-      const expiry = getNearestExpiry(i.id);
-      const value = i.sellPrice ? (stock * parseFloat(i.sellPrice)).toFixed(2) : '';
-      csv += `"${i.name}","${i.category||''}",${stock},${i.minStock},"${i.unit}","${expiry||''}",${i.sellPrice||''},${value},"${getStockStatus(i)}"\n`;
-    });
-  }
-
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast(`Exported ${filename}`, 'success');
-}
-
-// ---- BACKUP DOWNLOAD ----
-function downloadBackup() {
-  const a = document.createElement('a');
-  a.href = '/pharmacy.db';
-  a.download = 'pharmacy.db';
-  a.click();
-  showToast('Database file downloaded', 'success');
-}
-
-// ---- INIT ----
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('current-date').textContent =
-    new Date().toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
-
-  document.getElementById('pharmacy-name-display').textContent = db.pharmacyName;
-
-  if (ownerSession) {
-    const usernameEl = document.getElementById('owner-username-display');
-    if (usernameEl) usernameEl.textContent = ownerSession.username;
-  }
-
-  document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
-    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-  });
-
-  document.querySelectorAll('[data-tab]').forEach(el => {
-    if (el.tagName === 'BUTTON' && !el.classList.contains('nav-item')) {
-      el.addEventListener('click', () => switchTab(el.dataset.tab));
-    }
-  });
-
-  document.getElementById('quick-add-btn').addEventListener('click', openAddStockIn);
-  document.getElementById('backup-btn').addEventListener('click', downloadBackup);
-  document.getElementById('export-btn').addEventListener('click', exportCSV);
-
-  // Item modal
-  document.getElementById('add-item-btn').addEventListener('click', openAddItem);
-  document.getElementById('item-modal-close').addEventListener('click', () => closeModal('item-modal'));
-  document.getElementById('item-modal-cancel').addEventListener('click', () => closeModal('item-modal'));
-  document.getElementById('item-modal-save').addEventListener('click', saveItem);
-
-  // Stock In modal
-  document.getElementById('add-in-btn').addEventListener('click', openAddStockIn);
-  document.getElementById('in-modal-close').addEventListener('click', () => closeModal('in-modal'));
-  document.getElementById('in-modal-cancel').addEventListener('click', () => closeModal('in-modal'));
-  document.getElementById('in-modal-save').addEventListener('click', saveStockIn);
-
-  const calcInTotal = () => {
-    const p = parseFloat(document.getElementById('in-price').value) || 0;
-    const q = parseInt(document.getElementById('in-qty').value) || 0;
-    document.getElementById('in-total').value = p && q ? (p * q).toFixed(2) : '';
-  };
-  document.getElementById('in-price').addEventListener('input', calcInTotal);
-  document.getElementById('in-qty').addEventListener('input', calcInTotal);
-
-  // Stock Out modal
-  document.getElementById('add-out-btn').addEventListener('click', openAddStockOut);
-  document.getElementById('out-modal-close').addEventListener('click', () => closeModal('out-modal'));
-  document.getElementById('out-modal-cancel').addEventListener('click', () => closeModal('out-modal'));
-  document.getElementById('out-modal-save').addEventListener('click', saveStockOut);
-
-  document.getElementById('out-item').addEventListener('change', () => {
-    const id = parseInt(document.getElementById('out-item').value);
-    if (id) {
-      const item = db.items.find(i => i.id === id);
-      const stock = getStock(id);
-      document.getElementById('out-available').value = `${stock} ${item?.unit||''}`;
-      if (item?.sellPrice) document.getElementById('out-price').value = item.sellPrice;
-    } else {
-      document.getElementById('out-available').value = '';
-    }
-  });
-
-  const calcOutTotal = () => {
-    const p = parseFloat(document.getElementById('out-price').value) || 0;
-    const q = parseInt(document.getElementById('out-qty').value) || 0;
-    document.getElementById('out-total').value = p && q ? (p * q).toFixed(2) : '';
-  };
-  document.getElementById('out-price').addEventListener('input', calcOutTotal);
-  document.getElementById('out-qty').addEventListener('input', calcOutTotal);
-
-  // Expense modal setup
-  const addExpBtn = document.getElementById('add-expense-btn');
-  if (addExpBtn) addExpBtn.addEventListener('click', () => {
-    document.getElementById('exp-date').value = today();
-    document.getElementById('exp-category').value = '';
-    document.getElementById('exp-amount').value = '';
-    document.getElementById('exp-notes').value = '';
-    openModal('expense-modal');
-  });
-
-  const closeExpBtn = document.getElementById('expense-modal-close');
-  if (closeExpBtn) closeExpBtn.addEventListener('click', () => closeModal('expense-modal'));
-  const cancelExpBtn = document.getElementById('expense-modal-cancel');
-  if (cancelExpBtn) cancelExpBtn.addEventListener('click', () => closeModal('expense-modal'));
-  const saveExpBtn = document.getElementById('expense-modal-save');
-  if (saveExpBtn) saveExpBtn.addEventListener('click', saveExpense);
-
-  // Settings
-  document.getElementById('edit-pharmacy-btn').addEventListener('click', () => {
-    document.getElementById('pharmacy-name-input').value = db.pharmacyName || '';
-    document.getElementById('pharmacy-address-input').value = db.pharmacyAddress || '';
-    document.getElementById('pharmacy-phone-input').value = db.pharmacyPhone || '';
-    document.getElementById('new-owner-password').value = '';
-    document.getElementById('new-cashier-password').value = '';
-    openModal('pharmacy-modal');
-  });
-  document.getElementById('pharmacy-modal-close').addEventListener('click', () => closeModal('pharmacy-modal'));
-  document.getElementById('pharmacy-modal-cancel').addEventListener('click', () => closeModal('pharmacy-modal'));
-  document.getElementById('pharmacy-modal-save').addEventListener('click', async () => {
-    const name = document.getElementById('pharmacy-name-input').value.trim();
-    const address = document.getElementById('pharmacy-address-input').value.trim();
-    const phone = document.getElementById('pharmacy-phone-input').value.trim();
-    const newOwnerPw = document.getElementById('new-owner-password').value;
-    const newCashierPw = document.getElementById('new-cashier-password').value;
-
-    if (!name) { showToast('Pharmacy name cannot be empty', 'error'); return; }
-
-    try {
-      const res = await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          pharmacyName: name,
-          pharmacyAddress: address,
-          pharmacyPhone: phone,
-          newOwnerPassword: newOwnerPw || undefined,
-          newCashierPassword: newCashierPw || undefined
-        })
-      });
-      if (!res.ok) throw new Error();
-      showToast('Settings saved successfully', 'success');
-      closeModal('pharmacy-modal');
-      await syncWithServer();
-    } catch (e) {
-      showToast('Failed to save settings', 'error');
-    }
-  });
-
-  document.getElementById('logout-btn').addEventListener('click', logout);
-  document.getElementById('void-modal-close').addEventListener('click', () => closeModal('void-modal'));
-  document.getElementById('void-modal-cancel').addEventListener('click', () => closeModal('void-modal'));
-  document.getElementById('void-modal-confirm').addEventListener('click', executeVoidBill);
-
-  // Pay Supplier modal listeners
-  const closePaySup = document.getElementById('pay-supplier-modal-close');
-  if (closePaySup) closePaySup.addEventListener('click', () => closeModal('pay-supplier-modal'));
-  const cancelPaySup = document.getElementById('pay-supplier-modal-cancel');
-  if (cancelPaySup) cancelPaySup.addEventListener('click', () => closeModal('pay-supplier-modal'));
-  const confirmPaySup = document.getElementById('pay-supplier-modal-confirm');
-  if (confirmPaySup) confirmPaySup.addEventListener('click', executePaySupplier);
-
-  // Search filters
-  document.getElementById('sales-search').addEventListener('input', renderSales);
-  document.getElementById('sales-date-filter').addEventListener('change', renderSales);
-  document.getElementById('sales-status-filter').addEventListener('change', renderSales);
-  document.getElementById('items-search').addEventListener('input', renderItems);
-  document.getElementById('items-category-filter').addEventListener('change', renderItems);
-  document.getElementById('in-search').addEventListener('input', renderStockIn);
-  document.getElementById('in-date-filter').addEventListener('change', renderStockIn);
-  document.getElementById('out-search').addEventListener('input', renderStockOut);
-  document.getElementById('out-date-filter').addEventListener('change', renderStockOut);
-  document.getElementById('stock-search').addEventListener('input', renderStock);
-  document.getElementById('stock-status-filter').addEventListener('change', renderStock);
-
-  document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', e => {
-      if (e.target === overlay) overlay.classList.remove('open');
-    });
-  });
-
-  document.querySelectorAll('input[type="date"]').forEach(input => {
-    input.addEventListener('click', () => { try { input.showPicker(); } catch (e) {} });
-    input.addEventListener('focus', () => { try { input.showPicker(); } catch (e) {} });
-  });
-
-  // Initial load
-  switchTab('dashboard');
-  syncWithServer();
+$('btn-add-category').addEventListener('click', () => {
+  state.editingCategory = null;
+  $('modal-cat-title').textContent = 'Add Category';
+  $('cat-name').value = '';
+  $('cat-color').value = '#6366f1';
+  openModal('modal-category');
 });
+
+window.editCategory = (id) => {
+  const c = state.categories.find(x => x.id === id);
+  if (!c) return;
+  state.editingCategory = id;
+  $('modal-cat-title').textContent = 'Edit Category';
+  $('cat-name').value = c.name;
+  $('cat-color').value = c.color || '#6366f1';
+  openModal('modal-category');
+};
+
+$('btn-save-category').addEventListener('click', async () => {
+  const name = $('cat-name').value.trim();
+  if (!name) { toast('Name required', 'error'); return; }
+  const body = { name, color: $('cat-color').value };
+  try {
+    if (state.editingCategory) await api(`/categories/${state.editingCategory}`, 'PUT', body);
+    else await api('/categories', 'POST', body);
+    closeModal('modal-category');
+    toast(state.editingCategory ? 'Category updated' : 'Category added');
+    await loadCategories();
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+window.deleteCategory = async (id, name) => {
+  if (!confirm(`Delete category "${name}"?`)) return;
+  try {
+    await api(`/categories/${id}`, 'DELETE');
+    toast('Category deleted');
+    await loadCategories();
+  } catch (e) { toast(e.message, 'error'); }
+};
+
+// ─── Orders ───────────────────────────────────────────────
+async function loadOrders() {
+  const dateFrom = $('orders-date-from').value;
+  const dateTo = $('orders-date-to').value;
+  let url = '/orders?limit=200';
+  if (dateFrom) url += `&date_from=${dateFrom}`;
+  if (dateTo) url += `&date_to=${dateTo}`;
+  try {
+    const orders = await api(url);
+    const tbody = $('orders-tbody');
+    if (!orders.length) {
+      tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><p>No orders found.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = orders.map(o => `
+      <tr>
+        <td><code style="font-weight:600;color:var(--indigo)">${o.order_number}</code></td>
+        <td>${o.date} <span style="color:var(--text-2);font-size:0.75rem">${o.time}</span></td>
+        <td>${o.cashier}</td>
+        <td>${o.customer_name || '<span style="color:var(--text-2)">Walk-in</span>'}</td>
+        <td>${o.items ? o.items.length : '—'}</td>
+        <td style="font-weight:700">${curr(o.total)}</td>
+        <td><span class="badge badge-sky">${o.payment_method}</span></td>
+        <td>${o.status === 'void' ? '<span class="badge badge-rose">Voided</span>' : '<span class="badge badge-emerald">Completed</span>'}</td>
+        <td class="td-actions">
+          <button class="btn btn-ghost btn-sm" onclick="viewOrder(${o.id})">View</button>
+          ${o.status !== 'void' ? `<button class="btn btn-danger btn-sm" onclick="voidOrder(${o.id})">Void</button>` : ''}
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) { toast('Failed to load orders', 'error'); }
+}
+
+$('btn-orders-filter').addEventListener('click', loadOrders);
+
+window.viewOrder = async (id) => {
+  try {
+    const o = await api(`/orders/${id}`);
+    state.viewingOrderId = id;
+    $('modal-order-title').textContent = `Order ${o.order_number}`;
+    $('modal-order-body').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+        <div><div style="font-size:0.72rem;color:var(--text-2);margin-bottom:2px;">DATE & TIME</div><div style="font-weight:600">${o.date} ${o.time}</div></div>
+        <div><div style="font-size:0.72rem;color:var(--text-2);margin-bottom:2px;">CASHIER</div><div style="font-weight:600">${o.cashier}</div></div>
+        <div><div style="font-size:0.72rem;color:var(--text-2);margin-bottom:2px;">CUSTOMER</div><div style="font-weight:600">${o.customer_name || 'Walk-in'}</div></div>
+        <div><div style="font-size:0.72rem;color:var(--text-2);margin-bottom:2px;">PAYMENT</div><div>${o.payment_method}</div></div>
+      </div>
+      <div class="table-wrap" style="margin-bottom:16px;">
+        <table>
+          <thead><tr><th>Item</th><th>Qty</th><th>Unit Price</th><th>Disc%</th><th>Total</th></tr></thead>
+          <tbody>
+            ${o.items.map(i => `<tr>
+              <td>${i.product_name}</td>
+              <td>${i.qty} ${i.product_unit}</td>
+              <td>${curr(i.unit_price)}</td>
+              <td>${i.discount_pct ? i.discount_pct + '%' : '—'}</td>
+              <td style="font-weight:600">${curr(i.line_total)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:12px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:var(--text-2)">Subtotal</span><span>${curr(o.subtotal)}</span></div>
+        ${o.discount_amount ? `<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:var(--text-2)">Discount</span><span style="color:var(--rose)">-${curr(o.discount_amount)}</span></div>` : ''}
+        ${o.tax_amount ? `<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:var(--text-2)">Tax</span><span>${curr(o.tax_amount)}</span></div>` : ''}
+        <div style="display:flex;justify-content:space-between;font-size:1.1rem;font-weight:800;"><span>Total</span><span style="color:var(--indigo)">${curr(o.total)}</span></div>
+        ${o.amount_tendered > 0 ? `<div style="display:flex;justify-content:space-between;margin-top:8px;"><span style="color:var(--text-2)">Tendered</span><span>${curr(o.amount_tendered)}</span></div><div style="display:flex;justify-content:space-between;"><span style="color:var(--text-2)">Change</span><span>${curr(o.change_due)}</span></div>` : ''}
+      </div>
+      ${o.notes ? `<div style="margin-top:12px;padding:10px;background:var(--surface);border-radius:8px;font-size:0.82rem;color:var(--text-2)">📝 ${o.notes}</div>` : ''}
+    `;
+    const voidBtn = $('btn-void-order');
+    voidBtn.style.display = o.status === 'void' ? 'none' : '';
+    voidBtn.onclick = () => voidOrder(id);
+    openModal('modal-order-detail');
+  } catch (e) { toast('Failed to load order', 'error'); }
+};
+
+window.voidOrder = async (id) => {
+  if (!confirm('Void this order? This will restore stock.')) return;
+  try {
+    await api(`/orders/${id}/void`, 'POST');
+    closeModal('modal-order-detail');
+    toast('Order voided and stock restored');
+    await loadOrders();
+  } catch (e) { toast(e.message, 'error'); }
+};
+
+// ─── Customers ────────────────────────────────────────────
+async function loadCustomers() {
+  const q = $('customers-search')?.value || '';
+  try {
+    const customers = await api(`/customers${q ? `?q=${encodeURIComponent(q)}` : ''}`);
+    state.customers = customers;
+    const tbody = $('customers-tbody');
+    tbody.innerHTML = customers.map(c => `
+      <tr>
+        <td style="font-weight:600">${c.name}</td>
+        <td>${c.phone || '—'}</td>
+        <td>${c.email || '—'}</td>
+        <td style="font-weight:600">${curr(c.total_spent)}</td>
+        <td><span class="badge badge-indigo">${c.loyalty_points || 0} pts</span></td>
+        <td class="td-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editCustomer(${c.id})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${c.id}, '${c.name.replace(/'/g,"\\'")}')">Delete</button>
+        </td>
+      </tr>
+    `).join('') || `<tr><td colspan="6"><div class="empty-state"><p>No customers yet.</p></div></td></tr>`;
+  } catch (e) { toast('Failed to load customers', 'error'); }
+}
+
+$('customers-search').addEventListener('input', loadCustomers);
+
+$('btn-add-customer').addEventListener('click', () => {
+  state.editingCustomer = null;
+  $('modal-cust-title').textContent = 'Add Customer';
+  $('cust-name').value = '';
+  $('cust-phone').value = '';
+  $('cust-email').value = '';
+  $('cust-address').value = '';
+  openModal('modal-customer');
+});
+
+window.editCustomer = (id) => {
+  const c = state.customers.find(x => x.id === id);
+  if (!c) return;
+  state.editingCustomer = id;
+  $('modal-cust-title').textContent = 'Edit Customer';
+  $('cust-name').value = c.name;
+  $('cust-phone').value = c.phone || '';
+  $('cust-email').value = c.email || '';
+  $('cust-address').value = c.address || '';
+  openModal('modal-customer');
+};
+
+$('btn-save-customer').addEventListener('click', async () => {
+  const name = $('cust-name').value.trim();
+  if (!name) { toast('Name required', 'error'); return; }
+  const body = { name, phone: $('cust-phone').value.trim(), email: $('cust-email').value.trim(), address: $('cust-address').value.trim() };
+  try {
+    if (state.editingCustomer) await api(`/customers/${state.editingCustomer}`, 'PUT', body);
+    else await api('/customers', 'POST', body);
+    closeModal('modal-customer');
+    toast(state.editingCustomer ? 'Customer updated' : 'Customer added');
+    await loadCustomers();
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+window.deleteCustomer = async (id, name) => {
+  if (!confirm(`Delete customer "${name}"?`)) return;
+  try {
+    await api(`/customers/${id}`, 'DELETE');
+    toast('Customer deleted');
+    await loadCustomers();
+  } catch (e) { toast(e.message, 'error'); }
+};
+
+// ─── Suppliers ────────────────────────────────────────────
+async function loadSuppliers() {
+  try {
+    const sups = await api('/suppliers');
+    state.suppliers = sups;
+    const tbody = $('suppliers-tbody');
+    tbody.innerHTML = sups.map(s => `
+      <tr>
+        <td style="font-weight:600">${s.name}</td>
+        <td>${s.contact_person || '—'}</td>
+        <td>${s.phone || '—'}</td>
+        <td>${s.email || '—'}</td>
+        <td class="td-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editSupplier(${s.id})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteSupplier(${s.id}, '${s.name.replace(/'/g,"\\'")}')">Delete</button>
+        </td>
+      </tr>
+    `).join('') || `<tr><td colspan="5"><div class="empty-state"><p>No suppliers yet.</p></div></td></tr>`;
+  } catch (e) { toast('Failed to load suppliers', 'error'); }
+}
+
+$('btn-add-supplier').addEventListener('click', () => {
+  state.editingSupplier = null;
+  $('modal-sup-title').textContent = 'Add Supplier';
+  ['sup-name','sup-contact','sup-phone','sup-email','sup-address','sup-notes'].forEach(id => $(id).value = '');
+  openModal('modal-supplier');
+});
+
+window.editSupplier = (id) => {
+  const s = state.suppliers.find(x => x.id === id);
+  if (!s) return;
+  state.editingSupplier = id;
+  $('modal-sup-title').textContent = 'Edit Supplier';
+  $('sup-name').value = s.name || '';
+  $('sup-contact').value = s.contact_person || '';
+  $('sup-phone').value = s.phone || '';
+  $('sup-email').value = s.email || '';
+  $('sup-address').value = s.address || '';
+  $('sup-notes').value = s.notes || '';
+  openModal('modal-supplier');
+};
+
+$('btn-save-supplier').addEventListener('click', async () => {
+  const name = $('sup-name').value.trim();
+  if (!name) { toast('Name required', 'error'); return; }
+  const body = { name, contact_person: $('sup-contact').value.trim(), phone: $('sup-phone').value.trim(), email: $('sup-email').value.trim(), address: $('sup-address').value.trim(), notes: $('sup-notes').value.trim() };
+  try {
+    if (state.editingSupplier) await api(`/suppliers/${state.editingSupplier}`, 'PUT', body);
+    else await api('/suppliers', 'POST', body);
+    closeModal('modal-supplier');
+    toast(state.editingSupplier ? 'Supplier updated' : 'Supplier added');
+    await loadSuppliers();
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+window.deleteSupplier = async (id, name) => {
+  if (!confirm(`Delete supplier "${name}"?`)) return;
+  try {
+    await api(`/suppliers/${id}`, 'DELETE');
+    toast('Supplier deleted');
+    await loadSuppliers();
+  } catch (e) { toast(e.message, 'error'); }
+};
+
+// ─── Expenses ─────────────────────────────────────────────
+async function loadExpenses() {
+  try {
+    const expenses = await api('/expenses');
+    const tbody = $('expenses-tbody');
+    const total = expenses.reduce((s, e) => s + e.amount, 0);
+    tbody.innerHTML = expenses.map(e => `
+      <tr>
+        <td>${e.date}</td>
+        <td style="font-weight:600">${e.category}</td>
+        <td style="color:var(--text-2)">${e.description || '—'}</td>
+        <td style="font-weight:700;color:var(--rose)">${curr(e.amount)}</td>
+        <td style="color:var(--text-2)">${e.created_by || '—'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteExpense(${e.id})">Delete</button></td>
+      </tr>
+    `).join('') || `<tr><td colspan="6"><div class="empty-state"><p>No expenses recorded.</p></div></td></tr>`;
+
+    // Show total if there are expenses
+    if (expenses.length) {
+      const footRow = document.createElement('tr');
+      footRow.innerHTML = `<td colspan="3" style="font-weight:700;text-align:right;border-top:1px solid var(--border);">Total</td><td style="font-weight:800;color:var(--rose);border-top:1px solid var(--border);">${curr(total)}</td><td colspan="2" style="border-top:1px solid var(--border);"></td>`;
+      tbody.appendChild(footRow);
+    }
+  } catch (e) { toast('Failed to load expenses', 'error'); }
+}
+
+$('btn-add-expense').addEventListener('click', () => {
+  $('exp-category').value = '';
+  $('exp-amount').value = '';
+  $('exp-date').value = new Date().toISOString().split('T')[0];
+  $('exp-desc').value = '';
+  openModal('modal-expense');
+});
+
+$('btn-save-expense').addEventListener('click', async () => {
+  const category = $('exp-category').value.trim();
+  const amount = Number($('exp-amount').value);
+  if (!category) { toast('Category required', 'error'); return; }
+  if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
+  try {
+    await api('/expenses', 'POST', { category, amount, date: $('exp-date').value, description: $('exp-desc').value.trim() });
+    closeModal('modal-expense');
+    toast('Expense recorded');
+    await loadExpenses();
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+window.deleteExpense = async (id) => {
+  if (!confirm('Delete this expense?')) return;
+  try {
+    await api(`/expenses/${id}`, 'DELETE');
+    toast('Expense deleted');
+    await loadExpenses();
+  } catch (e) { toast(e.message, 'error'); }
+};
+
+// ─── Users ────────────────────────────────────────────────
+async function loadUsers() {
+  try {
+    const users = await api('/users');
+    const tbody = $('users-tbody');
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td style="font-weight:600">${u.username}</td>
+        <td>${u.full_name || '—'}</td>
+        <td><span class="badge ${u.role === 'admin' ? 'badge-indigo' : 'badge-emerald'}">${u.role}</span></td>
+        <td style="color:var(--text-2)">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id}, '${u.username}')">Delete</button></td>
+      </tr>
+    `).join('');
+  } catch (e) { toast('Failed to load users', 'error'); }
+}
+
+$('btn-add-user').addEventListener('click', () => {
+  $('user-fullname').value = '';
+  $('user-username').value = '';
+  $('user-pw').value = '';
+  openModal('modal-user');
+});
+
+$('btn-save-user').addEventListener('click', async () => {
+  const username = $('user-username').value.trim();
+  const password = $('user-pw').value.trim();
+  if (!username || !password) { toast('Username and password required', 'error'); return; }
+  try {
+    await api('/users', 'POST', { username, password, role: $('user-role').value, full_name: $('user-fullname').value.trim() });
+    closeModal('modal-user');
+    toast('User created');
+    await loadUsers();
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+window.deleteUser = async (id, username) => {
+  if (!confirm(`Delete user "${username}"?`)) return;
+  try {
+    await api(`/users/${id}`, 'DELETE');
+    toast('User deleted');
+    await loadUsers();
+  } catch (e) { toast(e.message, 'error'); }
+};
+
+// ─── Settings ─────────────────────────────────────────────
+async function loadSettings() {
+  try {
+    const cfg = await api('/config');
+    state.config = cfg;
+    $('cfg-business-name').value = cfg.businessName || '';
+    $('cfg-business-address').value = cfg.businessAddress || '';
+    $('cfg-business-phone').value = cfg.businessPhone || '';
+    $('cfg-currency').value = cfg.currency || '$';
+    $('cfg-tax-rate').value = cfg.taxRate || '0';
+    $('cfg-receipt-footer').value = cfg.receiptFooter || '';
+    $('cfg-loyalty-enabled').checked = cfg.loyaltyEnabled === 'true';
+    $('cfg-loyalty-rate').value = cfg.loyaltyRate || '1';
+  } catch (e) { toast('Failed to load settings', 'error'); }
+}
+
+$('btn-save-settings').addEventListener('click', async () => {
+  const body = {
+    businessName: $('cfg-business-name').value.trim(),
+    businessAddress: $('cfg-business-address').value.trim(),
+    businessPhone: $('cfg-business-phone').value.trim(),
+    currency: $('cfg-currency').value.trim() || '$',
+    taxRate: $('cfg-tax-rate').value || '0',
+    receiptFooter: $('cfg-receipt-footer').value.trim(),
+    loyaltyEnabled: String($('cfg-loyalty-enabled').checked),
+    loyaltyRate: $('cfg-loyalty-rate').value || '1'
+  };
+  const adminPw = $('cfg-admin-pw').value;
+  const cashierPw = $('cfg-cashier-pw').value;
+  if (adminPw) body.newAdminPassword = adminPw;
+  if (cashierPw) body.newCashierPassword = cashierPw;
+  try {
+    await api('/config', 'POST', body);
+    state.config = { ...state.config, ...body };
+    toast('Settings saved');
+    $('cfg-admin-pw').value = '';
+    $('cfg-cashier-pw').value = '';
+  } catch (e) { toast(e.message, 'error'); }
+});
+
+// ─── Logout ───────────────────────────────────────────────
+$('btn-logout').addEventListener('click', async () => {
+  await fetch('/api/logout', { method: 'POST' });
+  sessionStorage.removeItem('pos_session');
+  window.location.href = 'login.html';
+});
+
+// ─── Open POS ─────────────────────────────────────────────
+$('btn-open-pos').addEventListener('click', () => switchTab('pos'));
+
+// ─── POS Renderer ─────────────────────────────────────────
+let posCart = [];
+let posCustomerId = null;
+
+function renderPOS() {
+  const root = $('pos-root');
+  root.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:20px;height:calc(100vh - 130px);">
+      <!-- LEFT: Product Grid -->
+      <div style="display:flex;flex-direction:column;gap:16px;overflow:hidden;">
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div class="search-wrap" style="flex:1;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" id="pos-search" placeholder="Search products or scan barcode…" style="width:100%;" autocomplete="off" />
+          </div>
+          <select class="select" id="pos-cat-filter" style="width:auto;">
+            <option value="">All Categories</option>
+            ${state.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+          </select>
+        </div>
+        <div id="pos-product-grid" style="overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;align-content:start;flex:1;padding-right:4px;"></div>
+      </div>
+      <!-- RIGHT: Cart -->
+      <div style="display:flex;flex-direction:column;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+        <!-- Cart Header -->
+        <div style="padding:16px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <span style="font-weight:700;font-size:0.95rem;">Cart</span>
+            <button class="btn btn-ghost btn-sm" onclick="clearCart()" id="pos-clear-btn">Clear</button>
+          </div>
+          <select class="select" id="pos-customer" style="font-size:0.82rem;">
+            <option value="">Walk-in Customer</option>
+            ${state.customers.map(c => `<option value="${c.id}">${c.name}${c.phone ? ' · ' + c.phone : ''}</option>`).join('')}
+          </select>
+        </div>
+        <!-- Cart Items -->
+        <div id="pos-cart-items" style="flex:1;overflow-y:auto;padding:0 8px;"></div>
+        <!-- Cart Totals -->
+        <div style="border-top:1px solid var(--border);padding:16px;">
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <label style="font-size:0.8rem;color:var(--text-2);white-space:nowrap;">Discount (${state.config.currency || '$'})</label>
+              <input class="input" type="number" id="pos-discount" value="0" min="0" step="0.01" style="width:80px;padding:6px 8px;font-size:0.85rem;" />
+            </div>
+            <div id="pos-totals-display" style="font-size:0.85rem;display:flex;flex-direction:column;gap:4px;"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <button class="btn btn-ghost" id="pos-pay-cash" onclick="posCheckout('Cash')" style="flex-direction:column;height:56px;font-size:0.78rem;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Cash
+            </button>
+            <button class="btn btn-ghost" id="pos-pay-card" onclick="posCheckout('Card')" style="flex-direction:column;height:56px;font-size:0.78rem;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              Card
+            </button>
+          </div>
+          <button class="btn btn-primary" style="width:100%;height:48px;font-size:0.95rem;justify-content:center;" onclick="posCheckout('Cash')" id="pos-charge-btn">
+            Charge — <span id="pos-charge-total">${state.config.currency || '$'}0.00</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  loadPOSProducts();
+
+  $('pos-search').addEventListener('input', filterPOSProducts);
+  $('pos-cat-filter').addEventListener('change', filterPOSProducts);
+  $('pos-discount').addEventListener('input', updatePOSTotals);
+  $('pos-customer').addEventListener('change', e => { posCustomerId = e.target.value || null; });
+}
+
+let posProducts = [];
+
+async function loadPOSProducts() {
+  try {
+    posProducts = await api('/products');
+    filterPOSProducts();
+  } catch(e) {}
+}
+
+function filterPOSProducts() {
+  const q = ($('pos-search')?.value || '').toLowerCase();
+  const cat = $('pos-cat-filter')?.value;
+  const filtered = posProducts.filter(p =>
+    p.track_inventory === 0 || p.current_stock > 0
+  ).filter(p =>
+    (!q || p.name.toLowerCase().includes(q) || (p.sku||'').toLowerCase().includes(q) || (p.barcode||'').includes(q)) &&
+    (!cat || String(p.category_id) === cat)
+  );
+  renderPOSGrid(filtered);
+}
+
+function renderPOSGrid(products) {
+  const grid = $('pos-product-grid');
+  if (!grid) return;
+  if (!products.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-2)">No products found</div>`;
+    return;
+  }
+  grid.innerHTML = products.map(p => `
+    <button onclick="addToCart(${p.id})"
+      style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:14px 10px;text-align:left;transition:all var(--transition);cursor:pointer;"
+      onmouseenter="this.style.borderColor='var(--indigo)';this.style.background='rgba(99,102,241,0.08)'"
+      onmouseleave="this.style.borderColor='var(--border)';this.style.background='var(--bg-3)'"
+    >
+      <div style="width:32px;height:32px;border-radius:8px;background:${p.category_color || '#6366f1'}22;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="${p.category_color || '#6366f1'}" stroke-width="2" width="16" height="16"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <div style="font-size:0.82rem;font-weight:600;margin-bottom:4px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${p.name}</div>
+      <div style="font-size:0.95rem;font-weight:800;color:var(--indigo)">${curr(p.sell_price)}</div>
+      ${p.track_inventory ? `<div style="font-size:0.68rem;color:${p.current_stock <= p.min_stock ? 'var(--amber)' : 'var(--text-2)'}">Stock: ${p.current_stock}</div>` : ''}
+    </button>
+  `).join('');
+}
+
+function addToCart(productId) {
+  const p = posProducts.find(x => x.id === productId);
+  if (!p) return;
+  const existing = posCart.find(i => i.product_id === productId);
+  if (existing) {
+    if (p.track_inventory && existing.qty >= p.current_stock) {
+      toast(`Only ${p.current_stock} ${p.unit} in stock`, 'error'); return;
+    }
+    existing.qty++;
+    existing.line_total = existing.qty * existing.unit_price;
+  } else {
+    posCart.push({ product_id: productId, name: p.name, unit: p.unit, qty: 1, unit_price: p.sell_price, discount_pct: 0, line_total: p.sell_price });
+  }
+  renderPOSCart();
+}
+
+function renderPOSCart() {
+  const el = $('pos-cart-items');
+  if (!el) return;
+  if (!posCart.length) {
+    el.innerHTML = `<div style="padding:40px 16px;text-align:center;color:var(--text-3);font-size:0.85rem;">Cart is empty<br>Tap a product to add</div>`;
+    updatePOSTotals();
+    return;
+  }
+  el.innerHTML = posCart.map((item, idx) => `
+    <div style="padding:10px 8px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.82rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.name}</div>
+        <div style="font-size:0.75rem;color:var(--text-2)">${curr(item.unit_price)} × ${item.qty} = <span style="color:var(--text);font-weight:700">${curr(item.line_total)}</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button onclick="changeCartQty(${idx},-1)" style="width:26px;height:26px;border:1px solid var(--border);border-radius:6px;background:var(--bg-3);color:var(--text);font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;">−</button>
+        <span style="width:28px;text-align:center;font-weight:600;font-size:0.85rem">${item.qty}</span>
+        <button onclick="changeCartQty(${idx},1)" style="width:26px;height:26px;border:1px solid var(--border);border-radius:6px;background:var(--bg-3);color:var(--text);font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;">+</button>
+      </div>
+      <button onclick="removeFromCart(${idx})" style="background:none;border:none;color:var(--rose);cursor:pointer;padding:4px;font-size:1rem;line-height:1;">✕</button>
+    </div>
+  `).join('');
+  updatePOSTotals();
+}
+
+window.changeCartQty = (idx, delta) => {
+  const item = posCart[idx];
+  if (!item) return;
+  const p = posProducts.find(x => x.id === item.product_id);
+  const newQty = item.qty + delta;
+  if (newQty <= 0) { posCart.splice(idx, 1); }
+  else {
+    if (p && p.track_inventory && newQty > p.current_stock) { toast(`Only ${p.current_stock} in stock`, 'error'); return; }
+    item.qty = newQty;
+    item.line_total = item.qty * item.unit_price;
+  }
+  renderPOSCart();
+};
+
+window.removeFromCart = (idx) => { posCart.splice(idx, 1); renderPOSCart(); };
+window.clearCart = () => { posCart = []; posCustomerId = null; renderPOSCart(); };
+
+function updatePOSTotals() {
+  const subtotal = posCart.reduce((s, i) => s + i.line_total, 0);
+  const discount = Number($('pos-discount')?.value || 0);
+  const taxRate = Number(state.config.taxRate || 0);
+  const afterDiscount = Math.max(0, subtotal - discount);
+  const tax = afterDiscount * (taxRate / 100);
+  const total = afterDiscount + tax;
+
+  const totalsEl = $('pos-totals-display');
+  if (totalsEl) {
+    totalsEl.innerHTML = `
+      <div style="display:flex;justify-content:space-between;color:var(--text-2)"><span>Subtotal</span><span>${curr(subtotal)}</span></div>
+      ${discount > 0 ? `<div style="display:flex;justify-content:space-between;color:var(--rose)"><span>Discount</span><span>-${curr(discount)}</span></div>` : ''}
+      ${taxRate > 0 ? `<div style="display:flex;justify-content:space-between;color:var(--text-2)"><span>Tax (${taxRate}%)</span><span>${curr(tax)}</span></div>` : ''}
+      <div style="display:flex;justify-content:space-between;font-weight:800;font-size:1rem;border-top:1px solid var(--border);padding-top:6px;margin-top:4px;"><span>Total</span><span style="color:var(--indigo)">${curr(total)}</span></div>
+    `;
+  }
+  const chargeEl = $('pos-charge-total');
+  if (chargeEl) chargeEl.textContent = curr(total);
+}
+
+window.posCheckout = async (paymentMethod) => {
+  if (!posCart.length) { toast('Cart is empty', 'error'); return; }
+
+  const subtotal = posCart.reduce((s, i) => s + i.line_total, 0);
+  const discount = Number($('pos-discount')?.value || 0);
+  const taxRate = Number(state.config.taxRate || 0);
+  const afterDiscount = Math.max(0, subtotal - discount);
+  const tax = afterDiscount * (taxRate / 100);
+  const total = afterDiscount + tax;
+
+  let amountTendered = total;
+  if (paymentMethod === 'Cash') {
+    const tendered = prompt(`Total: ${curr(total)}\nEnter cash tendered:`, total.toFixed(2));
+    if (tendered === null) return;
+    amountTendered = parseFloat(tendered) || total;
+  }
+
+  try {
+    const result = await api('/orders/checkout', 'POST', {
+      items: posCart.map(i => ({
+        product_id: i.product_id,
+        qty: i.qty,
+        unit_price: i.unit_price,
+        discount_pct: i.discount_pct || 0
+      })),
+      payment_method: paymentMethod,
+      customer_id: posCustomerId ? Number(posCustomerId) : null,
+      discount_amount: discount,
+      amount_tendered: amountTendered
+    });
+
+    const changeDue = result.change_due;
+    toast(`✓ Order ${result.order_number} — ${changeDue > 0 ? `Change: ${curr(changeDue)}` : 'Payment complete'}`, 'success');
+    posCart = [];
+    posCustomerId = null;
+    if ($('pos-discount')) $('pos-discount').value = '0';
+    if ($('pos-customer')) $('pos-customer').value = '';
+    renderPOSCart();
+    loadPOSProducts(); // refresh stock
+  } catch (e) { toast(e.message, 'error'); }
+};
+
+// ─── Init ─────────────────────────────────────────────────
+async function init() {
+  // Set topbar date
+  $('topbar-date').textContent = formatDateLocal();
+
+  // Set user info
+  if (state.session) {
+    const name = state.session.full_name || state.session.username;
+    $('user-name').textContent = name;
+    $('user-avatar').textContent = name.charAt(0).toUpperCase();
+  }
+
+  // Load config
+  try {
+    state.config = await api('/config');
+  } catch(e) {}
+
+  // Load categories (needed for POS)
+  try {
+    state.categories = await api('/categories');
+  } catch(e) {}
+
+  // Load customers (needed for POS)
+  try {
+    state.customers = await api('/customers');
+  } catch(e) {}
+
+  // Load dashboard
+  loadDashboard();
+}
+
+init();

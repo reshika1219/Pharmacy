@@ -12,13 +12,12 @@ def get_db_connection():
     return conn
 
 def init_db():
-    # Ensure database folder exists
     os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
-    
+
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Config table
+    # Config table — store business settings
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS config (
             key TEXT PRIMARY KEY,
@@ -29,74 +28,110 @@ def init_db():
     # Users table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
-            username TEXT PRIMARY KEY,
-            password_hash TEXT,
-            role TEXT
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            role TEXT NOT NULL,
+            full_name TEXT,
+            created_at TEXT
         )
     ''')
 
-    # Items catalog
+    # Categories table
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS items (
+        CREATE TABLE IF NOT EXISTS categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            color TEXT DEFAULT '#6366f1',
+            icon TEXT DEFAULT 'box'
+        )
+    ''')
+
+    # Products / Items catalog
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            generic TEXT,
-            category TEXT,
-            unit TEXT,
-            minStock INTEGER DEFAULT 0,
-            notes TEXT
+            sku TEXT UNIQUE,
+            category_id INTEGER,
+            unit TEXT DEFAULT 'pcs',
+            barcode TEXT,
+            description TEXT,
+            image_url TEXT,
+            min_stock INTEGER DEFAULT 0,
+            track_inventory INTEGER DEFAULT 1,
+            created_at TEXT,
+            FOREIGN KEY(category_id) REFERENCES categories(id)
         )
     ''')
 
-    # Batches table (with supplier payable columns)
+    # Stock batches (inventory in)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS batches (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            itemId INTEGER,
-            batch_number TEXT,
-            expiry TEXT,
-            qty_received INTEGER,
-            qty_remaining INTEGER,
-            purchase_price REAL,
-            sell_price REAL,
+            product_id INTEGER NOT NULL,
+            batch_ref TEXT,
+            qty_received INTEGER DEFAULT 0,
+            qty_remaining INTEGER DEFAULT 0,
+            cost_price REAL DEFAULT 0.0,
+            sell_price REAL DEFAULT 0.0,
             supplier TEXT,
             date_added TEXT,
-            payment_status TEXT DEFAULT 'Pending',
-            amount_paid REAL DEFAULT 0.0,
-            qty_billed INTEGER,
-            qty_bonus INTEGER DEFAULT 0,
-            FOREIGN KEY(itemId) REFERENCES items(id)
+            notes TEXT,
+            FOREIGN KEY(product_id) REFERENCES products(id)
         )
     ''')
 
-    # Bills table
+    # Customers table
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS bills (
+        CREATE TABLE IF NOT EXISTS customers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            billNumber TEXT UNIQUE,
+            name TEXT NOT NULL,
+            phone TEXT,
+            email TEXT,
+            address TEXT,
+            loyalty_points INTEGER DEFAULT 0,
+            total_spent REAL DEFAULT 0.0,
+            created_at TEXT
+        )
+    ''')
+
+    # Orders / Bills table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_number TEXT UNIQUE NOT NULL,
             date TEXT,
             time TEXT,
             cashier TEXT,
-            paymentMethod TEXT,
-            discount REAL DEFAULT 0,
-            total REAL,
-            status TEXT DEFAULT 'active'
+            customer_id INTEGER,
+            payment_method TEXT DEFAULT 'Cash',
+            subtotal REAL DEFAULT 0.0,
+            discount_amount REAL DEFAULT 0.0,
+            tax_amount REAL DEFAULT 0.0,
+            total REAL DEFAULT 0.0,
+            amount_tendered REAL DEFAULT 0.0,
+            change_due REAL DEFAULT 0.0,
+            status TEXT DEFAULT 'completed',
+            notes TEXT,
+            FOREIGN KEY(customer_id) REFERENCES customers(id)
         )
     ''')
 
-    # Sales Items junction table
+    # Order items
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sales_items (
+        CREATE TABLE IF NOT EXISTS order_items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            billId INTEGER,
-            itemId INTEGER,
-            batchId INTEGER,
-            qty INTEGER,
-            price REAL,
-            total REAL,
-            FOREIGN KEY(billId) REFERENCES bills(id),
-            FOREIGN KEY(itemId) REFERENCES items(id),
-            FOREIGN KEY(batchId) REFERENCES batches(id)
+            order_id INTEGER NOT NULL,
+            product_id INTEGER NOT NULL,
+            batch_id INTEGER,
+            qty INTEGER DEFAULT 1,
+            unit_price REAL DEFAULT 0.0,
+            discount_pct REAL DEFAULT 0.0,
+            line_total REAL DEFAULT 0.0,
+            FOREIGN KEY(order_id) REFERENCES orders(id),
+            FOREIGN KEY(product_id) REFERENCES products(id),
+            FOREIGN KEY(batch_id) REFERENCES batches(id)
         )
     ''')
 
@@ -106,146 +141,71 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT,
             category TEXT,
-            amount REAL,
-            notes TEXT
+            description TEXT,
+            amount REAL DEFAULT 0.0,
+            created_by TEXT
         )
     ''')
 
-    # Default settings and users
-    cursor.execute("SELECT * FROM config WHERE key = 'pharmacyName'")
-    if not cursor.fetchone():
-        cursor.execute("INSERT INTO config (key, val) VALUES ('pharmacyName', 'PharmaCare')")
-        cursor.execute("INSERT INTO config (key, val) VALUES ('pharmacyAddress', '123 Health Ave, City')")
-        cursor.execute("INSERT INTO config (key, val) VALUES ('pharmacyPhone', '011-2345678')")
+    # Suppliers table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS suppliers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            contact_person TEXT,
+            phone TEXT,
+            email TEXT,
+            address TEXT,
+            notes TEXT,
+            created_at TEXT
+        )
+    ''')
 
-    cursor.execute("SELECT * FROM users WHERE username = 'owner'")
+    # --- Default data ---
+    cursor.execute("SELECT * FROM config WHERE key = 'businessName'")
     if not cursor.fetchone():
-        cursor.execute("INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
-                       ('owner', hash_password('owner123'), 'owner'))
-    cursor.execute("SELECT * FROM users WHERE username = 'cashier'")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('businessName', 'My Store')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('businessAddress', '123 Main Street')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('businessPhone', '')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('currency', '$')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('currencyCode', 'USD')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('taxRate', '0')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('receiptFooter', 'Thank you for your purchase!')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('orderNextId', '1')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('loyaltyEnabled', 'false')")
+        cursor.execute("INSERT INTO config (key, val) VALUES ('loyaltyRate', '1')")
+
+    cursor.execute("SELECT * FROM users WHERE username = 'admin'")
     if not cursor.fetchone():
-        cursor.execute("INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
-                       ('cashier', hash_password('cashier123'), 'cashier'))
+        now = datetime.now().isoformat()
+        cursor.execute(
+            "INSERT INTO users (username, password_hash, role, full_name, created_at) VALUES (?, ?, ?, ?, ?)",
+            ('admin', hash_password('admin123'), 'admin', 'Administrator', now)
+        )
+        cursor.execute(
+            "INSERT INTO users (username, password_hash, role, full_name, created_at) VALUES (?, ?, ?, ?, ?)",
+            ('cashier', hash_password('cashier123'), 'cashier', 'Cashier', now)
+        )
+
+    # Default categories
+    cursor.execute("SELECT COUNT(*) as cnt FROM categories")
+    if cursor.fetchone()['cnt'] == 0:
+        cats = [
+            ('General', '#6366f1', 'box'),
+            ('Electronics', '#f59e0b', 'cpu'),
+            ('Clothing', '#ec4899', 'shirt'),
+            ('Food & Beverages', '#10b981', 'coffee'),
+            ('Health & Beauty', '#8b5cf6', 'heart'),
+            ('Books & Stationery', '#3b82f6', 'book'),
+            ('Sports & Outdoor', '#ef4444', 'activity'),
+        ]
+        cursor.executemany("INSERT INTO categories (name, color, icon) VALUES (?, ?, ?)", cats)
 
     conn.commit()
     conn.close()
 
 def run_migrations():
     init_db()
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    # 1. Ensure discount column exists in bills table
-    try:
-        cursor.execute("PRAGMA table_info(bills)")
-        bills_cols = [col['name'] for col in cursor.fetchall()]
-        if 'discount' not in bills_cols:
-            cursor.execute("ALTER TABLE bills ADD COLUMN discount REAL DEFAULT 0")
-            conn.commit()
-    except Exception as e:
-        print(f"⚠️ Warning adding discount column: {e}")
-
-    # 2. Ensure supplier payment status columns exist in batches table
-    try:
-        cursor.execute("PRAGMA table_info(batches)")
-        batches_cols = [col['name'] for col in cursor.fetchall()]
-        if 'payment_status' not in batches_cols:
-            cursor.execute("ALTER TABLE batches ADD COLUMN payment_status TEXT DEFAULT 'Pending'")
-        if 'amount_paid' not in batches_cols:
-            cursor.execute("ALTER TABLE batches ADD COLUMN amount_paid REAL DEFAULT 0.0")
-        if 'qty_billed' not in batches_cols:
-            cursor.execute("ALTER TABLE batches ADD COLUMN qty_billed INTEGER")
-        if 'qty_bonus' not in batches_cols:
-            cursor.execute("ALTER TABLE batches ADD COLUMN qty_bonus INTEGER DEFAULT 0")
-        conn.commit()
-    except Exception as e:
-        print(f"⚠️ Warning adding batch payment columns: {e}")
-
-    # Check if we need to migrate schema version 1 data from original root DB location
-    cursor.execute("SELECT val FROM config WHERE key = 'schema_version'")
-    version_row = cursor.fetchone()
-    if version_row and version_row['val'] == '2':
-        conn.close()
-        return
-
-    # Check if old stock_in exists (signaling old schema migration needed)
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='stock_in'")
-    has_old_stock_in = cursor.fetchone()
-
-    if has_old_stock_in:
-        print("📦 Migrating old data schema...")
-        try:
-            # Migrate stock_in to batches
-            cursor.execute("SELECT * FROM stock_in")
-            old_stock_in = cursor.fetchall()
-            for r in old_stock_in:
-                qty = int(r['qty'])
-                purchase_price = float(r['price']) if r['price'] else 0.0
-                cursor.execute("SELECT sellPrice FROM items WHERE id = ?", (r['itemId'],))
-                item_row = cursor.fetchone()
-                sell_price = float(item_row['sellPrice']) if (item_row and item_row['sellPrice']) else purchase_price * 1.25
-                
-                cursor.execute('''
-                    INSERT INTO batches (id, itemId, batch_number, expiry, qty_received, qty_remaining, purchase_price, sell_price, supplier, date_added, payment_status, amount_paid)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', 0.0)
-                ''', (
-                    r['id'], r['itemId'], r['batch'], r['expiry'], qty, qty, purchase_price, sell_price, r['supplier'], r['date']
-                ))
-
-            # Migrate stock_out logs
-            cursor.execute("SELECT * FROM stock_out")
-            old_stock_outs = cursor.fetchall()
-            for r in old_stock_outs:
-                qty_to_deduct = int(r['qty'])
-                item_id = int(r['itemId'])
-                
-                cursor.execute('''
-                    SELECT * FROM batches 
-                    WHERE itemId = ? AND qty_remaining > 0 
-                    ORDER BY expiry ASC
-                ''', (item_id,))
-                active_batches = cursor.fetchall()
-                
-                for batch in active_batches:
-                    if qty_to_deduct <= 0:
-                        break
-                    b_id = batch['id']
-                    b_rem = batch['qty_remaining']
-                    deducted = min(qty_to_deduct, b_rem)
-                    
-                    cursor.execute('UPDATE batches SET qty_remaining = qty_remaining - ? WHERE id = ?', (deducted, b_id))
-                    
-                    if r['billId']:
-                        cursor.execute('''
-                            INSERT INTO sales_items (billId, itemId, batchId, qty, price, total)
-                            VALUES (?, ?, ?, ?, ?, ?)
-                        ''', (r['billId'], item_id, b_id, deducted, r['price'], r['total']))
-                    
-                    qty_to_deduct -= deducted
-
-            # Migrate passwords
-            cursor.execute("PRAGMA table_info(users)")
-            cols = [col['name'] for col in cursor.fetchall()]
-            if 'password' in cols:
-                cursor.execute("ALTER TABLE users RENAME TO users_old")
-                cursor.execute('CREATE TABLE users (username TEXT PRIMARY KEY, password_hash TEXT, role TEXT)')
-                cursor.execute("SELECT * FROM users_old")
-                for u in cursor.fetchall():
-                    pw = u['password']
-                    hashed = hash_password(pw) if not pw.startswith("pbkdf2:") else pw
-                    cursor.execute("INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
-                                   (u['username'], hashed, u['role']))
-                cursor.execute("DROP TABLE users_old")
-
-            cursor.execute("INSERT OR REPLACE INTO config (key, val) VALUES ('schema_version', '2')")
-            conn.commit()
-            print("✅ Database migration complete!")
-        except Exception as e:
-            conn.rollback()
-            print(f"❌ Database migration failed: {e}")
-            raise e
-
-    conn.close()
 
 def create_backup():
     if not os.path.exists(DATABASE_PATH):
@@ -253,11 +213,11 @@ def create_backup():
     if not os.path.exists(BACKUPS_DIR):
         os.makedirs(BACKUPS_DIR)
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    backup_path = os.path.join(BACKUPS_DIR, f'pharmacy_backup_{timestamp}.db')
+    backup_path = os.path.join(BACKUPS_DIR, f'pos_backup_{timestamp}.db')
     try:
         shutil.copy2(DATABASE_PATH, backup_path)
-        backups = sorted(glob.glob(os.path.join(BACKUPS_DIR, 'pharmacy_backup_*.db')))
-        while len(backups) > 10:
+        backups = sorted(glob.glob(os.path.join(BACKUPS_DIR, 'pos_backup_*.db')))
+        while len(backups) > 15:
             os.remove(backups.pop(0))
     except Exception as e:
-        print(f"⚠️ Backup rotation error: {e}")
+        print(f"Warning: Backup error: {e}")

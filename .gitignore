@@ -1,13 +1,22 @@
 # Database (contains sensitive business/inventory data)
+*.db
+*.sqlite3
 db.json
 db.json.bak
 pharmacy.db
+pos.db
+backend/pos.db
 backups/
 
 # Python cache files
 __pycache__/
 *.py[cod]
 
-# macOS system files
+# Temporary test logs and cookies
+*.log
+/tmp/
+*.txt
+
+# macOS / OS system files
 .DS_Store
 Thumbs.db
