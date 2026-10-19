@@ -19,16 +19,16 @@ export default function ThemeToggle({ className = '', showLabel = false }: Theme
       aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
       className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors select-none
-        bg-white dark:bg-gray-800
-        border-gray-300 dark:border-gray-700
-        text-gray-700 dark:text-gray-200
-        hover:bg-gray-100 dark:hover:bg-gray-700
+        bg-[var(--surface)]
+        border-[var(--border)]
+        text-[var(--text)]
+        hover:bg-[var(--surface-hover)]
         active:scale-95 shadow-xs ${className}`}
     >
       {theme === 'dark' ? (
-        <Sun className="w-4 h-4 text-amber-400" />
+        <Sun className="w-4 h-4 text-[var(--accent)]" />
       ) : (
-        <Moon className="w-4 h-4 text-gray-600" />
+        <Moon className="w-4 h-4 text-[var(--text-secondary)]" />
       )}
       {showLabel && (
         <span className="text-[11px] font-medium">

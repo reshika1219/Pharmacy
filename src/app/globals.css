@@ -1,9 +1,116 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
+@variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  /* Surfaces */
+  --bg: #FAF9F5;
+  --surface: #FFFFFF;
+  --surface-hover: #F3F1EA;
+  --border: #E8E6DC;
+
+  /* Text */
+  --text: #141413;
+  --text-secondary: #5E5D59;
+  --text-muted: #73726C;
+
+  /* Accent */
+  --accent: #B5532F;          /* buttons with white text */
+  --accent-hover: #9E4727;
+  --accent-text: #FFFFFF;
+
+  /* Status: background / text */
+  --success-bg: #DCFCE7;  --success-text: #166534;
+  --warning-bg: #FEF3C7;  --warning-text: #92400E;
+  --error-bg:   #FEE2E2;  --error-text:   #991B1B;
+  --info-bg:    #DBEAFE;  --info-text:    #1E40AF;
+}
+
+:root[data-theme="dark"],
+:root.dark,
+.dark {
+  /* Surfaces */
+  --bg: #262624;
+  --surface: #30302E;
+  --surface-hover: #3A3A37;
+  --border: #3D3D3A;
+
+  /* Text */
+  --text: #E8E6DC;
+  --text-secondary: #B0AEA5;
+  --text-muted: #9C9A92;
+
+  /* Accent */
+  --accent: #D97757;          /* buttons with dark text */
+  --accent-hover: #E08A6C;
+  --accent-text: #1F1E1D;
+
+  /* Status: background / text */
+  --success-bg: #12301F;  --success-text: #4ADE80;
+  --warning-bg: #3A2A05;  --warning-text: #FBBF24;
+  --error-bg:   #3B1515;  --error-text:   #F87171;
+  --info-bg:    #14274A;  --info-text:    #60A5FA;
+}
+
+/* Optional: follow the OS setting automatically */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(.light) {
+    --bg: #262624;
+    --surface: #30302E;
+    --surface-hover: #3A3A37;
+    --border: #3D3D3A;
+    --text: #E8E6DC;
+    --text-secondary: #B0AEA5;
+    --text-muted: #9C9A92;
+    --accent: #D97757;
+    --accent-hover: #E08A6C;
+    --accent-text: #1F1E1D;
+    --success-bg: #12301F;  --success-text: #4ADE80;
+    --warning-bg: #3A2A05;  --warning-text: #FBBF24;
+    --error-bg:   #3B1515;  --error-text:   #F87171;
+    --info-bg:    #14274A;  --info-text:    #60A5FA;
+  }
+}
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+
+  --color-text-main: var(--text);
+  --color-text-sub: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-text: var(--accent-text);
+
+  --color-success-bg: var(--success-bg);
+  --color-success-text: var(--success-text);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-text: var(--warning-text);
+  --color-error-bg: var(--error-bg);
+  --color-error-text: var(--error-text);
+  --color-info-bg: var(--info-bg);
+  --color-info-text: var(--info-text);
+
+  --color-gray-50: var(--bg);
+  --color-gray-100: var(--surface-hover);
+  --color-gray-200: var(--border);
+  --color-gray-300: var(--border);
+  --color-gray-400: var(--text-muted);
+  --color-gray-500: var(--text-secondary);
+  --color-gray-600: var(--text-secondary);
+  --color-gray-700: var(--border);
+  --color-gray-800: var(--surface);
+  --color-gray-900: var(--bg);
+  --color-gray-950: var(--bg);
+}
 
 body {
-  @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+  background-color: var(--bg);
+  color: var(--text);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   transition: background-color 0.15s ease, color 0.15s ease;
 }

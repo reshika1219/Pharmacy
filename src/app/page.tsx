@@ -168,7 +168,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors">
       <Navigation />
 
       {/* Main Content Area */}
@@ -177,14 +177,14 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-bold text-[var(--text)] tracking-tight">
                 Dashboard Overview
               </h1>
-              <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+              <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-[var(--surface-hover)] text-[var(--text-secondary)] border border-[var(--border)]">
                 Live
               </span>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
               Real-time sales, inventory valuation, and stock alerts.
             </p>
           </div>
@@ -192,7 +192,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <button
               onClick={() => loadData()}
-              className="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer active:scale-95"
+              className="px-3 py-2 rounded-lg bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text)] text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer active:scale-95 hover:bg-[var(--surface-hover)]"
               title="Refresh Data"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -200,7 +200,7 @@ export default function DashboardPage() {
             </button>
             <button
               onClick={() => setShowAddProduct(true)}
-              className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
+              className="px-3.5 py-2 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] text-xs font-semibold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Add Product</span>
@@ -211,45 +211,45 @@ export default function DashboardPage() {
         {/* ─── METRIC CARDS ─── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
           {/* Card 1: Today's Sales */}
-          <div className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-1.5">
+          <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-sm">
+            <div className="flex items-center justify-between text-[var(--text-secondary)] mb-1.5">
               <span className="text-[11px] font-semibold uppercase tracking-wider">Today's Sales</span>
-              <DollarSign className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <DollarSign className="w-4 h-4 text-[var(--accent)]" />
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold text-[var(--text)] tracking-tight">
               ${(kpis?.salesToday || 0).toFixed(2)}
             </div>
-            <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1.5">
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{kpis?.ordersTodayCount || 0} orders</span>
+            <div className="text-[11px] text-[var(--text-secondary)] mt-1 flex items-center gap-1.5">
+              <span className="text-[var(--success-text)] font-semibold">{kpis?.ordersTodayCount || 0} orders</span>
               <span>•</span>
               <span>{kpis?.itemsSoldToday || 0} items</span>
             </div>
           </div>
 
           {/* Card 2: Net Profit Today */}
-          <div className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-1.5">
+          <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-sm">
+            <div className="flex items-center justify-between text-[var(--text-secondary)] mb-1.5">
               <span className="text-[11px] font-semibold uppercase tracking-wider">Net Profit</span>
-              <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <TrendingUp className="w-4 h-4 text-[var(--success-text)]" />
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold text-[var(--success-text)] tracking-tight">
               ${(kpis?.netProfitToday || 0).toFixed(2)}
             </div>
-            <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
-              Expenses: <span className="text-red-600 dark:text-red-400 font-medium">${(kpis?.expensesToday || 0).toFixed(2)}</span>
+            <div className="text-[11px] text-[var(--text-secondary)] mt-1">
+              Expenses: <span className="text-[var(--error-text)] font-medium">${(kpis?.expensesToday || 0).toFixed(2)}</span>
             </div>
           </div>
 
           {/* Card 3: Inventory Value */}
-          <div className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-1.5">
+          <div className="p-4 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-sm">
+            <div className="flex items-center justify-between text-[var(--text-secondary)] mb-1.5">
               <span className="text-[11px] font-semibold uppercase tracking-wider">Inventory Value</span>
-              <Boxes className="w-4 h-4 text-gray-400" />
+              <Boxes className="w-4 h-4 text-[var(--text-muted)]" />
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold text-[var(--text)] tracking-tight">
               ${(kpis?.totalInventoryValue || 0).toFixed(2)}
             </div>
-            <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1.5">
+            <div className="text-[11px] text-[var(--text-secondary)] mt-1 flex items-center gap-1.5">
               <span>{kpis?.totalInventoryUnits || 0} units</span>
               <span>•</span>
               <span>{kpis?.totalProducts || 0} items</span>
@@ -261,22 +261,22 @@ export default function DashboardPage() {
             onClick={() => setFilterLowStock(!filterLowStock)}
             className={`p-4 rounded-xl border shadow-sm cursor-pointer transition-colors ${
               filterLowStock
-                ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                ? 'bg-[var(--warning-bg)] border-[var(--border)]'
+                : 'bg-[var(--surface)] border-[var(--border)] hover:bg-[var(--surface-hover)]'
             }`}
           >
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-secondary)]">
                 Stock Alerts
               </span>
-              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <AlertTriangle className="w-4 h-4 text-[var(--warning-text)]" />
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">
+            <div className="text-xl sm:text-2xl font-bold text-[var(--warning-text)] tracking-tight">
               {(kpis?.lowStockCount || 0) + (kpis?.outOfStockCount || 0)}
             </div>
-            <div className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 flex items-center justify-between">
+            <div className="text-[11px] text-[var(--text-secondary)] mt-1 flex items-center justify-between">
               <span>{kpis?.outOfStockCount || 0} out of stock</span>
-              <span className="text-blue-600 dark:text-blue-400 text-[10px] font-semibold underline">
+              <span className="text-[var(--accent)] text-[10px] font-semibold underline">
                 {filterLowStock ? 'Show All' : 'Filter'}
               </span>
             </div>
@@ -286,28 +286,28 @@ export default function DashboardPage() {
         {/* ─── INVENTORY SECTION ─── */}
         <section id="inventory" className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-            <h2 className="text-base font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-base font-bold text-[var(--text)] flex items-center gap-2">
+              <Package className="w-4 h-4 text-[var(--accent)]" />
               Inventory Catalog ({products.length})
             </h2>
 
             {/* Search & Category Filter */}
             <div className="flex items-center gap-2">
               <div className="relative w-full sm:w-64">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                 <input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search title, SKU, barcode..."
-                  className="w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg py-1.5 pl-9 pr-3 text-xs text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:border-blue-600"
+                  className="w-full bg-[var(--surface)] border border-[var(--border)] rounded-lg py-1.5 pl-9 pr-3 text-xs text-[var(--text)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
 
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg py-1.5 px-2.5 text-xs text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                className="bg-[var(--surface)] border border-[var(--border)] rounded-lg py-1.5 px-2.5 text-xs text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
               >
                 <option value="all">All Categories</option>
                 {categories.map((c) => (
@@ -320,61 +320,61 @@ export default function DashboardPage() {
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden md:block rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
+          <div className="hidden md:block rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-sm">
             <table className="w-full text-left text-xs">
-              <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold">
+              <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)] text-[var(--text-secondary)] font-semibold">
                 <tr>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Item & SKU</th>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Category</th>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Stock Level</th>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Sell Price</th>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Cost Price</th>
-                  <th className="py-3 px-4 text-right font-semibold text-gray-700 dark:text-gray-200">Action</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Item & SKU</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Category</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Stock Level</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Sell Price</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Cost Price</th>
+                  <th className="py-3 px-4 text-right font-semibold text-[var(--text)]">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
+              <tbody className="divide-y divide-[var(--border)] text-[var(--text)]">
                 {products.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-gray-400">
+                    <td colSpan={6} className="py-8 text-center text-[var(--text-muted)]">
                       No matching items found.
                     </td>
                   </tr>
                 ) : (
                   products.map((p) => (
-                    <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <td className="py-2.5 px-4 font-medium text-gray-900 dark:text-gray-100">
+                    <tr key={p.id} className="hover:bg-[var(--surface-hover)] transition-colors">
+                      <td className="py-2.5 px-4 font-medium text-[var(--text)]">
                         <div>{p.name}</div>
-                        <div className="text-[10px] text-gray-400 dark:text-gray-500 font-mono">
+                        <div className="text-[10px] text-[var(--text-muted)] font-mono">
                           {p.sku} {p.barcode ? `• ${p.barcode}` : ''}
                         </div>
                       </td>
                       <td className="py-2.5 px-4">
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[var(--surface-hover)] text-[var(--text-secondary)] border border-[var(--border)]">
                           {p.category?.name || 'General'}
                         </span>
                       </td>
                       <td className="py-2.5 px-4">
                         <div className="flex items-center gap-1.5">
                           <span
-                            className={`px-2 py-0.5 rounded-md text-[10px] font-semibold ${
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-semibold border border-transparent ${
                               p.stockStatus === 'out_of_stock'
-                                ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900'
+                                ? 'bg-[var(--error-bg)] text-[var(--error-text)]'
                                 : p.stockStatus === 'low_stock'
-                                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900'
-                                : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900'
+                                ? 'bg-[var(--warning-bg)] text-[var(--warning-text)]'
+                                : 'bg-[var(--success-bg)] text-[var(--success-text)]'
                             }`}
                           >
                             {p.totalStock} {p.unit}
                           </span>
                           {p.stockStatus !== 'in_stock' && (
-                            <span className="text-[10px] text-gray-400">(min: {p.minStock})</span>
+                            <span className="text-[10px] text-[var(--text-muted)]">(min: {p.minStock})</span>
                           )}
                         </div>
                       </td>
-                      <td className="py-2.5 px-4 font-bold text-gray-900 dark:text-gray-100">
+                      <td className="py-2.5 px-4 font-bold text-[var(--text)]">
                         ${p.sellPrice.toFixed(2)}
                       </td>
-                      <td className="py-2.5 px-4 text-gray-500 dark:text-gray-400">
+                      <td className="py-2.5 px-4 text-[var(--text-secondary)]">
                         ${p.costPrice.toFixed(2)}
                       </td>
                       <td className="py-2.5 px-4 text-right">
@@ -385,7 +385,7 @@ export default function DashboardPage() {
                             setIntakeCost(p.costPrice.toString());
                             setShowStockIntake(true);
                           }}
-                          className="px-2.5 py-1 rounded-md bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 text-[11px] font-semibold transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded-md bg-[var(--surface-hover)] hover:bg-[var(--border)] text-[var(--text)] text-[11px] font-semibold transition-colors cursor-pointer border border-[var(--border)]"
                         >
                           + Intake
                         </button>
@@ -400,41 +400,41 @@ export default function DashboardPage() {
           {/* Mobile View */}
           <div className="md:hidden space-y-2">
             {products.length === 0 ? (
-              <div className="p-8 text-center text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="p-8 text-center text-[var(--text-muted)] bg-[var(--surface)] rounded-xl border border-[var(--border)]">
                 No matching items found.
               </div>
             ) : (
               products.map((p) => (
                 <div
                   key={p.id}
-                  className="p-3.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm space-y-2"
+                  className="p-3.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-sm space-y-2"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-snug">
+                      <h3 className="font-semibold text-[var(--text)] text-sm leading-snug">
                         {p.name}
                       </h3>
-                      <div className="text-[10px] text-gray-400 dark:text-gray-500 font-mono mt-0.5">
+                      <div className="text-[10px] text-[var(--text-muted)] font-mono mt-0.5">
                         {p.sku} {p.barcode ? `• ${p.barcode}` : ''}
                       </div>
                     </div>
                     <span
                       className={`shrink-0 px-2 py-0.5 rounded-md text-[10px] font-semibold ${
                         p.stockStatus === 'out_of_stock'
-                          ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900'
+                          ? 'bg-[var(--error-bg)] text-[var(--error-text)]'
                           : p.stockStatus === 'low_stock'
-                          ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900'
-                          : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900'
+                          ? 'bg-[var(--warning-bg)] text-[var(--warning-text)]'
+                          : 'bg-[var(--success-bg)] text-[var(--success-text)]'
                       }`}
                     >
                       {p.totalStock} {p.unit}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700 text-xs">
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--border)] text-xs">
                     <div>
-                      <span className="text-[11px] text-gray-500 dark:text-gray-400">Price: </span>
-                      <span className="font-bold text-gray-900 dark:text-gray-100">${p.sellPrice.toFixed(2)}</span>
+                      <span className="text-[11px] text-[var(--text-secondary)]">Price: </span>
+                      <span className="font-bold text-[var(--text)]">${p.sellPrice.toFixed(2)}</span>
                     </div>
                     <button
                       onClick={() => {
@@ -443,7 +443,7 @@ export default function DashboardPage() {
                         setIntakeCost(p.costPrice.toString());
                         setShowStockIntake(true);
                       }}
-                      className="px-2.5 py-1 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-semibold active:scale-95 transition-transform cursor-pointer"
+                      className="px-2.5 py-1 rounded-md bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text)] text-xs font-semibold active:scale-95 transition-transform cursor-pointer"
                     >
                       + Intake Stock
                     </button>
@@ -455,32 +455,32 @@ export default function DashboardPage() {
         </section>
 
         {/* ─── RECENT TRANSACTIONS STREAM ─── */}
-        <section className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+        <section className="rounded-xl bg-[var(--surface)] border border-[var(--border)] p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-sm font-bold text-[var(--text)] flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[var(--accent)]" />
               Recent Completed Sales
             </h2>
           </div>
 
-          <div className="divide-y divide-gray-100 dark:divide-gray-700">
+          <div className="divide-y divide-[var(--border)]">
             {recentOrders.length === 0 ? (
-              <p className="text-xs text-gray-400 py-3 text-center">No transactions recorded yet.</p>
+              <p className="text-xs text-[var(--text-muted)] py-3 text-center">No transactions recorded yet.</p>
             ) : (
               recentOrders.map((ord) => (
                 <div key={ord.id} className="py-2.5 flex items-center justify-between text-xs">
                   <div>
-                    <span className="font-semibold text-gray-900 dark:text-gray-100">{ord.orderNumber}</span>
-                    <span className="text-gray-500 dark:text-gray-400 ml-2">({ord.customerName})</span>
-                    <div className="text-[10px] text-gray-400 dark:text-gray-500">
+                    <span className="font-semibold text-[var(--text)]">{ord.orderNumber}</span>
+                    <span className="text-[var(--text-secondary)] ml-2">({ord.customerName})</span>
+                    <div className="text-[10px] text-[var(--text-muted)]">
                       {ord.date} {ord.time} • Cashier: {ord.cashier} • {ord.paymentMethod}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
+                    <div className="font-bold text-[var(--success-text)] text-sm">
                       ${ord.total.toFixed(2)}
                     </div>
-                    <div className="text-[10px] text-gray-400">{ord.itemsCount} item(s)</div>
+                    <div className="text-[10px] text-[var(--text-muted)]">{ord.itemsCount} item(s)</div>
                   </div>
                 </div>
               ))
@@ -490,43 +490,43 @@ export default function DashboardPage() {
 
         {/* ─── MODAL: ADD PRODUCT ─── */}
         {showAddProduct && (
-          <div className="fixed inset-0 z-50 bg-gray-950/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 w-full max-w-lg shadow-xl space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">Add Item to Inventory</h3>
-                <button onClick={() => setShowAddProduct(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer">✕</button>
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 w-full max-w-lg shadow-xl space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+                <h3 className="font-bold text-[var(--text)] text-sm">Add Item to Inventory</h3>
+                <button onClick={() => setShowAddProduct(false)} className="text-[var(--text-muted)] hover:text-[var(--text)] cursor-pointer">✕</button>
               </div>
 
               <form onSubmit={handleCreateProduct} className="space-y-3 text-xs">
                 <div>
-                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Item Title *</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Item Title *</label>
                   <input
                     type="text"
                     required
                     value={newProdName}
                     onChange={(e) => setNewProdName(e.target.value)}
                     placeholder="e.g. Organic Coffee Beans 500g"
-                    className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">SKU / Code</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">SKU / Code</label>
                     <input
                       type="text"
                       value={newProdSku}
                       onChange={(e) => setNewProdSku(e.target.value)}
                       placeholder="e.g. COF-500"
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Category</label>
                     <select
                       value={newProdCategory}
                       onChange={(e) => setNewProdCategory(e.target.value)}
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                     >
                       <option value="">Select category...</option>
                       {categories.map((c) => (
@@ -538,54 +538,54 @@ export default function DashboardPage() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Unit</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Unit</label>
                     <input
                       type="text"
                       value={newProdUnit}
                       onChange={(e) => setNewProdUnit(e.target.value)}
                       placeholder="pcs, box, kg, liters..."
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Low Stock Alert Level</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Low Stock Alert Level</label>
                     <input
                       type="number"
                       value={newProdMinStock}
                       onChange={(e) => setNewProdMinStock(e.target.value)}
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Initial Qty</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Initial Qty</label>
                     <input
                       type="number"
                       value={newProdInitialQty}
                       onChange={(e) => setNewProdInitialQty(e.target.value)}
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 font-bold focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] font-bold focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Cost Price ($)</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Cost Price ($)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={newProdCostPrice}
                       onChange={(e) => setNewProdCostPrice(e.target.value)}
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Selling Price ($)</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Selling Price ($)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={newProdSellPrice}
                       onChange={(e) => setNewProdSellPrice(e.target.value)}
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 font-bold focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] font-bold focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                 </div>
@@ -594,13 +594,13 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => setShowAddProduct(false)}
-                    className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 text-xs cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] text-xs cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs cursor-pointer"
+                    className="px-4 py-1.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] font-semibold text-xs shadow-xs cursor-pointer"
                   >
                     Save Item
                   </button>
@@ -612,67 +612,67 @@ export default function DashboardPage() {
 
         {/* ─── MODAL: STOCK INTAKE ─── */}
         {showStockIntake && (
-          <div className="fixed inset-0 z-50 bg-gray-950/50 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 w-full max-w-md shadow-xl space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">Intake Shipment Batch</h3>
-                <button onClick={() => setShowStockIntake(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer">✕</button>
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 w-full max-w-md shadow-xl space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+                <h3 className="font-bold text-[var(--text)] text-sm">Intake Shipment Batch</h3>
+                <button onClick={() => setShowStockIntake(false)} className="text-[var(--text-muted)] hover:text-[var(--text)] cursor-pointer">✕</button>
               </div>
 
               <form onSubmit={handleStockIntake} className="space-y-3 text-xs">
                 <div>
-                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Quantity Received *</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Quantity Received *</label>
                   <input
                     type="number"
                     required
                     value={intakeQty}
                     onChange={(e) => setIntakeQty(e.target.value)}
-                    className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 text-sm font-bold focus:outline-none focus:border-blue-600"
+                    className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] text-sm font-bold focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Cost Price ($)</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Cost Price ($)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={intakeCost}
                       onChange={(e) => setIntakeCost(e.target.value)}
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Sell Price ($)</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Sell Price ($)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={intakeSell}
                       onChange={(e) => setIntakeSell(e.target.value)}
-                      className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 font-bold focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] font-bold focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Supplier / Vendor</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Supplier / Vendor</label>
                   <input
                     type="text"
                     value={intakeSupplier}
                     onChange={(e) => setIntakeSupplier(e.target.value)}
                     placeholder="e.g. Apex Wholesale Distributors"
-                    className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Batch Reference #</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Batch Reference #</label>
                   <input
                     type="text"
                     value={intakeBatchRef}
                     onChange={(e) => setIntakeBatchRef(e.target.value)}
                     placeholder="e.g. LOT-2026-X1"
-                    className="w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
@@ -680,13 +680,13 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => setShowStockIntake(false)}
-                    className="px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 text-xs cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] text-xs cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs cursor-pointer"
+                    className="px-4 py-1.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] font-semibold text-xs shadow-xs cursor-pointer"
                   >
                     Add to Stock
                   </button>

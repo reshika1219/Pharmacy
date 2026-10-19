@@ -55,17 +55,17 @@ export default function BatchesPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors">
       <Navigation />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full pb-24 lg:pb-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight flex items-center gap-2">
-              <Boxes className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <h1 className="text-xl sm:text-2xl font-bold text-[var(--text)] tracking-tight flex items-center gap-2">
+              <Boxes className="w-5 h-5 text-[var(--accent)]" />
               Stock Intake & Batches
             </h1>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
               Track incoming shipments, batch references, supplier sources, and cost vs. sell prices.
             </p>
           </div>
@@ -73,7 +73,7 @@ export default function BatchesPage() {
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <button
               onClick={() => setShowModal(true)}
-              className="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"
+              className="px-3.5 py-2 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] font-semibold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               Receive Batch
@@ -82,32 +82,32 @@ export default function BatchesPage() {
         </div>
 
         {/* Batches Table */}
-        <div className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden shadow-xs">
+        <div className="rounded-xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-xs">
           <div className="hidden md:block">
             <table className="w-full text-left text-xs">
-              <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold">
+              <thead className="bg-[var(--surface-hover)] border-b border-[var(--border)] text-[var(--text-secondary)] font-semibold">
                 <tr>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Batch Ref</th>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Product</th>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Date Added</th>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Supplier</th>
-                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Cost / Sell</th>
-                  <th className="py-3 px-4 text-right font-semibold text-gray-700 dark:text-gray-200">Remaining Stock</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Batch Ref</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Product</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Date Added</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Supplier</th>
+                  <th className="py-3 px-4 font-semibold text-[var(--text)]">Cost / Sell</th>
+                  <th className="py-3 px-4 text-right font-semibold text-[var(--text)]">Remaining Stock</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
+              <tbody className="divide-y divide-[var(--border)] text-[var(--text)]">
                 {batches.map((b) => (
-                  <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <td className="py-2.5 px-4 font-mono font-semibold text-gray-900 dark:text-gray-100">{b.batchRef || 'N/A'}</td>
-                    <td className="py-2.5 px-4 font-medium text-gray-900 dark:text-gray-100">{b.product?.name}</td>
-                    <td className="py-2.5 px-4 text-gray-500 dark:text-gray-400">{b.dateAdded || 'N/A'}</td>
-                    <td className="py-2.5 px-4 text-gray-600 dark:text-gray-300">{b.supplier || 'Direct'}</td>
+                  <tr key={b.id} className="hover:bg-[var(--surface-hover)] transition-colors">
+                    <td className="py-2.5 px-4 font-mono font-semibold text-[var(--text)]">{b.batchRef || 'N/A'}</td>
+                    <td className="py-2.5 px-4 font-medium text-[var(--text)]">{b.product?.name}</td>
+                    <td className="py-2.5 px-4 text-[var(--text-secondary)]">{b.dateAdded || 'N/A'}</td>
+                    <td className="py-2.5 px-4 text-[var(--text-secondary)]">{b.supplier || 'Direct'}</td>
                     <td className="py-2.5 px-4">
-                      <span className="text-gray-500">${b.costPrice.toFixed(2)}</span> /{' '}
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">${b.sellPrice.toFixed(2)}</span>
+                      <span className="text-[var(--text-muted)]">${b.costPrice.toFixed(2)}</span> /{' '}
+                      <span className="text-[var(--success-text)] font-bold">${b.sellPrice.toFixed(2)}</span>
                     </td>
-                    <td className="py-2.5 px-4 text-right font-bold text-gray-900 dark:text-gray-100">
-                      <span className="px-2 py-0.5 rounded-md text-[10px] bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <td className="py-2.5 px-4 text-right font-bold text-[var(--text)]">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] bg-[var(--surface-hover)] text-[var(--text)] border border-[var(--border)]">
                         {b.qtyRemaining} / {b.qtyReceived} pcs
                       </span>
                     </td>
@@ -118,19 +118,19 @@ export default function BatchesPage() {
           </div>
 
           {/* Mobile View */}
-          <div className="md:hidden divide-y divide-gray-100 dark:divide-gray-700/60">
+          <div className="md:hidden divide-y divide-[var(--border)]">
             {batches.map((b) => (
               <div key={b.id} className="p-3.5 space-y-1 text-xs">
                 <div className="flex justify-between items-start">
                   <div>
-                    <span className="font-semibold text-gray-900 dark:text-gray-100">{b.product?.name}</span>
-                    <div className="text-[10px] font-mono text-blue-600 dark:text-blue-400">Batch: {b.batchRef || 'N/A'}</div>
+                    <span className="font-semibold text-[var(--text)]">{b.product?.name}</span>
+                    <div className="text-[10px] font-mono text-[var(--accent)]">Batch: {b.batchRef || 'N/A'}</div>
                   </div>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-bold">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] bg-[var(--success-bg)] text-[var(--success-text)] border border-[var(--border)] font-bold">
                     {b.qtyRemaining} pcs left
                   </span>
                 </div>
-                <div className="text-[10px] text-gray-500 dark:text-gray-400 flex justify-between pt-1">
+                <div className="text-[10px] text-[var(--text-secondary)] flex justify-between pt-1">
                   <span>Supplier: {b.supplier || 'Direct'}</span>
                   <span>Sell: ${b.sellPrice.toFixed(2)}</span>
                 </div>
@@ -142,15 +142,15 @@ export default function BatchesPage() {
         {/* Modal: Receive Stock */}
         {showModal && (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 w-full max-w-md shadow-xl space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">Receive Shipment Batch</h3>
-                <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-xl p-5 w-full max-w-md shadow-xl space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
+                <h3 className="font-bold text-[var(--text)] text-sm">Receive Shipment Batch</h3>
+                <button onClick={() => setShowModal(false)} className="text-[var(--text-muted)] hover:text-[var(--text)] cursor-pointer">✕</button>
               </div>
 
               <form onSubmit={handleAddBatch} className="space-y-3 text-xs">
                 <div>
-                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Select Product *</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Select Product *</label>
                   <select
                     required
                     value={productId}
@@ -162,7 +162,7 @@ export default function BatchesPage() {
                         setSellPrice(prod.sellPrice.toString());
                       }
                     }}
-                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                   >
                     <option value="">Select item...</option>
                     {products.map((p) => (
@@ -173,58 +173,58 @@ export default function BatchesPage() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Qty Received *</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Qty Received *</label>
                     <input
                       type="number"
                       required
                       value={qty}
                       onChange={(e) => setQty(e.target.value)}
-                      className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 font-bold focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] font-bold focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Batch Reference #</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Batch Reference #</label>
                     <input
                       type="text"
                       value={batchRef}
                       onChange={(e) => setBatchRef(e.target.value)}
                       placeholder="e.g. B-2026-09"
-                      className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Cost Price ($)</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Cost Price ($)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={costPrice}
                       onChange={(e) => setCostPrice(e.target.value)}
-                      className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Sell Price ($)</label>
+                    <label className="block font-semibold text-[var(--text-secondary)] mb-1">Sell Price ($)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={sellPrice}
                       onChange={(e) => setSellPrice(e.target.value)}
-                      className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 font-bold focus:outline-none focus:border-blue-600"
+                      className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] font-bold focus:outline-none focus:border-[var(--accent)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Supplier</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Supplier</label>
                   <input
                     type="text"
                     value={supplier}
                     onChange={(e) => setSupplier(e.target.value)}
                     placeholder="e.g. Acme Wholesale Ltd"
-                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
@@ -232,13 +232,13 @@ export default function BatchesPage() {
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 text-xs"
+                    className="px-3 py-1.5 rounded-lg border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] text-xs cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs"
+                    className="px-4 py-1.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] font-semibold text-xs shadow-xs cursor-pointer"
                   >
                     Confirm Stock
                   </button>

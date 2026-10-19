@@ -83,18 +83,18 @@ export default function Navigation() {
   return (
     <>
       {/* ─── DESKTOP SIDEBAR ─── */}
-      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 h-screen sticky top-0 z-40 transition-colors">
+      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-[var(--border)] bg-[var(--surface)] h-screen sticky top-0 z-40 transition-colors">
         {/* Brand & Theme Toggle */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+        <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-[var(--accent)] text-[var(--accent-text)] flex items-center justify-center shadow-xs">
               <Store className="w-4 h-4" />
             </div>
             <div>
-              <h1 className="font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight leading-none">
+              <h1 className="font-bold text-[var(--text)] text-sm tracking-tight leading-none">
                 ExamplePOS
               </h1>
-              <span className="text-[11px] text-gray-500 dark:text-gray-400 font-normal">POS & Inventory</span>
+              <span className="text-[11px] text-[var(--text-secondary)] font-normal">POS & Inventory</span>
             </div>
           </div>
           <ThemeToggle />
@@ -102,7 +102,7 @@ export default function Navigation() {
 
         {/* Navigation Links */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-          <div className="px-3 py-1.5 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+          <div className="px-3 py-1.5 text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
             Menu
           </div>
           {filteredNav.map((item) => {
@@ -114,26 +114,24 @@ export default function Navigation() {
                 href={item.href}
                 className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                   isActive
-                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold'
+                    ? 'bg-[var(--surface-hover)] text-[var(--accent)] font-semibold border-l-2 border-[var(--accent)]'
                     : item.highlight
-                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'bg-[var(--surface-hover)] text-[var(--text)] hover:text-[var(--accent)]'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text)]'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   <Icon
                     className={`w-4 h-4 ${
                       isActive
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : item.highlight
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-gray-400 dark:text-gray-500'
+                        ? 'text-[var(--accent)]'
+                        : 'text-[var(--text-muted)]'
                     }`}
                   />
                   <span>{item.label}</span>
                 </div>
                 {item.badge !== undefined && item.badge > 0 && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 flex items-center gap-1">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-[var(--warning-bg)] text-[var(--warning-text)] flex items-center gap-1">
                     <AlertTriangle className="w-2.5 h-2.5" />
                     {item.badge}
                   </span>
@@ -144,25 +142,25 @@ export default function Navigation() {
         </nav>
 
         {/* User Card & Logout */}
-        <div className="p-3 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/70">
-          <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+        <div className="p-3 border-t border-[var(--border)] bg-[var(--bg)]">
+          <div className="flex items-center justify-between p-2 rounded-lg bg-[var(--surface)] border border-[var(--border)]">
             <div className="flex items-center gap-2 truncate">
-              <div className="w-7 h-7 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center font-bold text-xs uppercase">
+              <div className="w-7 h-7 rounded-md bg-[var(--surface-hover)] text-[var(--text)] flex items-center justify-center font-bold text-xs uppercase">
                 {user?.username?.substring(0, 2) || 'ST'}
               </div>
               <div className="truncate">
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate">
+                <p className="text-xs font-semibold text-[var(--text)] truncate">
                   {user?.fullName || user?.username || 'Staff'}
                 </p>
-                <p className="text-[10px] text-gray-500 dark:text-gray-400 capitalize flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                <p className="text-[10px] text-[var(--text-secondary)] capitalize flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-[var(--accent)]" />
                   {user?.role || 'Staff'}
                 </p>
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              className="p-1.5 text-[var(--text-muted)] hover:text-[var(--error-text)] hover:bg-[var(--error-bg)] rounded-md transition-colors"
               title="Sign Out"
             >
               <LogOut className="w-3.5 h-3.5" />
@@ -172,16 +170,16 @@ export default function Navigation() {
       </aside>
 
       {/* ─── MOBILE TOP BAR ─── */}
-      <header className="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-2.5 flex items-center justify-between shadow-xs">
+      <header className="lg:hidden sticky top-0 z-40 bg-[var(--surface)] border-b border-[var(--border)] px-4 py-2.5 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center text-white">
+          <div className="w-7 h-7 rounded-md bg-[var(--accent)] text-[var(--accent-text)] flex items-center justify-center">
             <Store className="w-3.5 h-3.5" />
           </div>
           <div>
-            <span className="font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight leading-none block">
+            <span className="font-bold text-[var(--text)] text-sm tracking-tight leading-none block">
               ExamplePOS
             </span>
-            <span className="text-[10px] text-gray-500 dark:text-gray-400 font-normal">POS & Inventory</span>
+            <span className="text-[10px] text-[var(--text-secondary)] font-normal">POS & Inventory</span>
           </div>
         </div>
 
@@ -190,14 +188,14 @@ export default function Navigation() {
           <ThemeToggle />
           <Link
             href="/pos"
-            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold flex items-center gap-1 active:scale-95 transition-transform"
+            className="px-2.5 py-1.5 rounded-lg bg-[var(--accent)] text-[var(--accent-text)] hover:bg-[var(--accent-hover)] text-xs font-semibold flex items-center gap-1 active:scale-95 transition-all"
           >
             <ShoppingCart className="w-3.5 h-3.5" />
             POS
           </Link>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-1.5 text-gray-600 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+            className="p-1.5 text-[var(--text-secondary)] rounded-lg border border-[var(--border)] bg-[var(--surface)]"
           >
             {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
@@ -206,18 +204,18 @@ export default function Navigation() {
 
       {/* ─── MOBILE DRAWER MENU ─── */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-gray-950/50 backdrop-blur-xs flex flex-col justify-end">
-          <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 rounded-t-2xl max-h-[85vh] overflow-y-auto p-4 space-y-3 shadow-xl">
-            <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-800">
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex flex-col justify-end">
+          <div className="bg-[var(--surface)] border-t border-[var(--border)] rounded-t-2xl max-h-[85vh] overflow-y-auto p-4 space-y-3 shadow-xl">
+            <div className="flex items-center justify-between pb-2 border-b border-[var(--border)]">
               <div>
-                <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">
+                <p className="font-bold text-[var(--text)] text-sm">
                   {user?.fullName || user?.username || 'Staff'}
                 </p>
-                <p className="text-[11px] text-gray-500 dark:text-gray-400 capitalize">{user?.role} Account</p>
+                <p className="text-[11px] text-[var(--text-secondary)] capitalize">{user?.role} Account</p>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-md"
+                className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text)] rounded-md"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -234,8 +232,8 @@ export default function Navigation() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center justify-between p-2.5 rounded-lg text-xs font-medium transition-colors ${
                       isActive
-                        ? 'bg-blue-600 text-white font-semibold'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                        ? 'bg-[var(--accent)] text-[var(--accent-text)] font-semibold'
+                        : 'text-[var(--text)] hover:bg-[var(--surface-hover)]'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -243,7 +241,7 @@ export default function Navigation() {
                       <span>{item.label}</span>
                     </div>
                     {item.badge !== undefined && item.badge > 0 ? (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 font-bold">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-[var(--warning-bg)] text-[var(--warning-text)] font-bold">
                         {item.badge}
                       </span>
                     ) : (
@@ -256,7 +254,7 @@ export default function Navigation() {
 
             <button
               onClick={handleLogout}
-              className="w-full py-2.5 rounded-lg bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+              className="w-full py-2.5 rounded-lg bg-[var(--error-bg)] text-[var(--error-text)] border border-[var(--border)] font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" />
               Sign Out

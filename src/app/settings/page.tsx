@@ -40,66 +40,65 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-[var(--bg)] text-[var(--text)] transition-colors">
       <Navigation />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full pb-24 lg:pb-12">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight flex items-center gap-2">
-              <Settings className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <h1 className="text-xl sm:text-2xl font-bold text-[var(--text)] tracking-tight flex items-center gap-2">
+              <Settings className="w-5 h-5 text-[var(--accent)]" />
               Store Settings & Localization
             </h1>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
               Configure business info, currency, tax rates, and receipt footers.
             </p>
           </div>
-
         </div>
 
         {success && (
-          <div className="mb-4 p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <div className="mb-4 p-2.5 rounded-lg bg-[var(--success-bg)] border border-[var(--border)] text-[var(--success-text)] text-xs font-semibold flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-[var(--success-text)]" />
             Settings saved successfully!
           </div>
         )}
 
         <form onSubmit={handleSave} className="space-y-5">
           {/* Business Profile */}
-          <div className="p-5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xs space-y-4">
-            <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 border-b border-gray-100 dark:border-gray-700 pb-2.5">
-              <Store className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          <div className="p-5 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-xs space-y-4">
+            <h2 className="text-sm font-bold text-[var(--text)] flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
+              <Store className="w-4 h-4 text-[var(--accent)]" />
               Business Profile
             </h2>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Business Name</label>
+                <label className="block font-semibold text-[var(--text-secondary)] mb-1">Business Name</label>
                 <input
                   type="text"
                   value={config.businessName || ''}
                   onChange={(e) => handleChange('businessName', e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Store Address</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Store Address</label>
                   <input
                     type="text"
                     value={config.businessAddress || ''}
                     onChange={(e) => handleChange('businessAddress', e.target.value)}
-                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Contact Phone</label>
+                  <label className="block font-semibold text-[var(--text-secondary)] mb-1">Contact Phone</label>
                   <input
                     type="text"
                     value={config.businessPhone || ''}
                     onChange={(e) => handleChange('businessPhone', e.target.value)}
-                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
               </div>
@@ -107,50 +106,50 @@ export default function SettingsPage() {
           </div>
 
           {/* Currency & Tax */}
-          <div className="p-5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xs space-y-4">
-            <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 border-b border-gray-100 dark:border-gray-700 pb-2.5">
-              <Receipt className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <div className="p-5 rounded-xl bg-[var(--surface)] border border-[var(--border)] shadow-xs space-y-4">
+            <h2 className="text-sm font-bold text-[var(--text)] flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
+              <Receipt className="w-4 h-4 text-[var(--accent)]" />
               Financial & Tax
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div>
-                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Currency Symbol</label>
+                <label className="block font-semibold text-[var(--text-secondary)] mb-1">Currency Symbol</label>
                 <input
                   type="text"
                   value={config.currency || '$'}
                   onChange={(e) => handleChange('currency', e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 font-bold focus:outline-none focus:border-blue-600"
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] font-bold focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Currency Code</label>
+                <label className="block font-semibold text-[var(--text-secondary)] mb-1">Currency Code</label>
                 <input
                   type="text"
                   value={config.currencyCode || 'USD'}
                   onChange={(e) => handleChange('currencyCode', e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 font-mono focus:outline-none focus:border-blue-600"
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] font-mono focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Default Tax Rate (%)</label>
+                <label className="block font-semibold text-[var(--text-secondary)] mb-1">Default Tax Rate (%)</label>
                 <input
                   type="number"
                   step="0.1"
                   value={config.taxRate || '5.0'}
                   onChange={(e) => handleChange('taxRate', e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 font-bold focus:outline-none focus:border-blue-600"
+                  className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] font-bold focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
             </div>
 
             <div className="text-xs">
-              <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Receipt Footer Message</label>
+              <label className="block font-semibold text-[var(--text-secondary)] mb-1">Receipt Footer Message</label>
               <textarea
                 rows={2}
                 value={config.receiptFooter || ''}
                 onChange={(e) => handleChange('receiptFooter', e.target.value)}
-                className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
+                className="w-full bg-[var(--bg)] border border-[var(--border)] rounded-lg p-2 text-[var(--text)] focus:outline-none focus:border-[var(--accent)]"
               />
             </div>
           </div>
@@ -159,7 +158,7 @@ export default function SettingsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"
+              className="px-5 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] font-semibold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
             >
               <Save className="w-3.5 h-3.5" />
               {saving ? 'Saving...' : 'Save Changes'}
