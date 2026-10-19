@@ -41,17 +41,17 @@ export default function CustomersPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
+    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Navigation />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full pb-24 lg:pb-12">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight flex items-center gap-2">
               <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               Customer Relationship Management (CRM)
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Track customer profiles, cumulative purchase spend, and loyalty points.
             </p>
           </div>
@@ -70,15 +70,15 @@ export default function CustomersPage() {
           </div>
         </div>
 
-        {/* Customer Cards (30% Surface Layer) */}
+        {/* Customer Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {customers.map((c) => (
-            <div key={c.id} className="p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs space-y-3">
+            <div key={c.id} className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xs space-y-3">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">{c.name}</h3>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
-                    <Phone className="w-3 h-3 text-slate-400" />
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{c.name}</h3>
+                  <div className="text-[11px] text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5">
+                    <Phone className="w-3 h-3 text-gray-400" />
                     {c.phone || 'No phone'}
                   </div>
                 </div>
@@ -88,8 +88,8 @@ export default function CustomersPage() {
                 </span>
               </div>
 
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
-                <span className="text-slate-500 dark:text-slate-400">Total Spent:</span>
+              <div className="pt-2 border-t border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-xs">
+                <span className="text-gray-500 dark:text-gray-400">Total Spent:</span>
                 <span className="font-bold text-emerald-600 dark:text-emerald-400">${(c.totalSpent || 0).toFixed(2)}</span>
               </div>
             </div>
@@ -98,56 +98,56 @@ export default function CustomersPage() {
 
         {/* Modal: Add Customer */}
         {showModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-5 w-full max-w-md shadow-xl space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">New Customer</h3>
-                <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 w-full max-w-md shadow-xl space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">New Customer</h3>
+                <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
               </div>
 
               <form onSubmit={handleCreate} className="space-y-3 text-xs">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Customer Full Name *</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Customer Full Name *</label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Johnathan Walker"
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Phone Number</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
                   <input
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Email</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Email</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="john@example.com"
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Address</label>
+                  <label className="block font-semibold text-gray-700 dark:text-gray-300 mb-1">Address</label>
                   <input
                     type="text"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="Street, City"
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600"
+                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
@@ -155,7 +155,7 @@ export default function CustomersPage() {
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs"
+                    className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 text-xs"
                   >
                     Cancel
                   </button>

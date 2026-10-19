@@ -180,21 +180,21 @@ export default function POSPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
+    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <Navigation />
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Header & Search Bar */}
-        <header className="p-3 sm:p-4 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0 flex flex-col sm:flex-row items-center gap-3 justify-between">
+        <header className="p-3 sm:p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shrink-0 flex flex-col sm:flex-row items-center gap-3 justify-between">
           <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               autoFocus
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Scan barcode or type name..."
-              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg py-1.5 pl-9 pr-3 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg py-1.5 pl-9 pr-3 text-xs sm:text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:border-blue-600"
             />
           </div>
 
@@ -206,7 +206,7 @@ export default function POSPage() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                   selectedCategory === 'all'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 All Items
@@ -218,7 +218,7 @@ export default function POSPage() {
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                     selectedCategory === c.id.toString()
                       ? 'bg-blue-600 text-white'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
                   {c.name}
@@ -235,7 +235,7 @@ export default function POSPage() {
 
         {/* POS Body (Catalog Grid + Cart Sidebar) */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Catalog Grid (60% Primary Work Area) */}
+          {/* Catalog Grid */}
           <section className="flex-1 overflow-y-auto p-3 sm:p-5 grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3.5 content-start pb-24 lg:pb-6">
             {filteredProducts.map((p) => {
               const inCart = cart.find((i) => i.id === p.id);
@@ -246,10 +246,10 @@ export default function POSPage() {
                   onClick={() => !isOut && addToCart(p)}
                   className={`p-3 sm:p-4 rounded-xl border text-left flex flex-col justify-between transition-all select-none relative ${
                     isOut
-                      ? 'bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800 opacity-60 cursor-not-allowed'
+                      ? 'bg-gray-100 dark:bg-gray-800/40 border-gray-200 dark:border-gray-800 opacity-60 cursor-not-allowed'
                       : inCart
-                      ? 'bg-blue-50/70 dark:bg-blue-950/40 border-blue-400 dark:border-blue-600 shadow-xs cursor-pointer active:scale-98'
-                      : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 border-slate-200 dark:border-slate-700 shadow-xs cursor-pointer active:scale-98'
+                      ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-500 dark:border-blue-500 shadow-xs cursor-pointer active:scale-98'
+                      : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 border-gray-200 dark:border-gray-700 shadow-xs cursor-pointer active:scale-98'
                   }`}
                 >
                   {inCart && (
@@ -259,21 +259,21 @@ export default function POSPage() {
                   )}
 
                   <div>
-                    <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 block truncate">
+                    <span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 block truncate">
                       {p.category?.name || 'General'}
                     </span>
-                    <h3 className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 line-clamp-2 mt-0.5 leading-snug">
+                    <h3 className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mt-0.5 leading-snug">
                       {p.name}
                     </h3>
                   </div>
 
-                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                  <div className="mt-3 pt-2 border-t border-gray-100 dark:border-gray-700/60 flex items-center justify-between text-xs">
+                    <span className="font-bold text-gray-900 dark:text-gray-100 text-sm">
                       ${p.sellPrice.toFixed(2)}
                     </span>
                     <span
                       className={`text-[10px] font-medium ${
-                        isOut ? 'text-red-600 dark:text-red-400 font-bold' : p.totalStock < 20 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'
+                        isOut ? 'text-red-600 dark:text-red-400 font-bold' : p.totalStock < 20 ? 'text-amber-600 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400'
                       }`}
                     >
                       {isOut ? 'Out of Stock' : `${p.totalStock} ${p.unit}`}
@@ -284,19 +284,19 @@ export default function POSPage() {
             })}
           </section>
 
-          {/* ─── DESKTOP CART SIDEBAR (30% Structural Layer) ─── */}
-          <aside className="hidden lg:flex flex-col w-96 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 h-full">
-            <div className="p-3.5 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+          {/* DESKTOP CART SIDEBAR */}
+          <aside className="hidden lg:flex flex-col w-96 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 h-full">
+            <div className="p-3.5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ShoppingCart className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                <h2 className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                <h2 className="font-bold text-gray-900 dark:text-gray-100 text-sm">
                   Cart ({cart.reduce((s, i) => s + i.qty, 0)})
                 </h2>
               </div>
               {cart.length > 0 && (
                 <button
                   onClick={() => setCart([])}
-                  className="text-[11px] text-slate-400 hover:text-red-600 transition-colors"
+                  className="text-[11px] text-gray-400 hover:text-red-600 transition-colors"
                 >
                   Clear Cart
                 </button>
@@ -304,17 +304,17 @@ export default function POSPage() {
             </div>
 
             {/* Customer selector */}
-            <div className="p-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-850">
-              <div className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-lg px-2.5 py-1.5 border border-slate-200 dark:border-slate-700">
-                <User className="w-3.5 h-3.5 text-slate-400" />
+            <div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+              <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg px-2.5 py-1.5 border border-gray-200 dark:border-gray-700">
+                <User className="w-3.5 h-3.5 text-gray-400" />
                 <select
                   value={selectedCustomer}
                   onChange={(e) => setSelectedCustomer(e.target.value)}
-                  className="bg-transparent text-xs text-slate-900 dark:text-slate-100 focus:outline-none w-full"
+                  className="bg-transparent text-xs text-gray-900 dark:text-gray-100 focus:outline-none w-full"
                 >
-                  <option value="" className="bg-white dark:bg-slate-900">Walk-in Customer</option>
+                  <option value="" className="bg-white dark:bg-gray-900">Walk-in Customer</option>
                   {customers.map((c) => (
-                    <option key={c.id} value={c.id} className="bg-white dark:bg-slate-900">
+                    <option key={c.id} value={c.id} className="bg-white dark:bg-gray-900">
                       {c.name} {c.phone ? `(${c.phone})` : ''}
                     </option>
                   ))}
@@ -325,48 +325,48 @@ export default function POSPage() {
             {/* Cart Items List */}
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
               {cart.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
+                <div className="h-full flex flex-col items-center justify-center text-center p-6 text-gray-400">
                   <ShoppingCart className="w-8 h-8 mb-2 opacity-30" />
                   <p className="text-xs font-medium">Cart is empty</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Click products to add them to current ticket.</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Click products to add them to current ticket.</p>
                 </div>
               ) : (
                 cart.map((item) => (
                   <div
                     key={item.id}
-                    className="p-2 rounded-lg bg-slate-50 dark:bg-slate-750 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs"
+                    className="p-2 rounded-lg bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-700 flex items-center justify-between text-xs"
                   >
                     <div className="truncate pr-2">
-                      <div className="font-semibold text-slate-900 dark:text-slate-100 truncate">{item.name}</div>
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                      <div className="font-semibold text-gray-900 dark:text-gray-100 truncate">{item.name}</div>
+                      <div className="text-[10px] text-gray-500 dark:text-gray-400">
                         ${item.sellPrice.toFixed(2)} each
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <div className="flex items-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md overflow-hidden">
+                      <div className="flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
                         <button
                           onClick={() => updateQty(item.id, -1)}
-                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
+                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-6 text-center font-bold text-slate-900 dark:text-slate-100 text-xs">{item.qty}</span>
+                        <span className="w-6 text-center font-bold text-gray-900 dark:text-gray-100 text-xs">{item.qty}</span>
                         <button
                           onClick={() => updateQty(item.id, 1)}
-                          className="p-1 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
+                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
 
-                      <div className="w-14 text-right font-bold text-slate-900 dark:text-slate-100">
+                      <div className="w-14 text-right font-bold text-gray-900 dark:text-gray-100">
                         ${(item.sellPrice * item.qty).toFixed(2)}
                       </div>
 
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="text-slate-400 hover:text-red-600"
+                        className="text-gray-400 hover:text-red-600"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -376,17 +376,17 @@ export default function POSPage() {
               )}
             </div>
 
-            {/* Summary & Checkout Footer (10% Accent) */}
-            <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-850 space-y-2">
-              <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+            {/* Summary & Checkout Footer */}
+            <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 space-y-2">
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                 <span>Tax (5%)</span>
                 <span>${taxAmount.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-sm font-bold text-slate-900 dark:text-slate-100 pt-2 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex justify-between text-sm font-bold text-gray-900 dark:text-gray-100 pt-2 border-t border-gray-200 dark:border-gray-700">
                 <span>Total Due</span>
                 <span className="text-emerald-600 dark:text-emerald-400 text-lg">${total.toFixed(2)}</span>
               </div>
@@ -405,7 +405,7 @@ export default function POSPage() {
           </aside>
         </div>
 
-        {/* ─── MOBILE FLOATING CART DRAWER TRIGGER ─── */}
+        {/* MOBILE FLOATING CART DRAWER TRIGGER */}
         <div className="lg:hidden fixed bottom-16 left-3 right-3 z-30">
           <button
             onClick={() => setMobileCartOpen(true)}
@@ -419,41 +419,41 @@ export default function POSPage() {
           </button>
         </div>
 
-        {/* ─── MOBILE CART DRAWER ─── */}
+        {/* MOBILE CART DRAWER */}
         {mobileCartOpen && (
-          <div className="lg:hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex flex-col justify-end">
-            <div className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 rounded-t-2xl max-h-[90vh] flex flex-col shadow-xl">
-              <div className="p-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Shopping Cart</h3>
-                <button onClick={() => setMobileCartOpen(false)} className="text-slate-400 p-1">
+          <div className="lg:hidden fixed inset-0 z-50 bg-black/50 flex flex-col justify-end">
+            <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 rounded-t-2xl max-h-[90vh] flex flex-col shadow-xl">
+              <div className="p-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">Shopping Cart</h3>
+                <button onClick={() => setMobileCartOpen(false)} className="text-gray-400 p-1">
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <div className="flex-1 overflow-y-auto p-3 space-y-2">
                 {cart.length === 0 ? (
-                  <p className="text-center text-slate-400 py-6 text-xs">Cart is empty.</p>
+                  <p className="text-center text-gray-400 py-6 text-xs">Cart is empty.</p>
                 ) : (
                   cart.map((item) => (
                     <div
                       key={item.id}
-                      className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs"
+                      className="p-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-between text-xs"
                     >
                       <div className="truncate pr-2">
-                        <div className="font-semibold text-slate-900 dark:text-slate-100 truncate">{item.name}</div>
-                        <div className="text-[10px] text-slate-500">${item.sellPrice.toFixed(2)}</div>
+                        <div className="font-semibold text-gray-900 dark:text-gray-100 truncate">{item.name}</div>
+                        <div className="text-[10px] text-gray-500">${item.sellPrice.toFixed(2)}</div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="flex items-center bg-white dark:bg-slate-700 rounded-md border border-slate-200 dark:border-slate-600">
-                          <button onClick={() => updateQty(item.id, -1)} className="p-1 text-slate-600 dark:text-slate-200">
+                        <div className="flex items-center bg-white dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600">
+                          <button onClick={() => updateQty(item.id, -1)} className="p-1 text-gray-600 dark:text-gray-200">
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="w-5 text-center font-bold text-slate-900 dark:text-slate-100 text-xs">{item.qty}</span>
-                          <button onClick={() => updateQty(item.id, 1)} className="p-1 text-slate-600 dark:text-slate-200">
+                          <span className="w-5 text-center font-bold text-gray-900 dark:text-gray-100 text-xs">{item.qty}</span>
+                          <button onClick={() => updateQty(item.id, 1)} className="p-1 text-gray-600 dark:text-gray-200">
                             <Plus className="w-3 h-3" />
                           </button>
                         </div>
-                        <span className="w-12 text-right font-bold text-slate-900 dark:text-slate-100">
+                        <span className="w-12 text-right font-bold text-gray-900 dark:text-gray-100">
                           ${(item.sellPrice * item.qty).toFixed(2)}
                         </span>
                       </div>
@@ -462,10 +462,10 @@ export default function POSPage() {
                 )}
               </div>
 
-              <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 space-y-2">
-                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+              <div className="p-3 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 space-y-2">
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
                   <span>Total</span>
-                  <span className="font-bold text-slate-900 dark:text-slate-100">${total.toFixed(2)}</span>
+                  <span className="font-bold text-gray-900 dark:text-gray-100">${total.toFixed(2)}</span>
                 </div>
                 <button
                   disabled={cart.length === 0}
@@ -482,24 +482,24 @@ export default function POSPage() {
           </div>
         )}
 
-        {/* ─── CHECKOUT MODAL ─── */}
+        {/* CHECKOUT MODAL */}
         {showCheckout && (
-          <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 w-full max-w-sm shadow-xl space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
-                <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Complete Checkout</h3>
-                <button onClick={() => setShowCheckout(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 w-full max-w-sm shadow-xl space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm">Complete Checkout</h3>
+                <button onClick={() => setShowCheckout(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
               </div>
 
               {/* Total Due Banner */}
               <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-center">
                 <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-400 tracking-wider">Amount Due</span>
-                <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-0.5">${total.toFixed(2)}</div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-0.5">${total.toFixed(2)}</div>
               </div>
 
               {/* Payment Mode Selector */}
               <div>
-                <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
+                <label className="block text-[11px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                   Payment Method
                 </label>
                 <div className="grid grid-cols-4 gap-1.5">
@@ -518,7 +518,7 @@ export default function POSPage() {
                         className={`p-2 rounded-lg border text-center flex flex-col items-center gap-1 transition-colors ${
                           paymentMethod === m.id
                             ? 'bg-blue-600 border-blue-600 text-white font-semibold'
-                            : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750'
+                            : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
                         }`}
                       >
                         <Icon className="w-3.5 h-3.5" />
@@ -533,7 +533,7 @@ export default function POSPage() {
               {paymentMethod === 'Cash' && (
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <label className="font-semibold text-slate-700 dark:text-slate-300">Amount Tendered</label>
+                    <label className="font-semibold text-gray-700 dark:text-gray-300">Amount Tendered</label>
                     {changeDue > 0 && (
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold">Change: ${changeDue.toFixed(2)}</span>
                     )}
@@ -543,7 +543,7 @@ export default function POSPage() {
                     step="0.01"
                     value={amountTendered}
                     onChange={(e) => setAmountTendered(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 text-base font-bold text-center focus:outline-none focus:border-blue-600"
+                    className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg p-2 text-gray-900 dark:text-gray-100 text-base font-bold text-center focus:outline-none focus:border-blue-600"
                   />
                   <div className="flex gap-1 justify-center pt-0.5">
                     {[10, 20, 50, 100].map((amt) => (
@@ -551,7 +551,7 @@ export default function POSPage() {
                         key={amt}
                         type="button"
                         onClick={() => setAmountTendered(amt.toString())}
-                        className="px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-200"
+                        className="px-2.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-200"
                       >
                         ${amt}
                       </button>
@@ -578,22 +578,22 @@ export default function POSPage() {
           </div>
         )}
 
-        {/* ─── THERMAL RECEIPT MODAL ─── */}
+        {/* THERMAL RECEIPT MODAL */}
         {completedOrder && (
-          <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5 w-full max-w-sm shadow-xl space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 w-full max-w-sm shadow-xl space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
                   <CheckCircle className="w-4 h-4" />
                   Sale Completed!
                 </div>
-                <button onClick={() => setCompletedOrder(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
+                <button onClick={() => setCompletedOrder(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
               </div>
 
               {/* Printable Thermal Receipt Box */}
               <div
                 id="thermal-receipt"
-                className="bg-white text-black p-4 rounded-lg text-left font-mono text-[11px] leading-tight space-y-2 border border-slate-200"
+                className="bg-white text-black p-4 rounded-lg text-left font-mono text-[11px] leading-tight space-y-2 border border-gray-200"
               >
                 <div className="text-center border-b border-dashed border-gray-400 pb-2">
                   <div className="font-bold text-sm uppercase">ExamplePOS Store</div>
@@ -635,7 +635,7 @@ export default function POSPage() {
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={() => window.print()}
-                  className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                  className="flex-1 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   Print Receipt

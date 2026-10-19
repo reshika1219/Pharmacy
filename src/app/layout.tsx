@@ -10,11 +10,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'ExamplePOS — Remote Inventory & Store Operations',
-  description: 'Modern universal Point of Sale and real-time inventory management web application for mobile and desktop.',
+  title: 'ExamplePOS — Point of Sale & Inventory Management',
+  description: 'Clean, modern Point of Sale and Inventory Management web application for any business.',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
     title: 'ExamplePOS',
   },
 };
@@ -32,29 +32,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} dark`} suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              try {
-                const stored = localStorage.getItem('examplepos_theme');
-                if (stored === 'light') {
-                  document.documentElement.classList.remove('dark');
-                  document.documentElement.classList.add('light');
-                } else if (stored === 'dark') {
-                  document.documentElement.classList.add('dark');
-                  document.documentElement.classList.remove('light');
-                } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-                  document.documentElement.classList.remove('dark');
-                  document.documentElement.classList.add('light');
-                }
-              } catch (_) {}
+              (function() {
+                try {
+                  var theme = localStorage.getItem('examplepos_theme');
+                  if (!theme) {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  }
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch(e) {}
+              })();
             `,
           }}
         />
       </head>
-      <body className="min-h-full antialiased font-sans flex flex-col">
+      <body className="min-h-full font-sans antialiased flex flex-col">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

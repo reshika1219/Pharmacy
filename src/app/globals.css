@@ -1,55 +1,14 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@variant dark (&:where(.dark, .dark *));
 
-@layer base {
-  :root {
-    /* 60% Dominant Base: Soft neutral stone/slate off-white (NOT harsh pure #fff) */
-    --bg-app: #f8fafc;
-    /* 30% Structural Surfaces: Crisp cards, panels, and borders */
-    --bg-surface: #ffffff;
-    --bg-surface-elevated: #f1f5f9;
-    --bg-surface-hover: #f1f5f9;
-    --border-subtle: #e2e8f0;
-    --border-strong: #cbd5e1;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
-    /* 10% Purposeful Accent: Refined, trustworthy enterprise cobalt */
-    --accent-primary: #2563eb;
-    --accent-hover: #1d4ed8;
-  }
-
-  .dark {
-    /* 60% Dominant Base: Muted deep slate/charcoal (NOT harsh pure #000) */
-    --bg-app: #0f172a;
-    /* 30% Structural Surfaces: Clean slate layers */
-    --bg-surface: #1e293b;
-    --bg-surface-elevated: #283548;
-    --bg-surface-hover: #263345;
-    --border-subtle: #334155;
-    --border-strong: #475569;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    /* 10% Purposeful Accent */
-    --accent-primary: #3b82f6;
-    --accent-hover: #60a5fa;
-  }
-
-  body {
-    background-color: var(--bg-app);
-    color: var(--text-primary);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    transition: background-color 0.2s ease, color 0.2s ease;
-  }
-
-  * {
-    border-color: var(--border-subtle);
-  }
+body {
+  @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-/* Scrollbar */
+/* Clean standard scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -58,14 +17,14 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(156, 163, 175, 0.4);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.5);
+  background: rgba(156, 163, 175, 0.6);
 }
 
-/* Printable thermal receipt styling */
+/* Printable thermal receipt */
 @media print {
   body * {
     visibility: hidden;

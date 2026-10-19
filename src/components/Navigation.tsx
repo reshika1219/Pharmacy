@@ -65,14 +65,14 @@ export default function Navigation() {
   };
 
   const navItems = [
-    { label: 'Operations & KPI', href: '/', icon: LayoutDashboard },
-    { label: 'POS Terminal', href: '/pos', icon: ShoppingCart, highlight: true },
-    { label: 'Inventory Catalog', href: '/inventory', icon: Package, badge: lowStockCount > 0 ? lowStockCount : undefined },
-    { label: 'Stock Intake & Batches', href: '/batches', icon: Boxes },
-    { label: 'Orders & Receipts', href: '/orders', icon: Receipt },
-    { label: 'Customers (CRM)', href: '/customers', icon: Users },
+    { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { label: 'Point of Sale', href: '/pos', icon: ShoppingCart, highlight: true },
+    { label: 'Inventory', href: '/inventory', icon: Package, badge: lowStockCount > 0 ? lowStockCount : undefined },
+    { label: 'Stock Intake', href: '/batches', icon: Boxes },
+    { label: 'Sales & Receipts', href: '/orders', icon: Receipt },
+    { label: 'Customers', href: '/customers', icon: Users },
     { label: 'Expenses', href: '/expenses', icon: Wallet },
-    { label: 'Store Settings', href: '/settings', icon: Settings, adminOnly: true },
+    { label: 'Settings', href: '/settings', icon: Settings, adminOnly: true },
   ];
 
   const filteredNav = navItems.filter((item) => {
@@ -82,19 +82,19 @@ export default function Navigation() {
 
   return (
     <>
-      {/* ─── DESKTOP SIDEBAR (30% Structural Layer) ─── */}
-      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 h-screen sticky top-0 z-40 transition-colors">
+      {/* ─── DESKTOP SIDEBAR ─── */}
+      <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 h-screen sticky top-0 z-40 transition-colors">
         {/* Brand & Theme Toggle */}
-        <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 dark:bg-blue-600 flex items-center justify-center text-white shadow-xs">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs">
               <Store className="w-4 h-4" />
             </div>
             <div>
-              <h1 className="font-bold text-slate-900 dark:text-slate-100 text-sm tracking-tight leading-none">
+              <h1 className="font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight leading-none">
                 ExamplePOS
               </h1>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Store Operations</span>
+              <span className="text-[11px] text-gray-500 dark:text-gray-400 font-normal">POS & Inventory</span>
             </div>
           </div>
           <ThemeToggle />
@@ -102,7 +102,7 @@ export default function Navigation() {
 
         {/* Navigation Links */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-          <div className="px-3 py-1.5 text-[11px] font-semibold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+          <div className="px-3 py-1.5 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
             Menu
           </div>
           {filteredNav.map((item) => {
@@ -114,10 +114,10 @@ export default function Navigation() {
                 href={item.href}
                 className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                   isActive
-                    ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200 dark:border-blue-800/60'
+                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold'
                     : item.highlight
-                    ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/40'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -127,13 +127,13 @@ export default function Navigation() {
                         ? 'text-blue-600 dark:text-blue-400'
                         : item.highlight
                         ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-slate-400 dark:text-slate-500'
+                        : 'text-gray-400 dark:text-gray-500'
                     }`}
                   />
                   <span>{item.label}</span>
                 </div>
                 {item.badge !== undefined && item.badge > 0 && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 flex items-center gap-1">
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 flex items-center gap-1">
                     <AlertTriangle className="w-2.5 h-2.5" />
                     {item.badge}
                   </span>
@@ -144,17 +144,17 @@ export default function Navigation() {
         </nav>
 
         {/* User Card & Logout */}
-        <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50">
-          <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60">
+        <div className="p-3 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/70">
+          <div className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2 truncate">
-              <div className="w-7 h-7 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center font-bold text-xs uppercase">
+              <div className="w-7 h-7 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 flex items-center justify-center font-bold text-xs uppercase">
                 {user?.username?.substring(0, 2) || 'ST'}
               </div>
               <div className="truncate">
-                <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
+                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate">
                   {user?.fullName || user?.username || 'Staff'}
                 </p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 capitalize flex items-center gap-1">
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 capitalize flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                   {user?.role || 'Staff'}
                 </p>
@@ -162,7 +162,7 @@ export default function Navigation() {
             </div>
             <button
               onClick={handleLogout}
-              className="p-1.5 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md transition-colors"
+              className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
               title="Sign Out"
             >
               <LogOut className="w-3.5 h-3.5" />
@@ -172,32 +172,32 @@ export default function Navigation() {
       </aside>
 
       {/* ─── MOBILE TOP BAR ─── */}
-      <header className="lg:hidden sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between">
+      <header className="lg:hidden sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-2.5 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center text-white">
             <Store className="w-3.5 h-3.5" />
           </div>
           <div>
-            <span className="font-bold text-slate-900 dark:text-slate-100 text-sm tracking-tight leading-none block">
+            <span className="font-bold text-gray-900 dark:text-gray-100 text-sm tracking-tight leading-none block">
               ExamplePOS
             </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Mobile Store</span>
+            <span className="text-[10px] text-gray-500 dark:text-gray-400 font-normal">POS & Inventory</span>
           </div>
         </div>
 
-        {/* Top-Right Controls: Theme Toggle, Quick POS, and Drawer */}
+        {/* Top-Right Controls */}
         <div className="flex items-center gap-1.5">
           <ThemeToggle />
           <Link
             href="/pos"
-            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold flex items-center gap-1 active:scale-95 transition-transform shadow-xs"
+            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold flex items-center gap-1 active:scale-95 transition-transform"
           >
             <ShoppingCart className="w-3.5 h-3.5" />
             POS
           </Link>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-1.5 text-slate-600 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800"
+            className="p-1.5 text-gray-600 dark:text-gray-300 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
           >
             {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
@@ -206,18 +206,18 @@ export default function Navigation() {
 
       {/* ─── MOBILE DRAWER MENU ─── */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-xs flex flex-col justify-end">
-          <div className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 rounded-t-2xl max-h-[85vh] overflow-y-auto p-4 space-y-3 shadow-xl">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+        <div className="lg:hidden fixed inset-0 z-50 bg-gray-950/50 backdrop-blur-xs flex flex-col justify-end">
+          <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 rounded-t-2xl max-h-[85vh] overflow-y-auto p-4 space-y-3 shadow-xl">
+            <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-800">
               <div>
-                <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">
+                <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">
                   {user?.fullName || user?.username || 'Staff'}
                 </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 capitalize">{user?.role} Account</p>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 capitalize">{user?.role} Account</p>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md"
+                className="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-md"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -235,7 +235,7 @@ export default function Navigation() {
                     className={`flex items-center justify-between p-2.5 rounded-lg text-xs font-medium transition-colors ${
                       isActive
                         ? 'bg-blue-600 text-white font-semibold'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
@@ -243,7 +243,7 @@ export default function Navigation() {
                       <span>{item.label}</span>
                     </div>
                     {item.badge !== undefined && item.badge > 0 ? (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 font-bold">
                         {item.badge}
                       </span>
                     ) : (
@@ -265,12 +265,12 @@ export default function Navigation() {
         </div>
       )}
 
-      {/* ─── MOBILE BOTTOM BAR (Touch-Friendly) ─── */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs border-t border-slate-200 dark:border-slate-800 px-3 py-1.5 flex items-center justify-around shadow-xs">
+      {/* ─── MOBILE BOTTOM BAR ─── */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-3 py-1.5 flex items-center justify-around shadow-xs">
         <Link
           href="/"
           className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-[10px] font-medium ${
-            pathname === '/' ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-slate-500 dark:text-slate-400'
+            pathname === '/' ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
           <LayoutDashboard className="w-4 h-4" />
@@ -279,7 +279,7 @@ export default function Navigation() {
         <Link
           href="/inventory"
           className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-[10px] font-medium relative ${
-            pathname === '/inventory' ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-slate-500 dark:text-slate-400'
+            pathname === '/inventory' ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
           <Package className="w-4 h-4" />
@@ -298,15 +298,15 @@ export default function Navigation() {
         <Link
           href="/orders"
           className={`flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-[10px] font-medium ${
-            pathname === '/orders' ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-slate-500 dark:text-slate-400'
+            pathname === '/orders' ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
           <Receipt className="w-4 h-4" />
-          Orders
+          Sales
         </Link>
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-[10px] font-medium text-slate-500 dark:text-slate-400"
+          className="flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-[10px] font-medium text-gray-500 dark:text-gray-400"
         >
           <Menu className="w-4 h-4" />
           More
