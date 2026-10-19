@@ -86,8 +86,6 @@ export default function LoginPage() {
           )}
 
           <form
-            action="javascript:void(0);"
-            method="POST"
             onSubmit={handleSubmit}
             className="space-y-3.5"
           >

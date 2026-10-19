@@ -116,6 +116,11 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Ensure developer overlay portal never captures or blocks touches */
+nextjs-portal {
+  pointer-events: none !important;
+}
+
 /* Hide scrollbar for clean horizontal category pills */
 .scrollbar-none::-webkit-scrollbar {
   display: none;
