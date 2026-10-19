@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
-import ThemeToggle from '@/components/ThemeToggle';
 import { Boxes, Plus } from 'lucide-react';
 
 export default function BatchesPage() {
@@ -72,9 +71,6 @@ export default function BatchesPage() {
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
-            <div className="hidden sm:block">
-              <ThemeToggle showLabel />
-            </div>
             <button
               onClick={() => setShowModal(true)}
               className="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"
@@ -89,19 +85,19 @@ export default function BatchesPage() {
         <div className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden shadow-xs">
           <div className="hidden md:block">
             <table className="w-full text-left text-xs">
-              <thead className="bg-gray-50 dark:bg-gray-900/60 border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 uppercase text-[10px] font-semibold tracking-wider">
+              <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold">
                 <tr>
-                  <th className="py-2.5 px-4">Batch Ref</th>
-                  <th className="py-2.5 px-4">Product</th>
-                  <th className="py-2.5 px-4">Date Added</th>
-                  <th className="py-2.5 px-4">Supplier</th>
-                  <th className="py-2.5 px-4">Cost / Sell</th>
-                  <th className="py-2.5 px-4 text-right">Remaining Stock</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Batch Ref</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Product</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Date Added</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Supplier</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Cost / Sell</th>
+                  <th className="py-3 px-4 text-right font-semibold text-gray-700 dark:text-gray-200">Remaining Stock</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-750 text-gray-700 dark:text-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
                 {batches.map((b) => (
-                  <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                  <tr key={b.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <td className="py-2.5 px-4 font-mono font-semibold text-gray-900 dark:text-gray-100">{b.batchRef || 'N/A'}</td>
                     <td className="py-2.5 px-4 font-medium text-gray-900 dark:text-gray-100">{b.product?.name}</td>
                     <td className="py-2.5 px-4 text-gray-500 dark:text-gray-400">{b.dateAdded || 'N/A'}</td>

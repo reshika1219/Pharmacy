@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Navigation from '@/components/Navigation';
-import ThemeToggle from '@/components/ThemeToggle';
 import {
   DollarSign,
   Package,
@@ -191,9 +190,6 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
-            <div className="hidden sm:block">
-              <ThemeToggle showLabel />
-            </div>
             <button
               onClick={() => loadData()}
               className="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer active:scale-95"
@@ -326,17 +322,17 @@ export default function DashboardPage() {
           {/* Desktop Table View */}
           <div className="hidden md:block rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">
             <table className="w-full text-left text-xs">
-              <thead className="bg-gray-50 dark:bg-gray-850 border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 uppercase text-[10px] font-semibold tracking-wider">
+              <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold">
                 <tr>
-                  <th className="py-2.5 px-4">Item & SKU</th>
-                  <th className="py-2.5 px-4">Category</th>
-                  <th className="py-2.5 px-4">Stock Level</th>
-                  <th className="py-2.5 px-4">Sell Price</th>
-                  <th className="py-2.5 px-4">Cost Price</th>
-                  <th className="py-2.5 px-4 text-right">Action</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Item & SKU</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Category</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Stock Level</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Sell Price</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Cost Price</th>
+                  <th className="py-3 px-4 text-right font-semibold text-gray-700 dark:text-gray-200">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700 text-gray-700 dark:text-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
                 {products.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="py-8 text-center text-gray-400">
@@ -345,7 +341,7 @@ export default function DashboardPage() {
                   </tr>
                 ) : (
                   products.map((p) => (
-                    <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                    <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="py-2.5 px-4 font-medium text-gray-900 dark:text-gray-100">
                         <div>{p.name}</div>
                         <div className="text-[10px] text-gray-400 dark:text-gray-500 font-mono">

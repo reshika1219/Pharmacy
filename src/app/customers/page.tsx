@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
-import ThemeToggle from '@/components/ThemeToggle';
 import { Users, Plus, Phone, Award } from 'lucide-react';
 
 export default function CustomersPage() {
@@ -57,9 +56,6 @@ export default function CustomersPage() {
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
-            <div className="hidden sm:block">
-              <ThemeToggle showLabel />
-            </div>
             <button
               onClick={() => setShowModal(true)}
               className="px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"

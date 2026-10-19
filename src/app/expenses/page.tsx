@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
-import ThemeToggle from '@/components/ThemeToggle';
 import { Wallet, Plus, Trash2 } from 'lucide-react';
 
 export default function ExpensesPage() {
@@ -62,9 +61,6 @@ export default function ExpensesPage() {
           </div>
 
           <div className="flex items-center gap-3 self-start sm:self-auto">
-            <div className="hidden sm:block">
-              <ThemeToggle showLabel />
-            </div>
             <div className="text-right">
               <span className="text-[10px] uppercase font-semibold text-gray-400 dark:text-gray-500 block">Total</span>
               <span className="text-base font-bold text-red-600 dark:text-red-400">${totalExpense.toFixed(2)}</span>
@@ -82,19 +78,19 @@ export default function ExpensesPage() {
         {/* Expenses Table */}
         <div className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden shadow-xs">
           <table className="w-full text-left text-xs">
-            <thead className="bg-gray-50 dark:bg-gray-900/60 border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 uppercase text-[10px] font-semibold tracking-wider">
+            <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold">
               <tr>
-                <th className="py-2.5 px-4">Date</th>
-                <th className="py-2.5 px-4">Category</th>
-                <th className="py-2.5 px-4">Description</th>
-                <th className="py-2.5 px-4">Logged By</th>
-                <th className="py-2.5 px-4 text-right">Amount</th>
-                <th className="py-2.5 px-4 text-right">Action</th>
+                <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Date</th>
+                <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Category</th>
+                <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Description</th>
+                <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Logged By</th>
+                <th className="py-3 px-4 text-right font-semibold text-gray-700 dark:text-gray-200">Amount</th>
+                <th className="py-3 px-4 text-right font-semibold text-gray-700 dark:text-gray-200">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-750 text-gray-700 dark:text-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
               {expenses.map((e) => (
-                <tr key={e.id} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                <tr key={e.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <td className="py-2.5 px-4 text-gray-500 dark:text-gray-400 font-mono">{e.date}</td>
                   <td className="py-2.5 px-4">
                     <span className="px-2 py-0.5 rounded-md text-[10px] bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 font-medium border border-red-200 dark:border-red-900">

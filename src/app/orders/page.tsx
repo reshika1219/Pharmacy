@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
-import ThemeToggle from '@/components/ThemeToggle';
 import { Receipt, Search, Printer, ChevronRight } from 'lucide-react';
 
 export default function OrdersPage() {
@@ -46,9 +45,6 @@ export default function OrdersPage() {
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
-            <div className="hidden sm:block">
-              <ThemeToggle showLabel />
-            </div>
             <div className="relative w-full sm:w-64">
               <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
@@ -66,18 +62,18 @@ export default function OrdersPage() {
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden shadow-xs">
           <div className="hidden md:block">
             <table className="w-full text-left text-xs">
-              <thead className="bg-gray-50 dark:bg-gray-900/60 border-b border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 uppercase text-[10px] font-semibold tracking-wider">
+              <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 font-semibold">
                 <tr>
-                  <th className="py-2.5 px-4">Receipt #</th>
-                  <th className="py-2.5 px-4">Date & Time</th>
-                  <th className="py-2.5 px-4">Customer</th>
-                  <th className="py-2.5 px-4">Cashier</th>
-                  <th className="py-2.5 px-4">Payment</th>
-                  <th className="py-2.5 px-4">Total</th>
-                  <th className="py-2.5 px-4 text-right">Action</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Receipt #</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Date & Time</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Customer</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Cashier</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Payment</th>
+                  <th className="py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Total</th>
+                  <th className="py-3 px-4 text-right font-semibold text-gray-700 dark:text-gray-200">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-750 text-gray-700 dark:text-gray-200">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-gray-900 dark:text-gray-100">
                 {filteredOrders.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="py-8 text-center text-gray-400">
@@ -86,7 +82,7 @@ export default function OrdersPage() {
                   </tr>
                 ) : (
                   filteredOrders.map((ord) => (
-                    <tr key={ord.id} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                    <tr key={ord.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                       <td className="py-2.5 px-4 font-bold text-gray-900 dark:text-gray-100 font-mono">{ord.orderNumber}</td>
                       <td className="py-2.5 px-4 text-gray-500 dark:text-gray-400">{ord.date} {ord.time}</td>
                       <td className="py-2.5 px-4">{ord.customer?.name || 'Walk-in'}</td>

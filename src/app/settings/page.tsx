@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
-import ThemeToggle from '@/components/ThemeToggle';
 import { Settings, Save, CheckCircle, Store, Receipt } from 'lucide-react';
 
 export default function SettingsPage() {
@@ -56,9 +55,6 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          <div className="hidden sm:block">
-            <ThemeToggle showLabel />
-          </div>
         </div>
 
         {success && (

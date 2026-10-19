@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Navigation from '@/components/Navigation';
-import ThemeToggle from '@/components/ThemeToggle';
 import {
   Search,
   ShoppingCart,
@@ -225,11 +224,6 @@ export default function POSPage() {
                 </button>
               ))}
             </div>
-
-            {/* Top Right Corner Switcher */}
-            <div className="shrink-0 hidden sm:block">
-              <ThemeToggle />
-            </div>
           </div>
         </header>
 
@@ -249,7 +243,7 @@ export default function POSPage() {
                       ? 'bg-gray-100 dark:bg-gray-800/40 border-gray-200 dark:border-gray-800 opacity-60 cursor-not-allowed'
                       : inCart
                       ? 'bg-blue-50 dark:bg-blue-950/40 border-blue-500 dark:border-blue-500 shadow-xs cursor-pointer active:scale-98'
-                      : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 border-gray-200 dark:border-gray-700 shadow-xs cursor-pointer active:scale-98'
+                      : 'bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/60 border-gray-200 dark:border-gray-700 shadow-xs cursor-pointer active:scale-98'
                   }`}
                 >
                   {inCart && (
@@ -518,7 +512,7 @@ export default function POSPage() {
                         className={`p-2 rounded-lg border text-center flex flex-col items-center gap-1 transition-colors ${
                           paymentMethod === m.id
                             ? 'bg-blue-600 border-blue-600 text-white font-semibold'
-                            : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750'
+                            : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
                       >
                         <Icon className="w-3.5 h-3.5" />
