@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import ThemeToggle from '@/components/ThemeToggle';
 import { Store, Lock, User, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 
 export default function LoginPage() {
@@ -46,110 +47,115 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950/40 via-[#090d16] to-[#06080e]">
-      <div className="w-full max-w-md">
-        {/* Brand Card Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 shadow-xl shadow-indigo-500/25 border border-indigo-400/30 mb-4">
-            <Store className="w-7 h-7 text-white" />
+    <main className="min-h-screen w-full flex items-center justify-center p-4 bg-slate-50 dark:bg-slate-900 transition-colors relative">
+      {/* Top Right Corner Light/Dark Mode Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle showLabel />
+      </div>
+
+      <div className="w-full max-w-sm">
+        {/* Brand Header */}
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-600 text-white shadow-xs mb-3">
+            <Store className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">ExamplePOS</h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 font-medium">
-            Cloud Remote Operations & Inventory Platform
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+            ExamplePOS
+          </h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Store Operations & Remote Inventory Management
           </p>
         </div>
 
-        {/* Login Form Panel */}
-        <div className="bg-[#0f172a]/90 backdrop-blur-2xl rounded-2xl p-6 sm:p-8 border border-white/10 shadow-2xl relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
-
+        {/* Clean Login Panel (30% Surface) */}
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
           {error && (
-            <div className="mb-5 p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs font-medium flex items-center gap-2 animate-shake">
-              <ShieldCheck className="w-4 h-4 shrink-0 text-rose-400" />
+            <div className="mb-4 p-2.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs font-medium flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Username
               </label>
               <div className="relative">
-                <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="admin or cashier"
-                  className="w-full bg-slate-900/80 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg py-2 pl-9 pr-3 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Password
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-slate-900/80 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg py-2 pl-9 pr-3 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors"
                 />
               </div>
             </div>
 
+            {/* 10% Accent Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 active:scale-[0.99] transition-all disabled:opacity-60"
+              className="w-full py-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-xs flex items-center justify-center gap-1.5 active:scale-98 transition-all disabled:opacity-60"
             >
               {loading ? (
                 <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
                   <span>Sign In</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </>
               )}
             </button>
           </form>
 
           {/* Quick Demo Login Presets */}
-          <div className="mt-6 pt-5 border-t border-white/10">
-            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center mb-3 flex items-center justify-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-amber-400" />
-              Quick Demo Logins
+          <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700/60">
+            <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider text-center mb-2.5 flex items-center justify-center gap-1">
+              <Zap className="w-3 h-3 text-amber-500" />
+              Demo Accounts
             </p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setPreset('admin', 'admin123')}
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left transition-colors group"
+                className="p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-700/50 border border-slate-200 dark:border-slate-700 text-left transition-colors"
               >
-                <div className="text-xs font-bold text-white group-hover:text-indigo-300">Admin Account</div>
-                <div className="text-[10px] text-slate-400">Full Store Operations</div>
+                <div className="text-xs font-bold text-slate-900 dark:text-slate-100">Admin</div>
+                <div className="text-[10px] text-slate-500">Store Manager</div>
               </button>
               <button
                 type="button"
                 onClick={() => setPreset('cashier', 'cashier123')}
-                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-left transition-colors group"
+                className="p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-700/50 border border-slate-200 dark:border-slate-700 text-left transition-colors"
               >
-                <div className="text-xs font-bold text-white group-hover:text-emerald-300">Cashier Account</div>
-                <div className="text-[10px] text-slate-400">POS Checkout Terminal</div>
+                <div className="text-xs font-bold text-slate-900 dark:text-slate-100">Cashier</div>
+                <div className="text-[10px] text-slate-500">POS Checkout</div>
               </button>
             </div>
           </div>
         </div>
 
-        <p className="text-center text-[11px] text-slate-500 mt-6">
+        <p className="text-center text-[11px] text-slate-400 dark:text-slate-500 mt-5">
           Access remotely from any mobile phone, tablet, or PC browser.
         </p>
       </div>

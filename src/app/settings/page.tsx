@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
-import { Settings, Save, CheckCircle, Shield, Store, Receipt } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
+import { Settings, Save, CheckCircle, Store, Receipt } from 'lucide-react';
 
 export default function SettingsPage() {
   const [config, setConfig] = useState<Record<string, string>>({});
@@ -40,63 +41,69 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row min-h-screen">
+    <div className="flex-1 flex flex-col lg:flex-row min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors">
       <Navigation />
 
       <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full pb-24 lg:pb-12">
-        <div className="mb-6">
-          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            <Settings className="w-5 h-5 text-indigo-400" />
-            Store Settings & Localization
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-            Configure business information, receipt headers, currency, and tax parameters.
-          </p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2">
+              <Settings className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              Store Settings & Localization
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Configure business info, currency, tax rates, and receipt footers.
+            </p>
+          </div>
+
+          <div className="hidden sm:block">
+            <ThemeToggle showLabel />
+          </div>
         </div>
 
         {success && (
-          <div className="mb-5 p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-400" />
+          <div className="mb-4 p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Settings saved successfully!
           </div>
         )}
 
-        <form onSubmit={handleSave} className="space-y-6">
-          {/* Store Info */}
-          <div className="p-5 rounded-2xl bg-[#0f172a] border border-white/10 shadow-xl space-y-4">
-            <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
-              <Store className="w-4 h-4 text-indigo-400" />
+        <form onSubmit={handleSave} className="space-y-5">
+          {/* Business Profile (30% Surface) */}
+          <div className="p-5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-2.5">
+              <Store className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               Business Profile
             </h2>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Business Name</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Business Name</label>
                 <input
                   type="text"
                   value={config.businessName || ''}
                   onChange={(e) => handleChange('businessName', e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Store Address</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Store Address</label>
                   <input
                     type="text"
                     value={config.businessAddress || ''}
                     onChange={(e) => handleChange('businessAddress', e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Contact Phone</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Contact Phone</label>
                   <input
                     type="text"
                     value={config.businessPhone || ''}
                     onChange={(e) => handleChange('businessPhone', e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white"
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
@@ -104,50 +111,50 @@ export default function SettingsPage() {
           </div>
 
           {/* Currency & Tax */}
-          <div className="p-5 rounded-2xl bg-[#0f172a] border border-white/10 shadow-xl space-y-4">
-            <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
-              <Receipt className="w-4 h-4 text-emerald-400" />
-              Financial & Tax Rates
+          <div className="p-5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b border-slate-100 dark:border-slate-700 pb-2.5">
+              <Receipt className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              Financial & Tax
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Currency Symbol</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Currency Symbol</label>
                 <input
                   type="text"
                   value={config.currency || '$'}
                   onChange={(e) => handleChange('currency', e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white font-bold"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:border-blue-600"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Currency Code</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Currency Code</label>
                 <input
                   type="text"
                   value={config.currencyCode || 'USD'}
                   onChange={(e) => handleChange('currencyCode', e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white font-mono"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 font-mono focus:outline-none focus:border-blue-600"
                 />
               </div>
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Default Tax Rate (%)</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Default Tax Rate (%)</label>
                 <input
                   type="number"
                   step="0.1"
                   value={config.taxRate || '5.0'}
                   onChange={(e) => handleChange('taxRate', e.target.value)}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white font-bold"
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 font-bold focus:outline-none focus:border-blue-600"
                 />
               </div>
             </div>
 
             <div className="text-xs">
-              <label className="block font-semibold text-slate-300 mb-1">Thermal Receipt Footer Note</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Receipt Footer Message</label>
               <textarea
                 rows={2}
                 value={config.receiptFooter || ''}
                 onChange={(e) => handleChange('receiptFooter', e.target.value)}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-white"
+                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-slate-900 dark:text-slate-100 focus:outline-none focus:border-blue-600"
               />
             </div>
           </div>
@@ -156,10 +163,10 @@ export default function SettingsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-xl shadow-indigo-600/30 active:scale-95 transition-all"
+              className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"
             >
-              <Save className="w-4 h-4" />
-              {saving ? 'Saving...' : 'Save Configuration'}
+              <Save className="w-3.5 h-3.5" />
+              {saving ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </form>

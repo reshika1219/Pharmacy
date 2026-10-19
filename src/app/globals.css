@@ -1,28 +1,55 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
-    --background: #090d16;
-    --surface: #0f172a;
-    --surface-elevated: #1e293b;
-    --border: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.16);
-    --accent: #6366f1;
-    --accent-glow: rgba(99, 102, 241, 0.25);
+    /* 60% Dominant Base: Soft neutral stone/slate off-white (NOT harsh pure #fff) */
+    --bg-app: #f8fafc;
+    /* 30% Structural Surfaces: Crisp cards, panels, and borders */
+    --bg-surface: #ffffff;
+    --bg-surface-elevated: #f1f5f9;
+    --bg-surface-hover: #f1f5f9;
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    /* 10% Purposeful Accent: Refined, trustworthy enterprise cobalt */
+    --accent-primary: #2563eb;
+    --accent-hover: #1d4ed8;
   }
 
-  * {
-    border-color: var(--border);
+  .dark {
+    /* 60% Dominant Base: Muted deep slate/charcoal (NOT harsh pure #000) */
+    --bg-app: #0f172a;
+    /* 30% Structural Surfaces: Clean slate layers */
+    --bg-surface: #1e293b;
+    --bg-surface-elevated: #283548;
+    --bg-surface-hover: #263345;
+    --border-subtle: #334155;
+    --border-strong: #475569;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    /* 10% Purposeful Accent */
+    --accent-primary: #3b82f6;
+    --accent-hover: #60a5fa;
   }
 
   body {
-    background-color: var(--background);
-    color: #f1f5f9;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  * {
+    border-color: var(--border-subtle);
   }
 }
 
-/* Custom scrollbar for sleek modern UI */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -31,14 +58,14 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(148, 163, 184, 0.3);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: rgba(148, 163, 184, 0.5);
 }
 
-/* Thermal receipt printable styling */
+/* Printable thermal receipt styling */
 @media print {
   body * {
     visibility: hidden;
@@ -56,19 +83,4 @@
     background: white !important;
     color: black !important;
   }
-}
-
-/* Glassmorphism utility */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.glass-panel-elevated {
-  background: rgba(30, 41, 59, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
 }
