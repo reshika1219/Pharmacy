@@ -30,9 +30,9 @@ export default function LoginPage() {
       }
 
       if (data.user.role === 'cashier') {
-        router.push('/pos');
+        window.location.href = '/pos';
       } else {
-        router.push('/');
+        window.location.href = '/';
       }
     } catch (err: any) {
       setError(err.message || 'Unable to sign in. Please check credentials.');

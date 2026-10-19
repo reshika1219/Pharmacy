@@ -14,6 +14,7 @@ import {
   Wallet,
   Settings,
   LogOut,
+  LogIn,
   Menu,
   X,
   Store,
@@ -39,15 +40,21 @@ export default function Navigation() {
     fetch('/api/auth/me')
       .then((res) => {
         if (!res.ok) {
-          router.replace('/login');
+          window.location.href = '/login';
           return null;
         }
         return res.json();
       })
       .then((data) => {
-        if (data?.user) setUser(data.user);
+        if (data?.user) {
+          setUser(data.user);
+        } else {
+          window.location.href = '/login';
+        }
       })
-      .catch(() => router.replace('/login'));
+      .catch(() => {
+        window.location.href = '/login';
+      });
 
     fetch('/api/dashboard')
       .then((res) => (res.ok ? res.json() : null))
@@ -60,8 +67,11 @@ export default function Navigation() {
   }, [router]);
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.replace('/login');
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } finally {
+      window.location.href = '/login';
+    }
   };
 
   const navItems = [
@@ -301,13 +311,23 @@ export default function Navigation() {
 
             {/* Drawer Footer Actions */}
             <div className="p-3.5 border-t border-[var(--border)] bg-[var(--surface-hover)] flex items-center gap-2 shrink-0">
-              <button
-                onClick={handleLogout}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-[var(--surface)] hover:bg-[var(--error-bg)] border border-[var(--border)] text-[var(--error-text)] font-semibold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-98"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                Sign Out
-              </button>
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-[var(--surface)] hover:bg-[var(--error-bg)] border border-[var(--border)] text-[var(--error-text)] font-semibold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-98"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Sign Out
+                </button>
+              ) : (
+                <a
+                  href="/login"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--accent-text)] font-semibold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-colors cursor-pointer active:scale-98"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Sign In to ExamplePOS
+                </a>
+              )}
             </div>
           </div>
         </div>

@@ -87,6 +87,11 @@ export default function DashboardPage() {
         fetch('/api/categories'),
       ]);
 
+      if (dashRes.status === 401 || prodRes.status === 401) {
+        window.location.href = '/login';
+        return;
+      }
+
       if (dashRes.ok) {
         const d = await dashRes.json();
         setKpis(d.kpis);
