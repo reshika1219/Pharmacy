@@ -1,39 +1,46 @@
-# Project Structure — PharmaCare
+# Project Structure — ExamplePOS
 
-PharmaCare is structured as a clean, modular single-branch pharmacy management application.
+ExamplePOS is structured as a modern, full-stack Next.js web application designed for remote inventory management and point of sale operations.
 
+```text
+├── prisma/
+│   ├── schema.prisma          # Database schema (PostgreSQL & SQLite compatible)
+│   └── seed.ts                # Initial configuration, categories, and inventory seeder
+├── src/
+│   ├── app/
+│   │   ├── api/               # Next.js Server REST API routes
+│   │   │   ├── auth/          # Login, logout, session management
+│   │   │   ├── batches/       # Stock intake & shipment batches
+│   │   │   ├── categories/    # Product categories
+│   │   │   ├── config/        # Store profile & settings
+│   │   │   ├── customers/     # CRM & loyalty points
+│   │   │   ├── dashboard/     # Real-time KPIs & operational analytics
+│   │   │   ├── expenses/      # Operational expenses
+│   │   │   ├── orders/        # POS checkout transactions & receipts
+│   │   │   └── products/      # Inventory catalog & SKU management
+│   │   ├── batches/           # Batch intake view
+│   │   ├── customers/         # Customer CRM view
+│   │   ├── expenses/          # Expense tracking view
+│   │   ├── inventory/         # Full inventory catalog view
+│   │   ├── login/             # Responsive authentication page
+│   │   ├── orders/            # Order history & thermal receipt reprint
+│   │   ├── pos/               # Cashier Point of Sale terminal
+│   │   ├── settings/          # Business settings & localization
+│   │   ├── globals.css        # Glassmorphic design system & print styles
+│   │   ├── layout.tsx         # Root layout with responsive viewport tags
+│   │   └── page.tsx           # Operations & Inventory Dashboard
+│   ├── components/
+│   │   └── Navigation.tsx     # Responsive desktop sidebar + mobile bottom tab bar
+│   └── lib/
+│       ├── auth.ts            # JWT sessions & bcrypt password verification
+│       └── prisma.ts          # Singleton database client
+├── package.json
+└── README.md
 ```
-pharmacy-inventory/
-├── backend/
-│   ├── src/
-│   │   ├── __init__.py
-│   │   ├── app.py           # Main server initialization and static serving
-│   │   ├── config.py        # Port, secret tokens, and paths setup
-│   │   ├── database.py      # SQLite connection, initialization, and auto-migrations
-│   │   ├── auth.py          # Secure password hashing and role validation middlewares
-│   │   └── routes.py        # REST API endpoints for login, catalog, sales, expenses, and dashboard reports
-│   └── backups/             # Auto-rotating database backups (.db)
-├── frontend/
-│   ├── login.html           # Authentication portal
-│   ├── login.css
-│   ├── cashier.html         # Cashier POS workspace
-│   ├── cashier.css
-│   ├── cashier.js           # Client POS controller querying REST routes
-│   ├── index.html           # Owner Portal dashboard UI
-│   ├── style.css
-│   └── app.js               # Owner dashboard controller handling sync, expenses, and suppliers
-├── docs/                    # Technical guides and documentations
-│   ├── project-structure.md
-│   ├── features.md
-│   └── owner-dashboard.md
-├── README.md                # System user manual
-├── PharmaCare.bat           # Windows application launcher
-└── PharmaCare.command       # macOS application launcher
-```
 
-## Backend Organization
-* **Modular Codebase**: Split from the legacy monolithic `server.py` to ensure that configuration, auth logic, database operations, and HTTP routes are managed independently.
-* **Database Isolation**: The database (`pharmacy.db`) and backup directories are localized within the `backend/` folder to separate concerns.
+---
 
-## Frontend Organization
-* **No Server-Side Templates**: Frontend files are served as static files from the `frontend/` folder, interacting with the backend purely through secure AJAX `fetch` calls.
+### Key Architectural Highlights
+* **Universal Remote Access**: Web application accessible from any mobile phone, tablet, or laptop browser.
+* **Separation of Concerns**: Dedicated touch-friendly POS terminal for cashiers (`/pos`), alongside an executive operations & inventory control panel (`/`).
+* **Cloud & Local Flexibility**: Works with local SQLite or cloud-hosted PostgreSQL (Supabase / Neon).

@@ -1,34 +1,30 @@
-# System Features — PharmaCare
+# System Features — ExamplePOS
 
-PharmaCare is custom-tailored for single-branch pharmacy workflows.
+ExamplePOS is a versatile, universal POS and inventory tracking platform suitable for any commercial enterprise (retail stores, groceries, apparel, specialty shops, cafes, service counters, etc.).
 
-## Completed Features
+---
 
-### 1. Role-Based Authentication
-* Secure PBKDF2/SHA256 password hashing.
-* Explicit user roles: `owner` (full system control, financials, setting) and `cashier` (read-only medicine search and sales checkout).
+## 💻 1. Cashier POS Experience
+- **Fluid Product Discovery**: Filter by categories or use real-time keyword/barcode search.
+- **Cart State Management**: Dynamically increment, decrement, or remove items with real-time stock limits.
+- **Discounts & Custom Taxes**: Support for invoice discounts (fixed amount or percentage) and configurable tax rates.
+- **Multiple Tender Methods**: Cash (with quick change calculator), Credit/Debit Card, Mobile / QR Wallets, and Store Credit.
+- **Clean Receipt Generation**: Modal preview with one-click thermal printer output.
 
-### 2. POS Billing Terminal
-* Fast medicine searching (by brand or generic name).
-* Barcode-ready text input selector.
-* Cart management with subtotal, discount inputs, and final total calculator.
-* Multi-mode checkout payments: Cash, Card, Online (mobile wallet/transfer), and Credit (patient tab).
-* Immediate receipt printing layout.
+---
 
-### 3. Inventory & Supply Chain Management
-* Catalog CRUD operations.
-* **FEFO (First Expired, First Out) Batch Control**: Stock is logged as distinct batches (expiry dates, purchase costs, suppliers). Checkout automatically decrements quantity from the nearest-expiring batch first.
-* Near-expiry alerts (highlighting batches expiring within 90 days).
-* Low-stock warnings (triggering when current stock falls below item-specific `minStock`).
+## 📦 2. Stock & Inventory Control
+- **Item Master**: Record product SKU, barcode, unit, minimum alert threshold, and category classification.
+- **Inventory Intake & Batches**: Record incoming supplies with cost price, retail price, receiving date, and supplier tags.
+- **Automated Stock Depletion**: Every sale automatically deducts quantities from active stock batches.
+- **Alert Flags**: Immediate visual warnings when stock falls below configured minimums or hits zero.
 
-### 4. Accounting & Expenses
-* Log operational costs (Rent, Salaries, Utilities) in the **Expenses** tab.
-* Dashboard reporting calculating Sales, COGS, Gross Profit, Expenses, and Net Profit (Profit = Sales - COGS - Expenses).
+---
 
-### 5. Supplier Payables
-* Log outstanding balances for each batch of incoming medicines.
-* Record partial or full payments to suppliers to clear ledger balances.
-
-## Future Recommendations / Roadmaps
-* **Sales Returns**: A dedicated checkout return handler to adjust item balances.
-* **Cashier Shift Balancing**: Shift logouts matching physical drawer cash count.
+## 📊 3. Analytics & Administrative Tools
+- **Live Business Dashboard**: Track today's revenue, sales volume, top-selling items, and profit margins.
+- **Transaction History**: Audit every past order with complete line-item visibility and receipt reprints.
+- **Expense Book**: Track overhead expenditures categorized by utility, rent, maintenance, payroll, and supplies.
+- **Customer CRM**: Maintain customer phone numbers, addresses, and track loyalty point accumulation.
+- **Supplier Ledger**: Maintain vendor contacts and supply histories.
+- **Security & Backups**: Role-based access control, cryptographic password hashing, and automatic rolling database backups.

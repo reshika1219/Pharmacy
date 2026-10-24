@@ -1,0 +1,150 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Config {
+  key String @id
+  val String
+
+  @@map("config")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String   @map("password_hash")
+  role         String   @default("cashier")
+  fullName     String?  @map("full_name")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  color    String    @default("#6366f1")
+  icon     String    @default("box")
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id             Int         @id @default(autoincrement())
+  name           String
+  sku            String?     @unique
+  categoryId     Int?        @map("category_id")
+  category       Category?   @relation(fields: [categoryId], references: [id])
+  unit           String      @default("pcs")
+  barcode        String?
+  description    String?
+  imageUrl       String?     @map("image_url")
+  minStock       Int         @default(0) @map("min_stock")
+  trackInventory Boolean     @default(true) @map("track_inventory")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  batches        Batch[]
+  orderItems     OrderItem[]
+
+  @@map("products")
+}
+
+model Batch {
+  id           Int         @id @default(autoincrement())
+  productId    Int         @map("product_id")
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  batchRef     String?     @map("batch_ref")
+  qtyReceived  Int         @default(0) @map("qty_received")
+  qtyRemaining Int         @default(0) @map("qty_remaining")
+  costPrice    Float       @default(0.0) @map("cost_price")
+  sellPrice    Float       @default(0.0) @map("sell_price")
+  supplier     String?
+  dateAdded    String?     @map("date_added")
+  notes        String?
+  orderItems   OrderItem[]
+
+  @@map("batches")
+}
+
+model Customer {
+  id            Int      @id @default(autoincrement())
+  name          String
+  phone         String?
+  email         String?
+  address       String?
+  loyaltyPoints Int      @default(0) @map("loyalty_points")
+  totalSpent    Float    @default(0.0) @map("total_spent")
+  createdAt     DateTime @default(now()) @map("created_at")
+  orders        Order[]
+
+  @@map("customers")
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  orderNumber    String      @unique @map("order_number")
+  date           String
+  time           String
+  cashier        String
+  customerId     Int?        @map("customer_id")
+  customer       Customer?   @relation(fields: [customerId], references: [id])
+  paymentMethod  String      @default("Cash") @map("payment_method")
+  subtotal       Float       @default(0.0)
+  discountAmount Float       @default(0.0) @map("discount_amount")
+  taxAmount      Float       @default(0.0) @map("tax_amount")
+  total          Float       @default(0.0)
+  amountTendered Float       @default(0.0) @map("amount_tendered")
+  changeDue      Float       @default(0.0) @map("change_due")
+  status         String      @default("completed")
+  notes          String?
+  items          OrderItem[]
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  orderId     Int      @map("order_id")
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   Int      @map("product_id")
+  product     Product  @relation(fields: [productId], references: [id])
+  batchId     Int?     @map("batch_id")
+  batch       Batch?   @relation(fields: [batchId], references: [id])
+  qty         Int      @default(1)
+  unitPrice   Float    @default(0.0) @map("unit_price")
+  discountPct Float    @default(0.0) @map("discount_pct")
+  lineTotal   Float    @default(0.0) @map("line_total")
+
+  @@map("order_items")
+}
+
+model Expense {
+  id          Int      @id @default(autoincrement())
+  date        String
+  category    String
+  description String?
+  amount      Float    @default(0.0)
+  createdBy   String?  @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("expenses")
+}
+
+model Supplier {
+  id            Int      @id @default(autoincrement())
+  name          String
+  contactPerson String?  @map("contact_person")
+  phone         String?
+  email         String?
+  address       String?
+  notes         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("suppliers")
+}

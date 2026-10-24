@@ -1,6 +1,6 @@
-# Remote Owner Dashboard — PharmaCare
+# Remote Owner Dashboard — ExamplePOS
 
-PharmaCare is designed to allow the pharmacy owner to securely monitor daily sales, profit metrics, operational costs, and cashier logs from anywhere in the world.
+ExamplePOS is designed to allow the store owner to securely monitor daily sales, profit metrics, operational costs, and cashier logs from anywhere in the world.
 
 ## Remote Access Metrics
 
